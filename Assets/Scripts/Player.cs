@@ -10,7 +10,7 @@ public class NewMonoBehaviourScript : MonoBehaviour {
     private Vector3 currPosition;
 
     private void Awake() {
-        currPosition = new Vector3(1, 0, 0);
+        currPosition = new Vector3(0, 0, 0);
         transform.position = currPosition;
     }
 
@@ -24,12 +24,12 @@ public class NewMonoBehaviourScript : MonoBehaviour {
         switch (keyPressed) {
             case "rightArrow":
                 if(transform.position.x == 1) {
-                    transform.position = new Vector3(3.5f, 0, 0);
+                    transform.position = new Vector3(2.5f, 0, 0);
                 }
                 break;
             case "leftArrow":
                 if (transform.position.x == 3.5f) {
-                    transform.position = new Vector3(1, 0, 0);
+                    transform.position = new Vector3(0, 0, 0);
                 }
                 break;
         }
