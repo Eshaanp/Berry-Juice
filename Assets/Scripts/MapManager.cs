@@ -38,9 +38,12 @@ public class TileSpawner : MonoBehaviour
         var fullData = Resources.Load <TextAsset> (csvDump);
         var tileSplit = fullData.text.Split('\n');
 
-        foreach (var tile in tileSplit) {
-            string[] pieces = tile.Split(',');
+        Debug.Log(tileSplit.GetType());
 
+        for (int i = 0; i < tileSplit.Length - 1; i++) {
+            string tile = tileSplit[i];
+           
+            string[] pieces = tile.Split(',');
             string id = pieces[0];
 
             string[] parsedCoords = pieces[1].Split('_');
