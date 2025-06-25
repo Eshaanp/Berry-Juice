@@ -38,8 +38,6 @@ public class TileSpawner : MonoBehaviour
         var fullData = Resources.Load <TextAsset> (csvDump);
         var tileSplit = fullData.text.Split('\n');
 
-        Debug.Log(tileSplit.GetType());
-
         for (int i = 0; i < tileSplit.Length - 1; i++) {
             string tile = tileSplit[i];
            
@@ -62,7 +60,37 @@ public class TileSpawner : MonoBehaviour
                 homeIDs.Add(id);
             }
 
-            Instantiate(tilePrefab, scaledCoords, Quaternion.identity);
+            GameObject tempTile = Instantiate(tilePrefab, scaledCoords, Quaternion.identity);
+            MeshRenderer renderer = tempTile.GetComponentInChildren<MeshRenderer>();
+
+            /* Color Assignment
+             * Warp = purple
+             * Encounter = red
+             * Drop = blue
+             * Draw = green
+             * bonus = gold
+             * home = white
+             */
+            switch (type) {
+                case "warp":
+                    renderer.material.color = Color.purple;
+                    break;
+                case "encounter":
+                    renderer.material.color = Color.red;
+                    break;
+                case "drop":
+                    renderer.material.color = Color.blue;
+                    break;
+                case "draw":
+                    renderer.material.color = Color.green;
+                    break;
+                case "bonus":
+                    renderer.material.color = Color.gold;
+                    break;
+                case "home":
+                    renderer.material.color = Color.white;
+                    break;
+            }
         }
     }
 }
