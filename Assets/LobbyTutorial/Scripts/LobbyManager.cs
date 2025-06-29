@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
@@ -176,7 +177,23 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
+    private async Task InitializeServicesAndAuthenticateAsync()
+    {
+        if (!UnityServices.State.Equals(ServicesInitializationState.Initialized))
+        {
+            await UnityServices.InitializeAsync();
+        }
+
+        if (!AuthenticationService.Instance.IsSignedIn)
+        {
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        }
+    }
+
+
     public async void CreateLobby(string lobbyName, int maxPlayers, bool isPrivate, GameMode gameMode) {
+        await InitializeServicesAndAuthenticateAsync();
+
         Player player = GetPlayer();
 
         CreateLobbyOptions options = new CreateLobbyOptions {
