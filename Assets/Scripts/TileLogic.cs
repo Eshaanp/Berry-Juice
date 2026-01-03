@@ -1,4 +1,6 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections;
 
 public class TileLogic : MonoBehaviour
 {
@@ -12,7 +14,9 @@ public class TileLogic : MonoBehaviour
 
     //Add more states ie isRollAgainTile; 
 
+    public bool isSlideForward;
 
+    public PlayerLogic p1;
 
     void Start()
     {
@@ -24,4 +28,8 @@ public class TileLogic : MonoBehaviour
     {
         
     }
+
+
+
+
 }
