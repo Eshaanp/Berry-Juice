@@ -5,20 +5,23 @@ using System.Collections;
 public class PlayerLogic : MonoBehaviour
 {
 
-
     public int PlayerId;
-    //public bool isTurn = false; 
-
     public int CurrentTileId = 0;
     public GameObject currentTile;
 
+
     public int moveNum = 1; 
     public float moveSpeed = 3f;
+    public int points = 0; 
 
+
+    [Header("Player States")]
+    public bool skipTurn = false;
+    public bool CrossedFinish = false;
     bool isMoving = false;
 
+    [Header("Manager Scripts")]
     public TileEffects tileEffects;
-
     public GameManger gameManager;
 
 
@@ -37,7 +40,7 @@ public class PlayerLogic : MonoBehaviour
     {
         //Check player turn then space to move for current tests
         //amount of spaces is moveNum but will be replaced
-        if (!gameManager.isPlayersTurn(PlayerId))
+       /* if (!gameManager.isPlayersTurn(PlayerId))
         {
             return;
         }
@@ -46,9 +49,22 @@ public class PlayerLogic : MonoBehaviour
         {
             StartCoroutine(MoveTilesCoroutine(moveNum));
 
-        }
+        }*/
     }
 
+
+    public IEnumerator DiceRoll()
+    {
+        Debug.Log("Press SPACE to roll/move");
+ 
+        while (!Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            yield return null;
+        }
+        StartCoroutine(MoveTilesCoroutine(moveNum));
+    }
+
+    
 
     //Moves player on first dice roll
     public IEnumerator MoveTilesCoroutine(int tilesToMove)
@@ -68,11 +84,16 @@ public class PlayerLogic : MonoBehaviour
         {
             TileLogic tileLogic = currentTile.GetComponent<TileLogic>();
 
-            GameObject nextTile = movingForward
-                ? tileLogic.nextTile
-                : tileLogic.prevTile;
+            //check if on last tile
+            if (tileLogic.tileType == TileLogic.TileType.EndTile)
+            {
+                break;
+            }
 
-            if (nextTile == null)
+            GameObject nextTile = movingForward ? tileLogic.nextTile : tileLogic.prevTile;
+
+
+            if (nextTile == null )
             {
                 break;
             }
@@ -89,7 +110,7 @@ public class PlayerLogic : MonoBehaviour
         //checks the effect of landed tile
         tileEffects.CheckEffect(this);
         isMoving = false;
-        gameManager.NextTurn();
+        gameManager.EndTurn();
     }
 
     //Moves the player model to tile
@@ -106,6 +127,10 @@ public class PlayerLogic : MonoBehaviour
 
         transform.position = targetPos;
     }
+
+
+
+
 
     //This is movement again, this is basically just the movement method again without NextTurn and stuff. 
     //Will remove to simplify later 
@@ -126,6 +151,10 @@ public class PlayerLogic : MonoBehaviour
         for (int i = 0; i < steps; i++)
         {
             TileLogic tileLogic = currentTile.GetComponent<TileLogic>();
+            if (tileLogic.tileType == TileLogic.TileType.EndTile)
+            {
+                break;
+            }
 
             GameObject nextTile = movingForward
                 ? tileLogic.nextTile

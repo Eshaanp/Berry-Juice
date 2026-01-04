@@ -309,7 +309,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 342499156}
-  - component: {fileID: 342499157}
   - component: {fileID: 342499158}
   m_Layer: 0
   m_Name: Player1
@@ -334,20 +333,6 @@ Transform:
   - {fileID: 1584134809}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &342499157
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 342499154}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4aa1a355badf18f4e9fbf8353a4b0749, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 7
-  playerInput: {fileID: 139405520}
 --- !u!114 &342499158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -364,7 +349,10 @@ MonoBehaviour:
   CurrentTileId: 0
   currentTile: {fileID: 1821684296}
   moveNum: 1
-  moveSpeed: 8
+  moveSpeed: 16
+  points: 0
+  skipTurn: 0
+  CrossedFinish: 0
   tileEffects: {fileID: 1057622775}
   gameManager: {fileID: 1057622773}
 --- !u!1 &362220405
@@ -402,10 +390,7 @@ MonoBehaviour:
   id: 1
   prevTile: {fileID: 1821684296}
   nextTile: {fileID: 421870669}
-  isStartTile: 0
-  isEndTile: 0
-  isSlideForward: 1
-  p1: {fileID: 0}
+  tileType: 5
 --- !u!65 &362220407
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -651,10 +636,7 @@ MonoBehaviour:
   id: 2
   prevTile: {fileID: 362220405}
   nextTile: {fileID: 856671095}
-  isStartTile: 0
-  isEndTile: 0
-  isSlideForward: 0
-  p1: {fileID: 0}
+  tileType: 4
 --- !u!65 &421870671
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -798,7 +780,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &714058554
 Transform:
   m_ObjectHideFlags: 0
@@ -901,10 +883,7 @@ MonoBehaviour:
   id: 3
   prevTile: {fileID: 421870669}
   nextTile: {fileID: 2059415980}
-  isStartTile: 0
-  isEndTile: 0
-  isSlideForward: 0
-  p1: {fileID: 0}
+  tileType: 0
 --- !u!65 &856671097
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1023,7 +1002,7 @@ Transform:
   m_GameObject: {fileID: 895745138}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.91, y: 0.09, z: -4.57}
+  m_LocalPosition: {x: -6.38, y: 0.09, z: -7.76}
   m_LocalScale: {x: 2, y: 0.2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1044,10 +1023,7 @@ MonoBehaviour:
   id: 7
   prevTile: {fileID: 1742133455}
   nextTile: {fileID: 1821684296}
-  isStartTile: 0
-  isEndTile: 1
-  isSlideForward: 0
-  p1: {fileID: 0}
+  tileType: 2
 --- !u!65 &895745141
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1201,7 +1177,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player1: {fileID: 342499158}
   player2: {fileID: 1297452642}
+  Player1Score: 0
+  Player2Score: 0
+  turn: 0
   currentPlayerTurn: 1
+  numOfPlayers: 2
 --- !u!4 &1057622774
 Transform:
   m_ObjectHideFlags: 0
@@ -1229,6 +1209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5270a8712c1a034092228e47f9d9cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManger: {fileID: 1057622773}
 --- !u!1 &1297452641
 GameObject:
   m_ObjectHideFlags: 0
@@ -1238,7 +1219,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1297452644}
-  - component: {fileID: 1297452643}
   - component: {fileID: 1297452642}
   m_Layer: 0
   m_Name: Player2
@@ -1262,24 +1242,13 @@ MonoBehaviour:
   PlayerId: 2
   CurrentTileId: 0
   currentTile: {fileID: 1821684296}
-  moveNum: 1
-  moveSpeed: 8
+  moveNum: 2
+  moveSpeed: 16
+  points: 0
+  skipTurn: 0
+  CrossedFinish: 0
   tileEffects: {fileID: 1057622775}
   gameManager: {fileID: 1057622773}
---- !u!114 &1297452643
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1297452641}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4aa1a355badf18f4e9fbf8353a4b0749, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 7
-  playerInput: {fileID: 139405520}
 --- !u!4 &1297452644
 Transform:
   m_ObjectHideFlags: 0
@@ -1440,10 +1409,7 @@ MonoBehaviour:
   id: 5
   prevTile: {fileID: 2059415980}
   nextTile: {fileID: 1742133455}
-  isStartTile: 0
-  isEndTile: 0
-  isSlideForward: 0
-  p1: {fileID: 0}
+  tileType: 3
 --- !u!65 &1470185764
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1678,10 +1644,7 @@ MonoBehaviour:
   id: 6
   prevTile: {fileID: 1470185762}
   nextTile: {fileID: 895745138}
-  isStartTile: 0
-  isEndTile: 0
-  isSlideForward: 0
-  p1: {fileID: 0}
+  tileType: 0
 --- !u!65 &1742133457
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1806,10 +1769,7 @@ MonoBehaviour:
   id: 0
   prevTile: {fileID: 895745138}
   nextTile: {fileID: 362220405}
-  isStartTile: 1
-  isEndTile: 0
-  isSlideForward: 0
-  p1: {fileID: 0}
+  tileType: 1
 --- !u!65 &1821684298
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1934,10 +1894,7 @@ MonoBehaviour:
   id: 4
   prevTile: {fileID: 856671095}
   nextTile: {fileID: 1470185762}
-  isStartTile: 0
-  isEndTile: 0
-  isSlideForward: 0
-  p1: {fileID: 0}
+  tileType: 0
 --- !u!65 &2059415982
 BoxCollider:
   m_ObjectHideFlags: 0
