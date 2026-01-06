@@ -19,7 +19,7 @@ public class PlayerTypes : MonoBehaviour
 
 
 
-    public GameManger gameManger;
+    public GameManger gameManager;
 
 
 
@@ -30,7 +30,11 @@ public class PlayerTypes : MonoBehaviour
         {
             case PlayerLogic.Character.Meowscarada:
                 ReRoll(player);
+                break;
 
+            case PlayerLogic.Character.Luvdisc:
+                CheckIfLastPlace(player);
+                StartCoroutine(player.DiceRoll());
                 break;
 
             default:
@@ -52,11 +56,27 @@ public class PlayerTypes : MonoBehaviour
                 break;
 
             default:
+                CheckJigglypuffEffect(player);
                 break;
         }
 
     }
 
+
+    //JiggyPuff effect- if passby, trip player. called by Check During ROle
+    public void CheckJigglypuffEffect(PlayerLogic player)
+    {
+        if (player.PlayerId != 1 && gameManager.player1.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player1.currentTile)
+        {
+            player.skipTurn = true;
+            
+        }
+        if (player.PlayerId != 2 && gameManager.player2.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player2.currentTile)
+        {
+            player.skipTurn = true;
+        }
+
+    }
 
 
 
@@ -106,15 +126,15 @@ public class PlayerTypes : MonoBehaviour
      */
     public void MoveBackwards(PlayerLogic player)
     {
-        if(player.PlayerId != 1 && player.currentTile == gameManger.player1.currentTile)
+        if(player.PlayerId != 1 && player.currentTile == gameManager.player1.currentTile)
         {
             Debug.Log("passing player 1");
-            StartCoroutine(gameManger.player1.MovementSlide(-1));
+            StartCoroutine(gameManager.player1.MovementSlide(-1));
         }
-        if (player.PlayerId != 2 && player.currentTile == gameManger.player2.currentTile)
+        if (player.PlayerId != 2 && player.currentTile == gameManager.player2.currentTile)
         {
             Debug.Log("passing player 2");
-            StartCoroutine(gameManger.player2.MovementSlide(-1));
+            StartCoroutine(gameManager.player2.MovementSlide(-1));
         }
         if (player.currentTile.GetComponent<TileLogic>().isPlayer3OnTile == true)
         {
@@ -128,5 +148,30 @@ public class PlayerTypes : MonoBehaviour
     }
 
 
+
+    public void CheckIfLastPlace(PlayerLogic player)
+    {
+        int player1Place = gameManager.player1.currentTile.GetComponent<TileLogic>().id;
+        int player2Place = gameManager.player2.currentTile.GetComponent<TileLogic>().id;
+
+        if(player.currentTile.GetComponent<TileLogic>().id <= player1Place && player.currentTile.GetComponent<TileLogic>().id <= player2Place)
+        {
+            Debug.Log("In last place");
+            switch (player.PlayerId)
+            {
+                case 1:
+                    gameManager.Player1Score -= 1;
+                    break;
+                case 2:
+                    gameManager.Player2Score -= 1;
+                    break;
+            }
+        }
+
+
+
+
+    }
+    
 
 }

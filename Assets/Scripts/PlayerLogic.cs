@@ -31,6 +31,7 @@ public class PlayerLogic : MonoBehaviour
     
     public enum Character
     {
+        Patrat,
         Jigglypuff,
         Sligoo,
         Meowscarada,

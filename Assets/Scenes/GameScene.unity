@@ -356,7 +356,7 @@ MonoBehaviour:
   tileEffects: {fileID: 1057622775}
   gameManager: {fileID: 1057622773}
   playerTypes: {fileID: 1057622776}
-  character: 3
+  character: 4
 --- !u!1 &362220405
 GameObject:
   m_ObjectHideFlags: 0
@@ -1242,7 +1242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5914627a9d174da49886244cc15b494f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManger: {fileID: 1057622773}
+  gameManager: {fileID: 1057622773}
 --- !u!1 &1297452641
 GameObject:
   m_ObjectHideFlags: 0
@@ -1275,7 +1275,7 @@ MonoBehaviour:
   PlayerId: 2
   CurrentTileId: 0
   currentTile: {fileID: 1821684296}
-  moveNum: 3
+  moveNum: 1
   moveSpeed: 16
   points: 0
   skipTurn: 0
@@ -1283,7 +1283,7 @@ MonoBehaviour:
   tileEffects: {fileID: 1057622775}
   gameManager: {fileID: 1057622773}
   playerTypes: {fileID: 1057622776}
-  character: 1
+  character: 0
 --- !u!4 &1297452644
 Transform:
   m_ObjectHideFlags: 0
