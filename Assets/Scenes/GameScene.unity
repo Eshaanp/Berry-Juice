@@ -348,13 +348,15 @@ MonoBehaviour:
   PlayerId: 1
   CurrentTileId: 0
   currentTile: {fileID: 1821684296}
-  moveNum: 1
+  moveNum: 2
   moveSpeed: 16
   points: 0
   skipTurn: 0
   CrossedFinish: 0
   tileEffects: {fileID: 1057622775}
   gameManager: {fileID: 1057622773}
+  playerTypes: {fileID: 1057622776}
+  character: 3
 --- !u!1 &362220405
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,7 +392,11 @@ MonoBehaviour:
   id: 1
   prevTile: {fileID: 1821684296}
   nextTile: {fileID: 421870669}
-  tileType: 5
+  isPlayer1OnTile: 0
+  isPlayer2OnTile: 0
+  isPlayer3OnTile: 0
+  isPlayer4OnTile: 0
+  tileType: 0
 --- !u!65 &362220407
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -474,7 +480,7 @@ Transform:
   m_GameObject: {fileID: 362220405}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.67, y: 0.09, z: -0.67889977}
+  m_LocalPosition: {x: 2.62, y: 0.09, z: -0.67889977}
   m_LocalScale: {x: 2, y: 0.2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -636,7 +642,11 @@ MonoBehaviour:
   id: 2
   prevTile: {fileID: 362220405}
   nextTile: {fileID: 856671095}
-  tileType: 4
+  isPlayer1OnTile: 0
+  isPlayer2OnTile: 0
+  isPlayer3OnTile: 0
+  isPlayer4OnTile: 0
+  tileType: 0
 --- !u!65 &421870671
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -883,6 +893,10 @@ MonoBehaviour:
   id: 3
   prevTile: {fileID: 421870669}
   nextTile: {fileID: 2059415980}
+  isPlayer1OnTile: 0
+  isPlayer2OnTile: 0
+  isPlayer3OnTile: 0
+  isPlayer4OnTile: 0
   tileType: 0
 --- !u!65 &856671097
 BoxCollider:
@@ -1023,6 +1037,10 @@ MonoBehaviour:
   id: 7
   prevTile: {fileID: 1742133455}
   nextTile: {fileID: 1821684296}
+  isPlayer1OnTile: 0
+  isPlayer2OnTile: 0
+  isPlayer3OnTile: 0
+  isPlayer4OnTile: 0
   tileType: 2
 --- !u!65 &895745141
 BoxCollider:
@@ -1156,6 +1174,7 @@ GameObject:
   - component: {fileID: 1057622774}
   - component: {fileID: 1057622773}
   - component: {fileID: 1057622775}
+  - component: {fileID: 1057622776}
   m_Layer: 0
   m_Name: GameManger
   m_TagString: Untagged
@@ -1182,6 +1201,7 @@ MonoBehaviour:
   turn: 0
   currentPlayerTurn: 1
   numOfPlayers: 2
+  playerTypes: {fileID: 1057622776}
 --- !u!4 &1057622774
 Transform:
   m_ObjectHideFlags: 0
@@ -1207,6 +1227,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b5270a8712c1a034092228e47f9d9cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManger: {fileID: 1057622773}
+--- !u!114 &1057622776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057622772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5914627a9d174da49886244cc15b494f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gameManger: {fileID: 1057622773}
@@ -1242,13 +1275,15 @@ MonoBehaviour:
   PlayerId: 2
   CurrentTileId: 0
   currentTile: {fileID: 1821684296}
-  moveNum: 2
+  moveNum: 3
   moveSpeed: 16
   points: 0
   skipTurn: 0
   CrossedFinish: 0
   tileEffects: {fileID: 1057622775}
   gameManager: {fileID: 1057622773}
+  playerTypes: {fileID: 1057622776}
+  character: 1
 --- !u!4 &1297452644
 Transform:
   m_ObjectHideFlags: 0
@@ -1409,7 +1444,11 @@ MonoBehaviour:
   id: 5
   prevTile: {fileID: 2059415980}
   nextTile: {fileID: 1742133455}
-  tileType: 3
+  isPlayer1OnTile: 0
+  isPlayer2OnTile: 0
+  isPlayer3OnTile: 0
+  isPlayer4OnTile: 0
+  tileType: 0
 --- !u!65 &1470185764
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1644,6 +1683,10 @@ MonoBehaviour:
   id: 6
   prevTile: {fileID: 1470185762}
   nextTile: {fileID: 895745138}
+  isPlayer1OnTile: 0
+  isPlayer2OnTile: 0
+  isPlayer3OnTile: 0
+  isPlayer4OnTile: 0
   tileType: 0
 --- !u!65 &1742133457
 BoxCollider:
@@ -1769,6 +1812,10 @@ MonoBehaviour:
   id: 0
   prevTile: {fileID: 895745138}
   nextTile: {fileID: 362220405}
+  isPlayer1OnTile: 0
+  isPlayer2OnTile: 0
+  isPlayer3OnTile: 0
+  isPlayer4OnTile: 0
   tileType: 1
 --- !u!65 &1821684298
 BoxCollider:
@@ -1894,6 +1941,10 @@ MonoBehaviour:
   id: 4
   prevTile: {fileID: 856671095}
   nextTile: {fileID: 1470185762}
+  isPlayer1OnTile: 0
+  isPlayer2OnTile: 0
+  isPlayer3OnTile: 0
+  isPlayer4OnTile: 0
   tileType: 0
 --- !u!65 &2059415982
 BoxCollider:

@@ -15,6 +15,8 @@ public class GameManger : MonoBehaviour
     public int currentPlayerTurn = 1;
     public int numOfPlayers = 2;
 
+    public PlayerTypes playerTypes;
+
     void Start()
     {
         StartTurn();
@@ -63,8 +65,8 @@ public class GameManger : MonoBehaviour
             return;
             
         }
-
-        StartCoroutine(GetCurrentPlayer().DiceRoll());
+        playerTypes.CheckCharacterBeforeRole(GetCurrentPlayer());
+        //StartCoroutine(GetCurrentPlayer().DiceRoll());
 
     }
 

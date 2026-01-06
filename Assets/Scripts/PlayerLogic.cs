@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using static TileLogic;
 
 public class PlayerLogic : MonoBehaviour
 {
@@ -23,6 +24,23 @@ public class PlayerLogic : MonoBehaviour
     [Header("Manager Scripts")]
     public TileEffects tileEffects;
     public GameManger gameManager;
+    public PlayerTypes playerTypes;
+
+
+
+    
+    public enum Character
+    {
+        Jigglypuff,
+        Sligoo,
+        Meowscarada,
+        Luvdisc
+    }
+    [Header("Pokemon")]
+    public Character character;
+
+    //[Header("Character Effect States")]
+
 
 
     void Start()
@@ -52,7 +70,7 @@ public class PlayerLogic : MonoBehaviour
         }*/
     }
 
-
+    //will simplify/fix dice later
     public IEnumerator DiceRoll()
     {
         Debug.Log("Press SPACE to roll/move");
@@ -61,54 +79,20 @@ public class PlayerLogic : MonoBehaviour
         {
             yield return null;
         }
-        StartCoroutine(MoveTilesCoroutine(moveNum));
+        
+        StartCoroutine(MainMovement(moveNum));
     }
 
+    public int DiceRollNumber()
+    {
+        return moveNum;
+    }
     
 
-    //Moves player on first dice roll
-    public IEnumerator MoveTilesCoroutine(int tilesToMove)
+    //Main Move, calls MovementSlide for movement
+    public IEnumerator MainMovement(int tilesToMove)
     {
-        if (currentTile == null)
-        {
-            yield break;
-        }
-
-        isMoving = true;
-
-        int steps = Mathf.Abs(tilesToMove);
-        bool movingForward = tilesToMove > 0;
-
-
-        for (int i = 0; i < steps; i++)
-        {
-            TileLogic tileLogic = currentTile.GetComponent<TileLogic>();
-
-            //check if on last tile
-            if (tileLogic.tileType == TileLogic.TileType.EndTile)
-            {
-                break;
-            }
-
-            GameObject nextTile = movingForward ? tileLogic.nextTile : tileLogic.prevTile;
-
-
-            if (nextTile == null )
-            {
-                break;
-            }
-
-            //this just moves the model
-            yield return StartCoroutine(WalkToTile(nextTile));
-
-            currentTile = nextTile;
-            CurrentTileId = currentTile.GetComponent<TileLogic>().id;
-
-            //Debug.Log("Visited tile " + CurrentTileId);
-        }
-
-        //checks the effect of landed tile
-        tileEffects.CheckEffect(this);
+        yield return MovementSlide(tilesToMove);
         isMoving = false;
         gameManager.EndTurn();
     }
@@ -129,20 +113,19 @@ public class PlayerLogic : MonoBehaviour
     }
 
 
-
-
-
-    //This is movement again, this is basically just the movement method again without NextTurn and stuff. 
+    //This is general movement  
     //Will remove to simplify later 
-    public IEnumerator ApplySlide(int tilesToMove)
+    public IEnumerator MovementSlide(int tilesToMove)
     {
-        Debug.Log("applying slide");
+        //Debug.Log("applying slide");
+
+        Debug.Log(" moving by: " +  tilesToMove);
 
         if (currentTile == null)
         {
             yield break;
         }
-
+        currentTile.GetComponent<TileLogic>().setPlayerOffTile(this);
         isMoving = true;
 
         int steps = Mathf.Abs(tilesToMove);
@@ -156,9 +139,7 @@ public class PlayerLogic : MonoBehaviour
                 break;
             }
 
-            GameObject nextTile = movingForward
-                ? tileLogic.nextTile
-                : tileLogic.prevTile;
+            GameObject nextTile = movingForward ? tileLogic.nextTile : tileLogic.prevTile;
 
             if (nextTile == null)
             {
@@ -167,16 +148,24 @@ public class PlayerLogic : MonoBehaviour
 
             yield return StartCoroutine(WalkToTile(nextTile));
 
+            if (i != 0)
+            {
+                playerTypes.CheckCharacterDuringRole(this);
+            }
+
             currentTile = nextTile;
             CurrentTileId = currentTile.GetComponent<TileLogic>().id;
 
             //Debug.Log("Visited tile " + CurrentTileId);
         }
-
-        //
+        currentTile.GetComponent<TileLogic>().setPlayerOnTile(this);
         tileEffects.CheckEffect(this);
+        
 
     }
+
+
+
 
 
 }

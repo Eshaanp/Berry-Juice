@@ -9,7 +9,7 @@ public class TileEffects : MonoBehaviour
 
     public void CheckEffect(PlayerLogic player)
     {
-        Debug.Log("check effect");
+        //Debug.Log("check effect");
         TileLogic tile = player.currentTile.GetComponent<TileLogic>();
 
 
@@ -25,7 +25,7 @@ public class TileEffects : MonoBehaviour
                     break;
 
                 case TileType.SlideForward:
-                    StartCoroutine(player.ApplySlide(1));
+                    StartCoroutine(player.MovementSlide(1));
                     break;
 
                 case TileType.TripTile:
