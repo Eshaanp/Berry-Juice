@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using static TileLogic;
 using System.Collections;
+using UnityEngine.UI;
+
+
 
 public class PlayerTypes : MonoBehaviour
 {
@@ -17,11 +20,16 @@ public class PlayerTypes : MonoBehaviour
      * 
      */
 
-
-
     public GameManger gameManager;
+    public UIManager uIManager;
 
 
+
+    private void Awake()
+    {
+        //ReRollButton.onClick.AddListener(OnYesPressed);
+        //DontReRollButton.onClick.AddListener(OnNoPressed);
+    }
 
     public void CheckCharacterBeforeRole(PlayerLogic player)
     {
@@ -64,7 +72,7 @@ public class PlayerTypes : MonoBehaviour
 
 
     //JiggyPuff effect- if passby, trip player. called by Check During ROle
-    public void CheckJigglypuffEffect(PlayerLogic player)
+    private void CheckJigglypuffEffect(PlayerLogic player)
     {
         if (player.PlayerId != 1 && gameManager.player1.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player1.currentTile)
         {
@@ -93,27 +101,32 @@ public class PlayerTypes : MonoBehaviour
 
     }
 
-    public IEnumerator ReRollChoice(PlayerLogic player, int firstRoll)
+    private IEnumerator ReRollChoice(PlayerLogic player, int firstRoll)
     {
-        while (true)
+
+
+        uIManager.MeowscaradaChoiceUI();
+
+        // Wait for a button press
+        while (!uIManager.MeowbuttonPressed)
         {
-   
-            if (Keyboard.current.yKey.wasPressedThisFrame)
-            {
-                int secondRoll = player.DiceRollNumber();
-                Debug.Log("Your Second Roll is " + secondRoll);
-                StartCoroutine(player.MainMovement(secondRoll));
-                yield break; 
-            }
-
-            if (Keyboard.current.nKey.wasPressedThisFrame)
-            {
-                Debug.Log("n");
-                StartCoroutine(player.MainMovement(firstRoll));
-                yield break; 
-            }
-
             yield return null;
+        }
+
+        // Disable buttons immediately
+        uIManager.ReRollButton.gameObject.SetActive(false);
+        uIManager.DontReRollButton.gameObject.SetActive(false);
+
+        if (uIManager.reroll)
+        {
+            int secondRoll = player.DiceRollNumber();
+            Debug.Log("Second roll: " + secondRoll);
+            yield return StartCoroutine(player.MainMovement(secondRoll));
+        }
+        else
+        {
+            Debug.Log("Keeping first roll");
+            yield return StartCoroutine(player.MainMovement(firstRoll));
         }
     }
 
@@ -124,7 +137,7 @@ public class PlayerTypes : MonoBehaviour
      * 
      * 
      */
-    public void MoveBackwards(PlayerLogic player)
+    private void MoveBackwards(PlayerLogic player)
     {
         if(player.PlayerId != 1 && player.currentTile == gameManager.player1.currentTile)
         {
@@ -149,7 +162,7 @@ public class PlayerTypes : MonoBehaviour
 
 
 
-    public void CheckIfLastPlace(PlayerLogic player)
+    private void CheckIfLastPlace(PlayerLogic player)
     {
         int player1Place = gameManager.player1.currentTile.GetComponent<TileLogic>().id;
         int player2Place = gameManager.player2.currentTile.GetComponent<TileLogic>().id;

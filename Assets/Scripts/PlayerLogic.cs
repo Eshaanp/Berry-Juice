@@ -25,6 +25,7 @@ public class PlayerLogic : MonoBehaviour
     public TileEffects tileEffects;
     public GameManger gameManager;
     public PlayerTypes playerTypes;
+    public UIManager uIManager;
 
 
 
@@ -74,13 +75,14 @@ public class PlayerLogic : MonoBehaviour
     //will simplify/fix dice later
     public IEnumerator DiceRoll()
     {
-        Debug.Log("Press SPACE to roll/move");
- 
-        while (!Keyboard.current.spaceKey.wasPressedThisFrame)
+        uIManager.isDicePressed = false;
+        uIManager.diceButton.gameObject.SetActive(true);
+
+        while (!uIManager.isDicePressed)
         {
             yield return null;
         }
-        
+
         StartCoroutine(MainMovement(moveNum));
     }
 
