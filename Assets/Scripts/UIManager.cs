@@ -18,6 +18,10 @@ public class UIManager : MonoBehaviour
 
 
 
+    private void Start()
+    {
+        this.gameObject.SetActive(false);
+    }
 
 
 
@@ -41,14 +45,15 @@ public class UIManager : MonoBehaviour
         MeowbuttonPressed = true;
     }
 
-
-
     public void RollDice()
     {
         isDicePressed = true;
         diceButton.gameObject.SetActive(false);
 
     }
+
+
+
 
 
 

@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using System.Collections.Generic;
+
 using static TileLogic;
 
 public class PlayerLogic : MonoBehaviour
@@ -40,6 +42,8 @@ public class PlayerLogic : MonoBehaviour
     }
     [Header("Pokemon")]
     public Character character;
+
+    public List<Character> pickedCharacters = new List<Character> ();
 
     //[Header("Character Effect States")]
 

@@ -7,6 +7,8 @@ public class GameManger : MonoBehaviour
 
     public PlayerLogic player1;
     public PlayerLogic player2;
+    public UIManager uiManager;
+    public SnakeDraft snakeDraft;
 
     public int Player1Score = 0;
     public int Player2Score = 0;
@@ -19,8 +21,8 @@ public class GameManger : MonoBehaviour
 
     void Start()
     {
-        StartTurn();
-        numOfPlayers = 2;
+        StartCoroutine(StartDraft());
+        
     }
 
     
@@ -43,15 +45,34 @@ public class GameManger : MonoBehaviour
     {
         if (currentPlayerTurn == 1)
             return player1;
-        else
+        else if (currentPlayerTurn == 2)
             return player2;
+        else
+            return null;
+    }
+
+
+    public IEnumerator StartDraft()
+    {
+        yield return StartCoroutine(snakeDraft.StartSnakeDraft());
+        yield return StartCoroutine(snakeDraft.ReverseSnakeDraft());
+        Debug.Log("Draft over");
+    }
+
+    public void FirstTurn()
+    {
+        uiManager.gameObject.SetActive(true);
+        currentPlayerTurn = 1;
+        turn = 0;
+        StartTurn();
+
     }
 
     public void NextTurn()
     {
         currentPlayerTurn = (currentPlayerTurn == 1) ? 2 : 1;
         Debug.Log("Player " + currentPlayerTurn + "'s turn");
-        StartTurn();
+        
     }
 
 
@@ -82,7 +103,7 @@ public class GameManger : MonoBehaviour
         }
 
         NextTurn();
-        
+        StartTurn();
 
 
     }
@@ -109,5 +130,20 @@ public class GameManger : MonoBehaviour
         }
 
     }
+
+    public PlayerLogic[] getAllPlayers()
+    {
+        PlayerLogic[] maxPlayers = { player1, player2 }; // append with more later
+        PlayerLogic[] result = new PlayerLogic[numOfPlayers];
+
+        for (int i = 0; i < numOfPlayers; i++)
+        { 
+            result[i] = maxPlayers[i];
+        }
+        return result;
+
+    }
+
+
 
 }
