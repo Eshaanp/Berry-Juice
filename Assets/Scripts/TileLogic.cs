@@ -4,29 +4,20 @@ using System.Collections;
 
 public class TileLogic : MonoBehaviour
 {
+    //Script to define tiles 
 
+    [Header("Tile Information")]
     public int id;
     public GameObject prevTile;
     public GameObject nextTile;
 
-
-    /*
-    public bool isStartTile;
-    public bool isEndTile;
-    public bool isSlideForward;
-    public bool isTripTile;
-    */
-
-
+    [Header("Player On Tile")]
     public bool isPlayer1OnTile = false;
     public bool isPlayer2OnTile = false;
     public bool isPlayer3OnTile = false;
     public bool isPlayer4OnTile = false;
 
 
-    Renderer tileRenderer;
-    
-    //Tile Types
     public enum TileType { 
         normalTile,
         StartTile,
@@ -35,8 +26,11 @@ public class TileLogic : MonoBehaviour
         TripTile,
         PitfallTile
     }
-
+    [Header("Type of Tile")]
     public TileType tileType;
+
+
+    Renderer tileRenderer;
 
     void Start()
     {
@@ -44,15 +38,8 @@ public class TileLogic : MonoBehaviour
         ApplyTileColor();
     }
 
-    
-    void Update()
-    {
-        
-    }
 
-
-
-
+    // Player object passed in, compares id to check if on tile
     public void setPlayerOnTile(PlayerLogic player)
     {
         switch (player.PlayerId)
@@ -75,6 +62,8 @@ public class TileLogic : MonoBehaviour
 
         }
     }
+
+    //checks player off tile
     public void setPlayerOffTile(PlayerLogic player)
     {
         switch (player.PlayerId)
@@ -98,7 +87,7 @@ public class TileLogic : MonoBehaviour
         }
     }
 
-
+    //Change color depending on type
     void ApplyTileColor()
     {
         switch (tileType)

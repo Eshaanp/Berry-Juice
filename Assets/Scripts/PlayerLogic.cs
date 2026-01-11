@@ -7,7 +7,7 @@ using static TileLogic;
 
 public class PlayerLogic : MonoBehaviour
 {
-
+    [Header("Player Information")]
     public int PlayerId;
     public int CurrentTileId = 0;
     public GameObject currentTile;
@@ -45,10 +45,10 @@ public class PlayerLogic : MonoBehaviour
 
     public List<Character> pickedCharacters = new List<Character> ();
 
-    //[Header("Character Effect States")]
+   
 
 
-
+    //Puts character on first tile
     void Start()
     {
         if (currentTile != null)
@@ -77,6 +77,7 @@ public class PlayerLogic : MonoBehaviour
     }
 
     //will simplify/fix dice later
+    //calls UIManager for dice button
     public IEnumerator DiceRoll()
     {
         uIManager.isDicePressed = false;

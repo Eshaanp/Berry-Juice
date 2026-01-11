@@ -4,15 +4,17 @@ using static TileLogic;
 public class TileEffects : MonoBehaviour
 {
 
-    //Tile effects and stuff
+    //Called to figure out the tile effect when a player ends on a tile 
+    //no effects if play crosses finish line
+
     public GameManger gameManger;
 
     public void CheckEffect(PlayerLogic player)
     {
-        //Debug.Log("check effect");
+        //get tile tile of current player
         TileLogic tile = player.currentTile.GetComponent<TileLogic>();
 
-
+        
         if (player.CrossedFinish == false) { 
             switch (tile.tileType)
             {

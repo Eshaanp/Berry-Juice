@@ -5,9 +5,10 @@ using System.Collections;
 public class SnakeDraft : MonoBehaviour
 {
 
+    //Manages snake draft logic and UI for it
+
     public GameManger gameManager;
     public UIManager uiManager;
-
     public bool didPlayerPressButton = false;
 
     [Header("Snake Draft Bools")]
@@ -25,7 +26,7 @@ public class SnakeDraft : MonoBehaviour
     public Button Patrat;
 
     
-
+    //Turn off and on all select character buttons 
     public void CharacterDraftButtonsActive()
     {
         Meowscarada.gameObject.SetActive(true);
@@ -45,6 +46,8 @@ public class SnakeDraft : MonoBehaviour
 
     }
 
+
+    //First half of snake draft
     public IEnumerator StartSnakeDraft()
     {
         this.gameObject.SetActive(true);
@@ -79,7 +82,7 @@ public class SnakeDraft : MonoBehaviour
         
     }
 
-
+    //Snake draft in reverse order
     public IEnumerator ReverseSnakeDraft()
     {
 
@@ -106,7 +109,7 @@ public class SnakeDraft : MonoBehaviour
 
     }
 
-
+    //waiting for player to pick character
     public IEnumerator PickCharacter(PlayerLogic player)
     {
         
@@ -121,12 +124,7 @@ public class SnakeDraft : MonoBehaviour
 
 
 
-
-
-
-
-
-
+    //Buttons call these functions 
     public void PressMeowscarada()
     {
         if (!isMeowscarada)
@@ -138,7 +136,6 @@ public class SnakeDraft : MonoBehaviour
 
         }
     }
-
     public void PressLuvdisc()
     {
         if (!isLuvdisc)
@@ -149,7 +146,6 @@ public class SnakeDraft : MonoBehaviour
             didPlayerPressButton = true;
         }
     }
-
     public void PressSligoo()
     {
         if (!isSligoo)
@@ -160,7 +156,6 @@ public class SnakeDraft : MonoBehaviour
             didPlayerPressButton = true;
         }
     }
-
     public void PressPatrat()
     {
         if (!isPatrat)
@@ -171,7 +166,6 @@ public class SnakeDraft : MonoBehaviour
             didPlayerPressButton = true;
         }
     }
-
     public void PressJigglypuff()
     {
         if (!isJigglypuff)

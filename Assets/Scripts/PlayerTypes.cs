@@ -9,16 +9,7 @@ using UnityEngine.UI;
 public class PlayerTypes : MonoBehaviour
 {
 
-    //find areas where a character power needs to be called and make its own function for each area its called. Pass the character type in each to check if something happens there
-    /*
-     * Before Main Move (Done)
-     * After Main Move
-     * After Tile Effect
-     * During the Movement (Passing players)
-     * 
-     * 
-     * 
-     */
+    //Manages how the player's character effects are played 
 
     public GameManger gameManager;
     public UIManager uIManager;
@@ -31,6 +22,9 @@ public class PlayerTypes : MonoBehaviour
         //DontReRollButton.onClick.AddListener(OnNoPressed);
     }
 
+
+    //Checks the character before the main roll 
+    //Currently Meowcarada, Luvdisc 
     public void CheckCharacterBeforeRole(PlayerLogic player)
     {
         //Debug.Log(player.character);
@@ -52,7 +46,8 @@ public class PlayerTypes : MonoBehaviour
   
     }
 
-
+    //Checks the character during the main movement
+    //Currently sligoo, jigglypuff
     public void CheckCharacterDuringRole(PlayerLogic player)
     {
         //Debug.Log(player.character);
@@ -88,7 +83,7 @@ public class PlayerTypes : MonoBehaviour
 
 
 
-    /* Currently Rerolls for meowscarada
+    /* Currently Rerolls for meowscarada, uses UIManager
      * idk why its two mehtods
      * may combine later
      */
@@ -161,7 +156,7 @@ public class PlayerTypes : MonoBehaviour
     }
 
 
-
+    //For Luvdisc, checks if its in last place, decrease score if it is
     private void CheckIfLastPlace(PlayerLogic player)
     {
         int player1Place = gameManager.player1.currentTile.GetComponent<TileLogic>().id;

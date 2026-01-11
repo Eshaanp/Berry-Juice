@@ -5,6 +5,9 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
 
+    //General Script for managing UI DURING the game
+
+
     [Header("Main Move")]
     public Button diceButton;
     public bool isDicePressed;
@@ -24,7 +27,7 @@ public class UIManager : MonoBehaviour
     }
 
 
-
+    //UI Management for Meowscarada re roll choice
     public void MeowscaradaChoiceUI()
     {
         MeowbuttonPressed = false;
@@ -45,6 +48,8 @@ public class UIManager : MonoBehaviour
         MeowbuttonPressed = true;
     }
 
+
+    //UI for normal dice roll
     public void RollDice()
     {
         isDicePressed = true;

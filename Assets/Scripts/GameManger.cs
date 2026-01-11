@@ -4,20 +4,23 @@ using System.Collections;
 
 public class GameManger : MonoBehaviour
 {
-
+    [Header("Players")]
     public PlayerLogic player1;
     public PlayerLogic player2;
+
+    [Header("Scripts")]
     public UIManager uiManager;
     public SnakeDraft snakeDraft;
+    public PlayerTypes playerTypes;
 
+    [Header("Game Information")]
     public int Player1Score = 0;
     public int Player2Score = 0;
-
     public int turn = 0; 
     public int currentPlayerTurn = 1;
     public int numOfPlayers = 2;
 
-    public PlayerTypes playerTypes;
+    
 
     void Start()
     {
@@ -35,12 +38,15 @@ public class GameManger : MonoBehaviour
         }
     }
 
-    //returns current players turn number
+
+    //checks if a players turn
     public bool isPlayersTurn(int playerId) {
 
         return (playerId == currentPlayerTurn);
 
     }
+
+    //Gets the current player's playerLogic script 
     public PlayerLogic GetCurrentPlayer()
     {
         if (currentPlayerTurn == 1)
@@ -51,7 +57,7 @@ public class GameManger : MonoBehaviour
             return null;
     }
 
-
+    //Begin draft, calls normal then reverse draft
     public IEnumerator StartDraft()
     {
         yield return StartCoroutine(snakeDraft.StartSnakeDraft());
@@ -59,6 +65,7 @@ public class GameManger : MonoBehaviour
         Debug.Log("Draft over");
     }
 
+    //First turn, starts main game and sets initial variables
     public void FirstTurn()
     {
         uiManager.gameObject.SetActive(true);
@@ -68,6 +75,7 @@ public class GameManger : MonoBehaviour
 
     }
 
+    //changes current player turn number
     public void NextTurn()
     {
         currentPlayerTurn = (currentPlayerTurn == 1) ? 2 : 1;
@@ -76,8 +84,12 @@ public class GameManger : MonoBehaviour
     }
 
 
+    //Starting turn, handle logic before Main dice roll
+    //check if players turn should be skipped
+    //checks the players character before role for effect (ie meowscarada)
     public void StartTurn()
     {
+        
         if (GetCurrentPlayer().skipTurn == true)
         {
             GetCurrentPlayer().skipTurn = false;
@@ -92,7 +104,7 @@ public class GameManger : MonoBehaviour
     }
 
 
-
+    //ends turn, updates currentTurn number, starts next turn
     public void EndTurn()
     {
 
@@ -108,7 +120,7 @@ public class GameManger : MonoBehaviour
 
     }
 
-
+    //updates score of player
     public void updateScore(int points)
     {
 
@@ -131,6 +143,7 @@ public class GameManger : MonoBehaviour
 
     }
 
+    //returns an array with all playerLogic scripts 
     public PlayerLogic[] getAllPlayers()
     {
         PlayerLogic[] maxPlayers = { player1, player2 }; // append with more later
