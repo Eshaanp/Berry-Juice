@@ -4,8 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 using static TileLogic;
+using PurrNet;
 
-public class PlayerLogic : MonoBehaviour
+public class PlayerLogic : NetworkBehaviour
 {
     [Header("Player Information")]
     public int PlayerId;
@@ -22,12 +23,13 @@ public class PlayerLogic : MonoBehaviour
     public bool skipTurn = false;
     public bool CrossedFinish = false;
     bool isMoving = false;
+    public bool isDicePressed = false;
 
     [Header("Manager Scripts")]
     public TileEffects tileEffects;
     public GameManger gameManager;
     public PlayerTypes playerTypes;
-    public UIManager uIManager;
+    //public UIManager uIManager;
 
 
 
@@ -38,12 +40,16 @@ public class PlayerLogic : MonoBehaviour
         Jigglypuff,
         Sligoo,
         Meowscarada,
-        Luvdisc
+        Luvdisc,
+        Victini,
+        Golisopod,
+        Hoopa
     }
     [Header("Pokemon")]
     public Character character;
 
-    public List<Character> pickedCharacters = new List<Character> ();
+    public SyncList<Character> pickedCharacters = new SyncList<Character> ();
+
 
    
 
@@ -60,46 +66,66 @@ public class PlayerLogic : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        //Check player turn then space to move for current tests
-        //amount of spaces is moveNum but will be replaced
-       /* if (!gameManager.isPlayersTurn(PlayerId))
-        {
-            return;
-        }
-
-        if (Keyboard.current.spaceKey.wasPressedThisFrame && !isMoving)
-        {
-            StartCoroutine(MoveTilesCoroutine(moveNum));
-
-        }*/
-    }
 
     //will simplify/fix dice later
     //calls UIManager for dice button
+    /*
     public IEnumerator DiceRoll()
     {
-        uIManager.isDicePressed = false;
-        uIManager.diceButton.gameObject.SetActive(true);
 
-        while (!uIManager.isDicePressed)
+        if (!isServer)
+        {
+            yield break;
+        }
+        Debug.Log("test");
+        isDicePressed = false;
+        ShowDiceUIRpc();
+
+        while (!isDicePressed)
         {
             yield return null;
         }
-
+        
+        HideDiceUIRpc();
         StartCoroutine(MainMovement(moveNum));
+    }
+
+    [ObserversRpc]
+    public void ShowDiceUIRpc()
+    {
+        if (uIManager == null)
+            uIManager = UIManager.Instance;
+
+        Debug.Log("ShowDiceUIRpc running"); // this should appear on all clients
+        uIManager.showUI("dice");
+    }
+
+    [ObserversRpc]
+    private void HideDiceUIRpc()
+    {
+        uIManager.hideUI("dice");
+    }
+
+    [ServerRpc]
+    public void RollDiceServerRpc()
+    {
+        isDicePressed = true;
     }
 
     public int DiceRollNumber()
     {
         return moveNum;
-    }
+    }*/
     
+    public void test()
+    {
+        Debug.Log("testing mov");
+    }
 
     //Main Move, calls MovementSlide for movement
     public IEnumerator MainMovement(int tilesToMove)
     {
+        Debug.Log("move");
         yield return MovementSlide(tilesToMove);
         isMoving = false;
         gameManager.EndTurn();
@@ -156,6 +182,7 @@ public class PlayerLogic : MonoBehaviour
 
             yield return StartCoroutine(WalkToTile(nextTile));
 
+            //For characters that activate effect during movement
             if (i != 0)
             {
                 playerTypes.CheckCharacterDuringRole(this);

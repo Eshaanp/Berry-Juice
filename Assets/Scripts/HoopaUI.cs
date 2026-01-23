@@ -1,0 +1,136 @@
+using PurrNet;
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+
+public class HoopaUI : NetworkBehaviour
+{
+    
+
+    public GameManger gameManger;
+    public DiceRoll roll;
+
+    public Button player1;
+    public Button player2;
+    //public Button player3;
+    //public Button player4;
+    public Button noPlayer;
+
+    public bool hoopaButtonPressed = false;
+
+
+
+
+    public IEnumerator Hoopa()
+    {
+        hoopaButtonPressed = false;
+        int currentPlayerId = gameManger.GetCurrentPlayer().PlayerId;
+        int numOfPlayers = gameManger.numOfPlayers;
+
+        setButtons(currentPlayerId);
+
+        while (!hoopaButtonPressed)
+        {
+            yield return null;
+        }
+        hideButtons();
+        StartCoroutine(roll.diceRoll());
+    }
+
+    [ObserversRpc]
+    private void setButtons(int currentPlayerId)
+    {
+        noPlayer.gameObject.SetActive(true);
+        if(currentPlayerId != 1)
+        {
+            player1.gameObject.SetActive(true);
+        }
+        if (currentPlayerId != 2)
+        {
+            player2.gameObject.SetActive(true);
+        }
+        if (currentPlayerId != 3)
+        {
+            //player3.gameObject.SetActive(true);
+        }
+        if (currentPlayerId != 4)
+        {
+           // player4.gameObject.SetActive(true);
+        }
+
+    }
+
+    [ObserversRpc]
+    private void hideButtons()
+    {
+        player1.gameObject.SetActive(false);
+        player2.gameObject.SetActive(false);
+        //player3.gameObject.SetActive(false);
+        //player4.gameObject.SetActive(false);
+        noPlayer.gameObject.SetActive(false);
+
+    }
+
+
+    [ServerRpc]
+    public void PickNoPlayer()
+    {
+        hoopaButtonPressed = true;
+        
+
+    }
+
+    [ServerRpc]
+    public void PickPlayer1()
+    {
+        hoopaButtonPressed = true;
+        movePlayer(1);
+
+    }
+
+    [ServerRpc]
+    public void PickPlayer2()
+    {
+        hoopaButtonPressed = true;
+        movePlayer(2);
+    }
+
+
+    [ServerRpc]
+    public void PickPlayer3()
+    {
+        hoopaButtonPressed = true;
+        movePlayer(3);
+    }
+
+    [ServerRpc]
+    public void PickPlayer4()
+    {
+        hoopaButtonPressed = true;
+        movePlayer(4);
+    }
+
+
+
+
+
+
+
+
+    private void movePlayer(int playerNum)
+    {
+        int currentPlayerId = gameManger.GetCurrentPlayer().PlayerId;
+
+        int currentPlayerTileId = gameManger.GetCurrentPlayer().currentTile.GetComponent<TileLogic>().id;
+        int targetPlayerTileId = gameManger.GetTargetPlayer(playerNum).currentTile.GetComponent<TileLogic>().id;
+
+        int targetMovement = -1 * (targetPlayerTileId - currentPlayerTileId);
+
+        StartCoroutine(gameManger.GetTargetPlayer(playerNum).MovementSlide(targetMovement));
+
+    }
+
+
+    
+
+}

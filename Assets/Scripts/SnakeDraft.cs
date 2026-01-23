@@ -1,14 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using PurrNet;
+using UnityEditor.Experimental.GraphView;
 
-public class SnakeDraft : MonoBehaviour
+public class SnakeDraft : NetworkBehaviour
 {
 
     //Manages snake draft logic and UI for it
 
     public GameManger gameManager;
-    public UIManager uiManager;
+    //public UIManager uiManager;
     public bool didPlayerPressButton = false;
 
     [Header("Snake Draft Bools")]
@@ -17,6 +19,10 @@ public class SnakeDraft : MonoBehaviour
     public bool isJigglypuff = false;
     public bool isLuvdisc = false;
     public bool isSligoo = false;
+    public bool isGolisopod = false;
+    public bool isHoopa = false;
+    public bool isVictini = false;
+
 
     [Header("Snake Draft Buttons")]
     public Button Meowscarada;
@@ -24,18 +30,27 @@ public class SnakeDraft : MonoBehaviour
     public Button Luvdisc;
     public Button Sligoo;
     public Button Patrat;
+    public Button Hoopa;
+    public Button Golisopod;
+    public Button Victini;
 
-    
     //Turn off and on all select character buttons 
+    [ObserversRpc]
     public void CharacterDraftButtonsActive()
     {
+        //this.gameObject.SetActive(true);
         Meowscarada.gameObject.SetActive(true);
         Jigglypuff.gameObject.SetActive(true);
         Luvdisc.gameObject.SetActive(true);
         Sligoo.gameObject.SetActive(true);
         Patrat.gameObject.SetActive(true);
+        Golisopod.gameObject.SetActive(true);
+        Hoopa.gameObject.SetActive(true);
+        Victini.gameObject.SetActive(true);
 
     }
+
+    [ObserversRpc]
     public void CharacterDraftButtonsDeActive()
     {
         Meowscarada.gameObject.SetActive(false);
@@ -43,14 +58,19 @@ public class SnakeDraft : MonoBehaviour
         Luvdisc.gameObject.SetActive(false);
         Sligoo.gameObject.SetActive(false);
         Patrat.gameObject.SetActive(false);
-
+        Golisopod.gameObject.SetActive(false);
+        Hoopa.gameObject.SetActive(false);
+        Victini.gameObject.SetActive(false);
     }
 
 
     //First half of snake draft
+    
     public IEnumerator StartSnakeDraft()
     {
         this.gameObject.SetActive(true);
+        
+
         CharacterDraftButtonsActive();
 
         PlayerLogic[] currentPlayers = gameManager.getAllPlayers();
@@ -83,8 +103,10 @@ public class SnakeDraft : MonoBehaviour
     }
 
     //Snake draft in reverse order
+    
     public IEnumerator ReverseSnakeDraft()
     {
+
 
 
         gameManager.currentPlayerTurn = gameManager.numOfPlayers;
@@ -110,7 +132,8 @@ public class SnakeDraft : MonoBehaviour
     }
 
     //waiting for player to pick character
-    public IEnumerator PickCharacter(PlayerLogic player)
+    
+    private IEnumerator PickCharacter(PlayerLogic player)
     {
         
 
@@ -125,58 +148,144 @@ public class SnakeDraft : MonoBehaviour
 
 
     //Buttons call these functions 
+    [ServerRpc]
     public void PressMeowscarada()
     {
         if (!isMeowscarada)
         {
             gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Meowscarada);
             Meowscarada.gameObject.SetActive(false);
+            turnOff(1);
             isMeowscarada = true;
             didPlayerPressButton = true;
 
         }
     }
+
+
+
+    [ServerRpc]
     public void PressLuvdisc()
     {
         if (!isLuvdisc)
         {
             gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Luvdisc);
             Luvdisc.gameObject.SetActive(false);
+            turnOff(2);
             isLuvdisc = true;
             didPlayerPressButton = true;
         }
     }
+    [ServerRpc]
     public void PressSligoo()
     {
         if (!isSligoo)
         {
             gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Sligoo);
             Sligoo.gameObject.SetActive(false);
+            turnOff(3);
             isSligoo = true;
             didPlayerPressButton = true;
         }
     }
+    [ServerRpc]
     public void PressPatrat()
     {
         if (!isPatrat)
         {
             gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Patrat);
             Patrat.gameObject.SetActive(false);
+            turnOff(4);
             isPatrat = true;
             didPlayerPressButton = true;
         }
     }
+    [ServerRpc]
     public void PressJigglypuff()
     {
         if (!isJigglypuff)
         {
             gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Jigglypuff);
             Jigglypuff.gameObject.SetActive(false);
+            turnOff(5);
             isJigglypuff = true;
+            didPlayerPressButton = true;
+        }
+    }
+    [ServerRpc]
+    public void PressGolisopod()
+    {
+        if (!isGolisopod)
+        {
+            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Golisopod);
+            Golisopod.gameObject.SetActive(false);
+            turnOff(6);
+            isGolisopod = true;
+            didPlayerPressButton = true;
+        }
+    }
+    [ServerRpc]
+    public void PressVictini()
+    {
+        if (!isVictini)
+        {
+            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Victini);
+            Victini.gameObject.SetActive(false);
+            turnOff(7);
+            isVictini = true;
+            didPlayerPressButton = true;
+        }
+    }
+    [ServerRpc]
+    public void PressHoopa()
+    {
+        if (!isHoopa)
+        {
+            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Hoopa);
+            Hoopa.gameObject.SetActive(false);
+            turnOff(8);
+            isHoopa = true;
             didPlayerPressButton = true;
         }
     }
 
 
+    [ObserversRpc]
+    public void turnOff(int num)
+    {
+        switch (num)
+        {
+            case 1:
+                Meowscarada.gameObject.SetActive(false);
+                break;
+            case 2:
+                Luvdisc.gameObject.SetActive(false);
+                break;
+            case 3:
+                Sligoo.gameObject.SetActive(false);
+                break;
+            case 4:
+                Patrat.gameObject.SetActive(false);
+                break;
+            case 5:
+                Jigglypuff.gameObject.SetActive(false);
+                break;
+            case 6:
+                Golisopod.gameObject.SetActive(false);
+                break;
+            case 7:
+                Victini.gameObject.SetActive(false);
+                break;
+            case 8:
+                Hoopa.gameObject.SetActive(false);
+                break;
+
+
+
+        }
+        
+        
+     
+    }
 
 }

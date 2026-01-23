@@ -3,16 +3,19 @@ using UnityEngine.InputSystem;
 using static TileLogic;
 using System.Collections;
 using UnityEngine.UI;
+using PurrNet;
 
 
 
-public class PlayerTypes : MonoBehaviour
+public class PlayerTypes : NetworkBehaviour
 {
 
     //Manages how the player's character effects are played 
 
-    public GameManger gameManager;
-    public UIManager uIManager;
+    public GameManger gameManager; 
+    public MeowUI meowManager;
+    public HoopaUI hoopaManager;
+    public DiceRoll roll;
 
 
 
@@ -31,16 +34,31 @@ public class PlayerTypes : MonoBehaviour
         switch (player.character)
         {
             case PlayerLogic.Character.Meowscarada:
-                ReRoll(player);
+                StartCoroutine(roll.diceRoll());
+                break;
+
+            case PlayerLogic.Character.Victini:
+                StartCoroutine(roll.diceRoll());
+                break;
+
+            case PlayerLogic.Character.Golisopod:
+                StartCoroutine(roll.diceRoll());
+
+                break;
+
+            case PlayerLogic.Character.Hoopa:
+                StartCoroutine(hoopaManager.Hoopa());
+                
+                
                 break;
 
             case PlayerLogic.Character.Luvdisc:
                 CheckIfLastPlace(player);
-                StartCoroutine(player.DiceRoll());
+                StartCoroutine(roll.diceRoll());
                 break;
 
             default:
-                StartCoroutine(player.DiceRoll());
+                StartCoroutine(roll.diceRoll());
                 break;
         }
   
@@ -83,47 +101,21 @@ public class PlayerTypes : MonoBehaviour
 
 
 
-    /* Currently Rerolls for meowscarada, uses UIManager
-     * idk why its two mehtods
-     * may combine later
+    /* Currently Rerolls for meowscarada, uses MeowUI for all logic currently
+     * currently, meowscarada calls the normal DiceRoll function, which directs it here after determining the first roll
+     * may combine later (more self containment)
      */
-    public void ReRoll(PlayerLogic player)
+    public void ReRoll(PlayerLogic player, int firstRoll)
     {
-        int firstRoll = player.DiceRollNumber();
+
+        
         Debug.Log("Your First Roll is " + firstRoll + ". Roll again? (y/n)");
-        StartCoroutine(ReRollChoice(player, firstRoll));
+        StartCoroutine(meowManager.ReRollChoice(player, firstRoll));
 
 
     }
 
-    private IEnumerator ReRollChoice(PlayerLogic player, int firstRoll)
-    {
 
-
-        uIManager.MeowscaradaChoiceUI();
-
-        // Wait for a button press
-        while (!uIManager.MeowbuttonPressed)
-        {
-            yield return null;
-        }
-
-        // Disable buttons immediately
-        uIManager.ReRollButton.gameObject.SetActive(false);
-        uIManager.DontReRollButton.gameObject.SetActive(false);
-
-        if (uIManager.reroll)
-        {
-            int secondRoll = player.DiceRollNumber();
-            Debug.Log("Second roll: " + secondRoll);
-            yield return StartCoroutine(player.MainMovement(secondRoll));
-        }
-        else
-        {
-            Debug.Log("Keeping first roll");
-            yield return StartCoroutine(player.MainMovement(firstRoll));
-        }
-    }
 
 
 

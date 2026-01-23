@@ -1,8 +1,9 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections;
+using PurrNet;
 
-public class TileLogic : MonoBehaviour
+public class TileLogic : NetworkBehaviour
 {
     //Script to define tiles 
 
@@ -32,12 +33,22 @@ public class TileLogic : MonoBehaviour
 
     Renderer tileRenderer;
 
-    void Start()
+
+
+    private void Start()
     {
+        //tileRenderer = GetComponent<Renderer>();
+        //ApplyTileColor();
+    }
+
+    protected override void OnSpawned()
+    {
+        base.OnSpawned();
         tileRenderer = GetComponent<Renderer>();
         ApplyTileColor();
     }
 
+    
 
     // Player object passed in, compares id to check if on tile
     public void setPlayerOnTile(PlayerLogic player)
@@ -87,7 +98,9 @@ public class TileLogic : MonoBehaviour
         }
     }
 
+
     //Change color depending on type
+    
     void ApplyTileColor()
     {
         switch (tileType)

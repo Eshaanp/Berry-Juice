@@ -1,17 +1,20 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using PurrNet;
 
-public class GameManger : MonoBehaviour
+public class GameManger : NetworkBehaviour
 {
     [Header("Players")]
     public PlayerLogic player1;
     public PlayerLogic player2;
 
     [Header("Scripts")]
-    public UIManager uiManager;
+    
     public SnakeDraft snakeDraft;
     public PlayerTypes playerTypes;
+    public DiceRoll rolling;
+    
 
     [Header("Game Information")]
     public int Player1Score = 0;
@@ -24,17 +27,30 @@ public class GameManger : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(StartDraft());
-        
+        //StartCoroutine(StartDraft());
+        //FirstTurn();
     }
 
-    
+
     //change turn to test
+    
     void Update()
     {
         if (Keyboard.current.tKey.wasPressedThisFrame)
         {
             NextTurn();
+        }
+        if (Keyboard.current.fKey.wasPressedThisFrame)
+        {
+
+            FirstTurn();
+            
+        }
+        if (Keyboard.current.dKey.wasPressedThisFrame)
+        {
+
+            StartCoroutine(StartDraft());
+            
         }
     }
 
@@ -57,18 +73,50 @@ public class GameManger : MonoBehaviour
             return null;
     }
 
+    public PlayerLogic GetTargetPlayer(int playerNum)
+    {
+        if (playerNum == 1)
+            return player1;
+        else if (playerNum == 2)
+            return player2;
+        else
+            return null;
+    }
+
+
+    public void playerSetUp()
+    {
+        PlayerLogic[] players = getAllPlayers();
+
+        for (int i = 0; i < numOfPlayers; i++)
+        {
+            players[i].character = players[i].pickedCharacters[0];
+
+
+        }
+        Debug.Log("Setting up players");
+    }
+
+
     //Begin draft, calls normal then reverse draft
     public IEnumerator StartDraft()
     {
+        if (!isServer)
+        {
+            yield return null;
+        }
         yield return StartCoroutine(snakeDraft.StartSnakeDraft());
         yield return StartCoroutine(snakeDraft.ReverseSnakeDraft());
         Debug.Log("Draft over");
+
+        playerSetUp();
+        FirstTurn();
     }
 
     //First turn, starts main game and sets initial variables
     public void FirstTurn()
     {
-        uiManager.gameObject.SetActive(true);
+        //uiManager.gameObject.SetActive(true);
         currentPlayerTurn = 1;
         turn = 0;
         StartTurn();
