@@ -22,7 +22,9 @@ public class SnakeDraft : NetworkBehaviour
     public bool isGolisopod = false;
     public bool isHoopa = false;
     public bool isVictini = false;
-
+    public bool isOricorio = false;
+    public bool isRaboot = false;
+    public bool isDrifblim = false;
 
     [Header("Snake Draft Buttons")]
     public Button Meowscarada;
@@ -33,6 +35,10 @@ public class SnakeDraft : NetworkBehaviour
     public Button Hoopa;
     public Button Golisopod;
     public Button Victini;
+    public Button Oricorio;
+    public Button Raboot;
+    public Button Drifblim;
+
 
     //Turn off and on all select character buttons 
     [ObserversRpc]
@@ -47,6 +53,9 @@ public class SnakeDraft : NetworkBehaviour
         Golisopod.gameObject.SetActive(true);
         Hoopa.gameObject.SetActive(true);
         Victini.gameObject.SetActive(true);
+        Oricorio.gameObject.SetActive(true);
+        Raboot.gameObject.SetActive(true);
+        Drifblim.gameObject.SetActive(true);
 
     }
 
@@ -61,6 +70,9 @@ public class SnakeDraft : NetworkBehaviour
         Golisopod.gameObject.SetActive(false);
         Hoopa.gameObject.SetActive(false);
         Victini.gameObject.SetActive(false);
+        Oricorio.gameObject.SetActive(false);
+        Raboot.gameObject.SetActive(false);
+        Drifblim.gameObject.SetActive(false);
     }
 
 
@@ -249,6 +261,48 @@ public class SnakeDraft : NetworkBehaviour
         }
     }
 
+    [ServerRpc]
+    public void PressOricorio()
+    {
+        if (!isOricorio)
+        {
+            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Oricorio);
+            Oricorio.gameObject.SetActive(false);
+            turnOff(9);
+            isOricorio = true;
+            didPlayerPressButton = true;
+        }
+    }
+
+    [ServerRpc]
+    public void PressRaboot()
+    {
+        if (!isRaboot)
+        {
+            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Raboot);
+            Raboot.gameObject.SetActive(false);
+            turnOff(10);
+            isRaboot = true;
+            didPlayerPressButton = true;
+        }
+    }
+
+    [ServerRpc]
+    public void PressDrifblim()
+    {
+        if (!isDrifblim)
+        {
+            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Drifblim);
+            Drifblim.gameObject.SetActive(false);
+            turnOff(11);
+            isDrifblim = true;
+            didPlayerPressButton = true;
+        }
+    }
+
+
+
+
 
     [ObserversRpc]
     public void turnOff(int num)
@@ -279,7 +333,15 @@ public class SnakeDraft : NetworkBehaviour
             case 8:
                 Hoopa.gameObject.SetActive(false);
                 break;
-
+            case 9:
+                Oricorio.gameObject.SetActive(false);
+                break;
+            case 10:
+                Raboot.gameObject.SetActive(false);
+                break;
+            case 11:
+                Drifblim.gameObject.SetActive(false);
+                break;
 
 
         }

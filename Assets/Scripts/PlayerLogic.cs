@@ -43,7 +43,10 @@ public class PlayerLogic : NetworkBehaviour
         Luvdisc,
         Victini,
         Golisopod,
-        Hoopa
+        Hoopa,
+        Oricorio,
+        Raboot,
+        Drifblim
     }
     [Header("Pokemon")]
     public Character character;

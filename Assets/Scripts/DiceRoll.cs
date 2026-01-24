@@ -3,13 +3,20 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using System.Linq;
+using static Unity.Collections.AllocatorManager;
 
 public class DiceRoll : NetworkBehaviour
 {
 
-    public GameManger gameManger;
+    public GameManger gameManager;
     public PlayerTypes characterType;
 
+    [Header("Specific Character Scripts")]
+    public MeowUI meowManager;
+    public DriftUI driftManager;
+
+    [Header("Normal Dice Stuff")]
     public bool isDicePressed = false;
     public Button diceButton;
     public int moveNum = 1;
@@ -46,42 +53,58 @@ public class DiceRoll : NetworkBehaviour
        // Debug.Log("Dice rolled a 2");
 
 
-        if(gameManger.GetCurrentPlayer().character == PlayerLogic.Character.Meowscarada)
+        if(currentPlayer().character == PlayerLogic.Character.Meowscarada)
         {
-            characterType.ReRoll(gameManger.GetCurrentPlayer(), DiceRollNumber());
+
+            Debug.Log("Your First Roll is " + DiceRollNumber() + ". Roll again? (y/n)");
+            StartCoroutine(meowManager.ReRollChoice(currentPlayer(), DiceRollNumber()));
+
+            //characterType.ReRoll(currentPlayer(), DiceRollNumber());
         }
 
-        else if (gameManger.GetCurrentPlayer().character == PlayerLogic.Character.Victini)
+        else if (currentPlayer().character == PlayerLogic.Character.Drifblim)
+        {
+            Debug.Log("Your First Roll is " + DiceRollNumber() + ". Double for a trip? (y/n)");
+            StartCoroutine(driftManager.DoubleForTrip(currentPlayer(), DiceRollNumber()));
+            //characterType.ReRoll(currentPlayer(), DiceRollNumber());
+        }
+        else if (currentPlayer().character == PlayerLogic.Character.Victini)
         {
             int victiniRoll = DiceRollNumber();
             if(victiniRoll < 3)
             {
-                StartCoroutine(gameManger.GetCurrentPlayer().MainMovement(4));
+                StartCoroutine(currentPlayer().MainMovement(4));
             }
             else
             {
-                StartCoroutine(gameManger.GetCurrentPlayer().MainMovement(victiniRoll));
+                StartCoroutine(currentPlayer().MainMovement(victiniRoll));
             }
         }
 
-        else if (gameManger.GetCurrentPlayer().character == PlayerLogic.Character.Golisopod)
+        else if (currentPlayer().character == PlayerLogic.Character.Golisopod)
         {
             int roll = DiceRollNumber();
             if(roll > 1)
             {
-                StartCoroutine(gameManger.GetCurrentPlayer().MainMovement(roll * 2));
+                StartCoroutine(currentPlayer().MainMovement(roll * 2));
             }
             else
             {
-                int rollToStart = -1 * gameManger.GetCurrentPlayer().currentTile.GetComponent<TileLogic>().id;
-                StartCoroutine(gameManger.GetCurrentPlayer().MainMovement(rollToStart));
+                int rollToStart = -1 * currentPlayer().currentTile.GetComponent<TileLogic>().id;
+                StartCoroutine(currentPlayer().MainMovement(rollToStart));
             }
+
+        }
+        else if (currentPlayer().character == PlayerLogic.Character.Raboot)
+        {
+            int roll = DiceRollNumber();
+            RabootEffectModifier(roll);
 
         }
 
         else
         {
-            StartCoroutine(gameManger.GetCurrentPlayer().MainMovement(DiceRollNumber()));
+            StartCoroutine(currentPlayer().MainMovement(DiceRollNumber()));
         }
         
    
@@ -114,13 +137,67 @@ public class DiceRoll : NetworkBehaviour
 
     public int DiceRollNumber()
     {
-        return gameManger.GetCurrentPlayer().moveNum;
+        return gameManager.GetCurrentPlayer().moveNum;
+    }
+
+
+    public PlayerLogic currentPlayer(){
+        
+        return gameManager.GetCurrentPlayer();
     }
 
 
 
+    public void RabootEffectModifier(int rollNum)
+    {
+
+        PlayerLogic[] players = gameManager.getAllPlayers();
+
+        int[] placements = new int[gameManager.numOfPlayers];
+
+        for (int i = 0; i < gameManager.numOfPlayers; i++)
+        {
+            placements[i] = players[i].currentTile.gameObject.GetComponent<TileLogic>().id;
+        }
+
+        int[] blocked = placements.Distinct().ToArray();
+
+        int currentSpaceId = currentPlayer().currentTile.gameObject.GetComponent<TileLogic>().id;
 
 
+
+        int[] result = new int[rollNum + 1];
+        int index = 0;
+        int current = currentSpaceId;
+
+        while (index <= rollNum)
+        {
+            bool isBlocked = false;
+
+            for (int i = 0; i < blocked.Length; i++)
+            {
+                if (blocked[i] == current && blocked[i] != currentSpaceId)
+                {
+                    isBlocked = true;
+                    break;
+                }
+            }
+
+            if (!isBlocked)
+            {
+                result[index] = current;
+                index++;
+            }
+
+            current++;
+        }
+
+
+        StartCoroutine(currentPlayer().MainMovement((current-1)-currentSpaceId));
+
+
+
+    }
 
 
 

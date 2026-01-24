@@ -4,6 +4,8 @@ using static TileLogic;
 using System.Collections;
 using UnityEngine.UI;
 using PurrNet;
+using Unity.Burst.Intrinsics;
+using System.Linq;
 
 
 
@@ -15,6 +17,7 @@ public class PlayerTypes : NetworkBehaviour
     public GameManger gameManager; 
     public MeowUI meowManager;
     public HoopaUI hoopaManager;
+    public OricorUi oriManager;
     public DiceRoll roll;
 
 
@@ -43,13 +46,14 @@ public class PlayerTypes : NetworkBehaviour
 
             case PlayerLogic.Character.Golisopod:
                 StartCoroutine(roll.diceRoll());
+                break;
 
+            case PlayerLogic.Character.Oricorio:
+                StartCoroutine(oriManager.Oricorio());
                 break;
 
             case PlayerLogic.Character.Hoopa:
                 StartCoroutine(hoopaManager.Hoopa());
-                
-                
                 break;
 
             case PlayerLogic.Character.Luvdisc:
@@ -82,6 +86,10 @@ public class PlayerTypes : NetworkBehaviour
         }
 
     }
+
+
+
+
 
 
     //JiggyPuff effect- if passby, trip player. called by Check During ROle

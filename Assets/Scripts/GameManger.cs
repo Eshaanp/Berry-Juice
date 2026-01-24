@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 using PurrNet;
+using System.Linq;
+using NUnit.Framework;
+using System.Collections.Generic;
 
 public class GameManger : NetworkBehaviour
 {
@@ -82,6 +85,53 @@ public class GameManger : NetworkBehaviour
         else
             return null;
     }
+
+    //returns an array with all playerLogic scripts 
+    public PlayerLogic[] getAllPlayers()
+    {
+        PlayerLogic[] maxPlayers = { player1, player2 }; // append with more later
+        PlayerLogic[] result = new PlayerLogic[numOfPlayers];
+
+        for (int i = 0; i < numOfPlayers; i++)
+        {
+            result[i] = maxPlayers[i];
+        }
+        return result;
+
+    }
+
+    // returns player(s) in last place
+    public List<PlayerLogic> getLastPlacePlayers()
+    {
+
+        PlayerLogic[] players = { player1, player2 };// append with more later
+        int[] placements = new int[numOfPlayers];
+
+        for (int i = 0; i < numOfPlayers; i++)
+        {
+            placements[i] = players[i].currentTile.gameObject.GetComponent<TileLogic>().id;
+        }
+
+        
+    
+
+        int minimum = placements.Min();
+
+        List<PlayerLogic> result = new List<PlayerLogic>();
+
+        for (int i = 0; i < numOfPlayers; i++)
+        {
+            if (players[i].currentTile.gameObject.GetComponent<TileLogic>().id == minimum)
+            {
+                result.Add(players[i]); 
+            }
+        }
+
+        return result;
+
+    }
+
+
 
 
     public void playerSetUp()
@@ -191,20 +241,8 @@ public class GameManger : NetworkBehaviour
 
     }
 
-    //returns an array with all playerLogic scripts 
-    public PlayerLogic[] getAllPlayers()
-    {
-        PlayerLogic[] maxPlayers = { player1, player2 }; // append with more later
-        PlayerLogic[] result = new PlayerLogic[numOfPlayers];
-
-        for (int i = 0; i < numOfPlayers; i++)
-        { 
-            result[i] = maxPlayers[i];
-        }
-        return result;
-
-    }
 
 
+    
 
 }
