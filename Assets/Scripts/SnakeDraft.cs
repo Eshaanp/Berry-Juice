@@ -105,6 +105,7 @@ public class SnakeDraft : NetworkBehaviour
             {
                 Debug.Log(x.ToString());
             }
+
             gameManager.NextTurn();
 
         }

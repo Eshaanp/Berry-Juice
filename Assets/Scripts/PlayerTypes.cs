@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using PurrNet;
 using Unity.Burst.Intrinsics;
 using System.Linq;
+using System.Collections.Generic;
 
 
 
@@ -104,7 +105,14 @@ public class PlayerTypes : NetworkBehaviour
         {
             player.skipTurn = true;
         }
-
+        if (gameManager.numOfPlayers >= 3 && player.PlayerId != 3 && gameManager.player3.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player3.currentTile)
+        {
+            player.skipTurn = true;
+        }
+        if (gameManager.numOfPlayers == 4 && player.PlayerId != 4 && gameManager.player4.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player4.currentTile)
+        {
+            player.skipTurn = true;
+        }
     }
 
 
@@ -144,13 +152,15 @@ public class PlayerTypes : NetworkBehaviour
             Debug.Log("passing player 2");
             StartCoroutine(gameManager.player2.MovementSlide(-1));
         }
-        if (player.currentTile.GetComponent<TileLogic>().isPlayer3OnTile == true)
+        if (gameManager.numOfPlayers >= 3 && player.PlayerId != 3 && player.currentTile == gameManager.player3.currentTile)
         {
-
+            Debug.Log("passing player 3");
+            StartCoroutine(gameManager.player3.MovementSlide(-1));
         }
-        if (player.currentTile.GetComponent<TileLogic>().isPlayer4OnTile == true)
+        if (gameManager.numOfPlayers == 4 &&  player.PlayerId != 4 && player.currentTile == gameManager.player4.currentTile)
         {
-
+            Debug.Log("passing player 4");
+            StartCoroutine(gameManager.player4.MovementSlide(-1));
         }
 
     }
@@ -159,22 +169,37 @@ public class PlayerTypes : NetworkBehaviour
     //For Luvdisc, checks if its in last place, decrease score if it is
     private void CheckIfLastPlace(PlayerLogic player)
     {
-        int player1Place = gameManager.player1.currentTile.GetComponent<TileLogic>().id;
-        int player2Place = gameManager.player2.currentTile.GetComponent<TileLogic>().id;
+        //int player1Place = gameManager.player1.currentTile.GetComponent<TileLogic>().id;
+       //int player2Place = gameManager.player2.currentTile.GetComponent<TileLogic>().id;
+        //int player3Place = gameManager.player3.currentTile.GetComponent<TileLogic>().id;
+        //int player4Place = gameManager.player4.currentTile.GetComponent<TileLogic>().id;
 
-        if(player.currentTile.GetComponent<TileLogic>().id <= player1Place && player.currentTile.GetComponent<TileLogic>().id <= player2Place)
+        List<PlayerLogic> lastPlacePlayers = gameManager.getLastPlacePlayers();
+        for (int i = 0; i < lastPlacePlayers.Count; i++)
         {
-            Debug.Log("In last place");
-            switch (player.PlayerId)
+            if (lastPlacePlayers[i] == player)
             {
-                case 1:
-                    gameManager.Player1Score -= 1;
-                    break;
-                case 2:
-                    gameManager.Player2Score -= 1;
-                    break;
+                switch (player.PlayerId)
+                {
+                    case 1:
+                        gameManager.Player1Score -= 1;
+                        break;
+                    case 2:
+                        gameManager.Player2Score -= 1;
+                        break;
+                    case 3:
+                        gameManager.Player3Score -= 1;
+                        break;
+                    case 4:
+                        gameManager.Player4Score -= 1;
+                        break;
+                }
             }
         }
+
+
+
+  
 
 
 

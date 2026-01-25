@@ -11,6 +11,8 @@ public class GameManger : NetworkBehaviour
     [Header("Players")]
     public PlayerLogic player1;
     public PlayerLogic player2;
+    public PlayerLogic player3;
+    public PlayerLogic player4;
 
     [Header("Scripts")]
     
@@ -22,6 +24,8 @@ public class GameManger : NetworkBehaviour
     [Header("Game Information")]
     public int Player1Score = 0;
     public int Player2Score = 0;
+    public int Player3Score = 0;
+    public int Player4Score = 0;
     public int turn = 0; 
     public int currentPlayerTurn = 1;
     public int numOfPlayers = 2;
@@ -72,6 +76,10 @@ public class GameManger : NetworkBehaviour
             return player1;
         else if (currentPlayerTurn == 2)
             return player2;
+        else if (currentPlayerTurn == 3)
+            return player3;
+        else if (currentPlayerTurn == 4)
+            return player4;
         else
             return null;
     }
@@ -82,6 +90,10 @@ public class GameManger : NetworkBehaviour
             return player1;
         else if (playerNum == 2)
             return player2;
+        else if (playerNum == 3)
+            return player2;
+        else if (playerNum == 4)
+            return player2;
         else
             return null;
     }
@@ -89,7 +101,7 @@ public class GameManger : NetworkBehaviour
     //returns an array with all playerLogic scripts 
     public PlayerLogic[] getAllPlayers()
     {
-        PlayerLogic[] maxPlayers = { player1, player2 }; // append with more later
+        PlayerLogic[] maxPlayers = { player1, player2 , player3, player4}; // append with more later
         PlayerLogic[] result = new PlayerLogic[numOfPlayers];
 
         for (int i = 0; i < numOfPlayers; i++)
@@ -104,7 +116,7 @@ public class GameManger : NetworkBehaviour
     public List<PlayerLogic> getLastPlacePlayers()
     {
 
-        PlayerLogic[] players = { player1, player2 };// append with more later
+        PlayerLogic[] players = getAllPlayers();// append with more later
         int[] placements = new int[numOfPlayers];
 
         for (int i = 0; i < numOfPlayers; i++)
@@ -193,9 +205,15 @@ public class GameManger : NetworkBehaviour
     }
 
     //changes current player turn number
-    public void NextTurn()      //NEEDS 4 PLAYER ADJUSTMENT
+    public void NextTurn()      
     {
-        currentPlayerTurn = (currentPlayerTurn == 1) ? 2 : 1;
+        //currentPlayerTurn = (currentPlayerTurn == 1) ? 2 : 1;
+        currentPlayerTurn++;
+        if (currentPlayerTurn > numOfPlayers)
+        {
+            currentPlayerTurn = 1;
+        }
+
         Debug.Log("Player " + currentPlayerTurn + "'s turn");
         
     }
@@ -289,10 +307,10 @@ public class GameManger : NetworkBehaviour
             Player2Score += points;
         } else if (player.PlayerId == 3)
         {
-
+            Player3Score += points;
         } else if (player.PlayerId == 4)
         {
-
+            Player4Score += points;
         }
 
     }

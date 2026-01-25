@@ -12,8 +12,8 @@ public class HoopaUI : NetworkBehaviour
 
     public Button player1;
     public Button player2;
-    //public Button player3;
-    //public Button player4;
+    public Button player3;
+    public Button player4;
     public Button noPlayer;
 
     public bool hoopaButtonPressed = false;
@@ -49,13 +49,13 @@ public class HoopaUI : NetworkBehaviour
         {
             player2.gameObject.SetActive(true);
         }
-        if (currentPlayerId != 3)
+        if (currentPlayerId != 3 && gameManger.numOfPlayers >= 3)
         {
-            //player3.gameObject.SetActive(true);
+            player3.gameObject.SetActive(true);
         }
-        if (currentPlayerId != 4)
+        if (currentPlayerId != 4 && gameManger.numOfPlayers == 4)
         {
-           // player4.gameObject.SetActive(true);
+           player4.gameObject.SetActive(true);
         }
 
     }
@@ -65,8 +65,8 @@ public class HoopaUI : NetworkBehaviour
     {
         player1.gameObject.SetActive(false);
         player2.gameObject.SetActive(false);
-        //player3.gameObject.SetActive(false);
-        //player4.gameObject.SetActive(false);
+        player3.gameObject.SetActive(false);
+        player4.gameObject.SetActive(false);
         noPlayer.gameObject.SetActive(false);
 
     }
@@ -119,7 +119,13 @@ public class HoopaUI : NetworkBehaviour
 
     private void movePlayer(int playerNum)
     {
+        /*
+        if(gameManger.GetTargetPlayer(playerNum) == null){
+            return;
+        }*/
+        
         int currentPlayerId = gameManger.GetCurrentPlayer().PlayerId;
+
 
         int currentPlayerTileId = gameManger.GetCurrentPlayer().currentTile.GetComponent<TileLogic>().id;
         int targetPlayerTileId = gameManger.GetTargetPlayer(playerNum).currentTile.GetComponent<TileLogic>().id;
