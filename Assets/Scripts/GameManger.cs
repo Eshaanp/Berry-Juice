@@ -132,6 +132,25 @@ public class GameManger : NetworkBehaviour
     }
 
 
+    public int finishedPlayersAmount()
+    {
+        PlayerLogic[] maxPlayers = getAllPlayers(); // append with more later
+
+        int result = 0;
+
+        for (int i = 0; i < maxPlayers.Length; i++)
+        {
+            if (maxPlayers[i].currentTile.gameObject.GetComponent<TileLogic>().tileType == TileLogic.TileType.EndTile)
+            {
+                result++;
+            }
+        }
+        return result;
+
+    }
+
+
+
 
 
     public void playerSetUp()
@@ -174,7 +193,7 @@ public class GameManger : NetworkBehaviour
     }
 
     //changes current player turn number
-    public void NextTurn()
+    public void NextTurn()      //NEEDS 4 PLAYER ADJUSTMENT
     {
         currentPlayerTurn = (currentPlayerTurn == 1) ? 2 : 1;
         Debug.Log("Player " + currentPlayerTurn + "'s turn");
@@ -187,8 +206,21 @@ public class GameManger : NetworkBehaviour
     //checks the players character before role for effect (ie meowscarada)
     public void StartTurn()
     {
-        
-        if (GetCurrentPlayer().skipTurn == true)
+        if (GetCurrentPlayer().CrossedFinish == true)
+        {
+
+            if (CheckIfRaceEnd())
+            {
+                EndGame();
+                Debug.Log("Game Ended");
+                return;
+            }    
+            EndTurn();
+            Debug.Log("crossed Finish");
+            return;
+
+        }
+        else if (GetCurrentPlayer().skipTurn == true)
         {
             GetCurrentPlayer().skipTurn = false;
             EndTurn();
@@ -196,6 +228,7 @@ public class GameManger : NetworkBehaviour
             return;
             
         }
+
         playerTypes.CheckCharacterBeforeRole(GetCurrentPlayer());
         //StartCoroutine(GetCurrentPlayer().DiceRoll());
 
@@ -217,6 +250,29 @@ public class GameManger : NetworkBehaviour
 
 
     }
+
+    public void EndGame()
+    {
+
+        Debug.Log("Game Ended");
+
+
+    }
+
+
+    public bool CheckIfRaceEnd()
+    {
+        if(finishedPlayersAmount() == numOfPlayers)
+        {
+            return true;
+        }
+
+        return false;
+
+    }
+
+
+
 
     //updates score of player
     public void updateScore(int points)

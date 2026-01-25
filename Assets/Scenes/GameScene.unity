@@ -1406,7 +1406,7 @@ MonoBehaviour:
   PlayerId: 1
   CurrentTileId: 0
   currentTile: {fileID: 1821684296}
-  moveNum: 1
+  moveNum: 3
   moveSpeed: 16
   points: 0
   skipTurn: 0
