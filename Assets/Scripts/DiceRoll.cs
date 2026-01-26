@@ -91,7 +91,8 @@ public class DiceRoll : NetworkBehaviour
             else
             {
                 int rollToStart = -1 * currentPlayer().currentTile.GetComponent<TileLogic>().id;
-                StartCoroutine(currentPlayer().MainMovement(rollToStart));
+                currentPlayer().Teleport(gameManager.firstTile);
+                StartCoroutine(currentPlayer().MainMovement(0));
             }
 
         }

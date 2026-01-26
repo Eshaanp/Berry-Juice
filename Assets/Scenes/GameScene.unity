@@ -4756,7 +4756,8 @@ MonoBehaviour:
   Player4Score: 0
   turn: 0
   currentPlayerTurn: 1
-  numOfPlayers: 4
+  numOfPlayers: 2
+  firstTile: {fileID: 1821684296}
 --- !u!4 &1057622774
 Transform:
   m_ObjectHideFlags: 0

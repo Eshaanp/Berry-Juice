@@ -41,19 +41,19 @@ public class HoopaUI : NetworkBehaviour
     private void setButtons(int currentPlayerId)
     {
         noPlayer.gameObject.SetActive(true);
-        if(currentPlayerId != 1)
+        if(currentPlayerId != 1 && gameManger.player1.CrossedFinish == false)
         {
             player1.gameObject.SetActive(true);
         }
-        if (currentPlayerId != 2)
+        if (currentPlayerId != 2 && gameManger.player2.CrossedFinish == false)
         {
             player2.gameObject.SetActive(true);
         }
-        if (currentPlayerId != 3 && gameManger.numOfPlayers >= 3)
+        if (currentPlayerId != 3 && gameManger.numOfPlayers >= 3 && gameManger.player3.CrossedFinish == false)
         {
             player3.gameObject.SetActive(true);
         }
-        if (currentPlayerId != 4 && gameManger.numOfPlayers == 4)
+        if (currentPlayerId != 4 && gameManger.numOfPlayers == 4 && gameManger.player4.CrossedFinish == false)
         {
            player4.gameObject.SetActive(true);
         }
@@ -132,7 +132,14 @@ public class HoopaUI : NetworkBehaviour
 
         int targetMovement = -1 * (targetPlayerTileId - currentPlayerTileId);
 
-        StartCoroutine(gameManger.GetTargetPlayer(playerNum).MovementSlide(targetMovement));
+        if (gameManger.GetTargetPlayer(playerNum).CrossedFinish == false)
+        {
+            gameManger.GetTargetPlayer(playerNum).Teleport(gameManger.GetCurrentPlayer().currentTile);
+        }
+            
+
+
+        //StartCoroutine(gameManger.GetTargetPlayer(playerNum).MovementSlide(targetMovement));
 
     }
 

@@ -30,6 +30,9 @@ public class GameManger : NetworkBehaviour
     public int currentPlayerTurn = 1;
     public int numOfPlayers = 2;
 
+    public GameObject firstTile;
+
+
     
 
     void Start()

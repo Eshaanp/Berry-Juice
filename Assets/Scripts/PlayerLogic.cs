@@ -12,6 +12,7 @@ public class PlayerLogic : NetworkBehaviour
     public int PlayerId;
     public int CurrentTileId = 0;
     public GameObject currentTile;
+    
 
 
     public int moveNum = 1; 
@@ -202,6 +203,18 @@ public class PlayerLogic : NetworkBehaviour
 
     }
 
+    public void Teleport(GameObject tile)
+    {
+
+     
+        Vector3 pos = transform.position;
+        pos.x = tile.transform.position.x;
+        pos.z = tile.transform.position.z;
+        transform.position = pos;
+        currentTile = tile;
+
+
+    }
 
 
 
