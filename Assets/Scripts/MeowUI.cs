@@ -6,11 +6,11 @@ using PurrNet;
 public class MeowUI : NetworkBehaviour
 {
 
-
+    public GameManger gameManger;
 
     [Header("Main Move")]
     public Button diceButton;
-    //public bool isDicePressed;
+    
 
     [Header("Meowscarada")]
     public Button ReRollButton;
@@ -19,21 +19,19 @@ public class MeowUI : NetworkBehaviour
     public bool reroll = false;
 
 
-
-
-    private void Start()
-    {
-        //this.gameObject.SetActive(false);
-    }
-
-
-
-
     public IEnumerator ReRollChoice(PlayerLogic player, int firstRoll)
     {
 
+        if (!isServer)
+        {
+            yield break;
+        }
+        MeowbuttonPressed = false;
+        reroll = false;
 
-        MeowscaradaChoiceUI();
+        // Enable buttons when asking
+        showMeowUI(true);
+        //MeowscaradaChoiceUI();
 
         // Wait for a button press
         while (!MeowbuttonPressed)
@@ -42,8 +40,7 @@ public class MeowUI : NetworkBehaviour
         }
 
         // Disable buttons immediately
-        hideUI("dontReroll");
-        hideUI("reroll");
+        showMeowUI(false);
 
         if (reroll)
         {
@@ -61,8 +58,8 @@ public class MeowUI : NetworkBehaviour
 
 
 
-    //UI Management for Meowscarada re roll choice
-
+   
+    //unused- deletion?
     public void MeowscaradaChoiceUI()
     {
         if (!isServer)
@@ -73,64 +70,63 @@ public class MeowUI : NetworkBehaviour
         reroll = false;
 
         // Enable buttons when asking
-        showUI("reroll");
-        showUI("dontReroll");
-    }
-
-    [ServerRpc]
-    public void RerollYesPressed()
-    {
-        reroll = true;
-        MeowbuttonPressed = true;
-    }
-
-    [ServerRpc]
-    public void RerollNoPressed()
-    {
-        reroll = false;
-        MeowbuttonPressed = true;
-    }
-
-
-    //UI for normal dice roll
-
-    [ObserversRpc]
-    public void showUI(string button)
-    {
-
-        //Debug.Log("ui shown");
-        switch (button)
-        {
-
-            case "reroll":
-                ReRollButton.gameObject.SetActive(true);
-                break;
-            case "dontReroll":
-                DontReRollButton.gameObject.SetActive(true);
-                break;
-
-        }
+        showMeowUI(true);
         
     }
 
-    [ObserversRpc]
-    public void hideUI(string button)
+
+
+    /* Buttons to pick whether player rerolls
+     * only shown to play with client id = to turn 
+     * 
+     */
+    public void RerollYesPressed()
     {
-        switch (button)
-        {
-
-            case "reroll":
-                ReRollButton.gameObject.SetActive(false);
-                break;
-            case "dontReroll":
-                DontReRollButton.gameObject.SetActive(false);
-                break;
-
-
-
-        }
-
+        ReRollToServer(true);
     }
+    public void RerollNoPressed()
+    {
+        ReRollToServer(false);
+    }
+    [ServerRpc]
+    private void ReRollToServer(bool isReroll, RPCInfo info = default)
+    {
+        if ((ushort)info.sender.id != (ushort)gameManger.currentPlayerTurn.value)
+        {
+            return;
+        }
+        reroll = isReroll;
+        MeowbuttonPressed = true;
+    }
+
+
+
+
+    /* Buttons to show meow UI
+     * all clients send local id to server
+     * server picks which one to show based on its id
+     */
+    [ObserversRpc]
+    public void showMeowUI(bool showUI)
+    {
+        PlayerID clientId = localPlayer.Value;
+        ShowMeowUIServer(clientId, showUI);
+    }
+    [ServerRpc]
+    private void ShowMeowUIServer(PlayerID target, bool showUI)
+    {
+        if ((ushort)gameManger.currentPlayerTurn.value == (ushort)target.id)
+        {
+            showMeowUITarget(target, showUI);
+        }
+    }
+    [TargetRpc]
+    public void showMeowUITarget(PlayerID target, bool showUI)
+    {
+        ReRollButton.gameObject.SetActive(showUI);
+        DontReRollButton.gameObject.SetActive(showUI);
+    }
+
 
 
 

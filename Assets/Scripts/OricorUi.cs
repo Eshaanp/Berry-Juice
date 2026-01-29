@@ -25,54 +25,68 @@ public class OricorUi : NetworkBehaviour
     public IEnumerator Oricorio()
     {
         oriButtonPressed = false;
-        
-        setButtons();
+
+        ShowOriUI(true);    
 
         while (!oriButtonPressed)
         {
             yield return null;
         }
-        hideButtons();
+        ShowOriUI(false);
         StartCoroutine(roll.diceRoll());
     }
 
-    [ObserversRpc]
-    private void setButtons()
-    {
-        
-        Cheer.gameObject.SetActive(true);
-        noCheer.gameObject.SetActive(true);
 
-
-
-    }
 
     [ObserversRpc]
-    private void hideButtons()
+    private void ShowOriUI(bool showUI)
     {
-        Cheer.gameObject.SetActive(false);
-        noCheer.gameObject.SetActive(false);
+        PlayerID clientId = localPlayer.Value;
+        ShowOriUIServer(clientId, showUI);
 
     }
-
-
     [ServerRpc]
+    public void ShowOriUIServer(PlayerID target, bool showUI)
+    {
+        if ((ushort)gameManger.currentPlayerTurn.value == (ushort)target.id)
+        {
+            ShowOriUITarget(target, showUI);
+        }
+    }
+    [TargetRpc]
+    public void ShowOriUITarget(PlayerID target, bool showUI)
+    {
+        Cheer.gameObject.SetActive(showUI);
+        noCheer.gameObject.SetActive(showUI);
+    }
+
+
+
+
     public void PickNoCheer()
     {
-        oriButtonPressed = true;
-
-
+        CheerToServer(false);
     }
-
-    [ServerRpc]
     public void PickCheer()
     {
+        CheerToServer(true);
+    }
+    [ServerRpc]
+    private void CheerToServer(bool isCheer, RPCInfo info = default)
+    {
+        if ((ushort)info.sender.id != (ushort)gameManger.currentPlayerTurn.value)
+        {
+            return;
+        }
+
         oriButtonPressed = true;
-        movePlayers();
+
+        if (isCheer)
+        {
+            movePlayers();
+        }
 
     }
-
-
 
 
 

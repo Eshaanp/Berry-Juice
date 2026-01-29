@@ -7,6 +7,8 @@ using System.Linq;
 using static Unity.Collections.AllocatorManager;
 using Unity.Networking.Transport;
 using System;
+using System.Threading.Tasks;
+using UnityEditor.PackageManager;
 
 public class DiceRoll : NetworkBehaviour
 {
@@ -121,68 +123,51 @@ public class DiceRoll : NetworkBehaviour
    
     }
 
+    /* Controls which clients get to see the dice roll button
+     * all clients send local id to server
+     * server picks which one to show based on its id
+     * 
+     */
     [ObserversRpc]
     public void ShowDiceUIObserver(bool showUI)
     {
-
-        GetRpcInfoDiceUI(showUI);
-
+        PlayerID clientId = localPlayer.Value;
+        ShowDiceUIServer(clientId, showUI);
 
     }
-
     [ServerRpc]
-    private void GetRpcInfoDiceUI(bool showUI, RPCInfo info = default)
+    private void ShowDiceUIServer(PlayerID target, bool showUI)
     {
-        //Here we now have the RPC info
-        //Debug.Log($"Sender: {info.sender}");
 
-        if ((ulong)gameManager.currentPlayerTurn.value == (ulong)info.sender.id)
+        if ( (ushort) gameManager.currentPlayerTurn.value == (ushort) target.id )
         {
-            showUITarget(info.sender, showUI);
+            showUITarget(target, showUI);
         }
 
     }
-
-
-
     [TargetRpc]
     public void showUITarget(PlayerID target, bool showUI)
     {
-
         diceButton.gameObject.SetActive(showUI);
-     
     }
-
+    
 
 
     
     public void RollDiceServerRpc()
     {
-
-        TestRpc();
-
-
-
+        RollToServer();
     }
 
-
     [ServerRpc]
-    private void TestRpc(RPCInfo info = default)
+    private void RollToServer(RPCInfo info = default)
     {
-        //Here we now have the RPC info
-        Debug.Log($"Sender: {info.sender}");
-
-        ulong id = info.sender.id;
-        ulong turn = (ulong)gameManager.currentPlayerTurn.value;
-        //Debug.Log(id);
-        //Debug.Log(turn);
-        if (id != turn)
+        if ((ushort)info.sender.id != (ushort)gameManager.currentPlayerTurn.value)
         {
             return;
         }
 
         isDicePressed = true;
-
     }
 
 

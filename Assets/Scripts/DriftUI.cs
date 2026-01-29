@@ -4,9 +4,11 @@ using UnityEngine.UI;
 using PurrNet;
 public class DriftUI : NetworkBehaviour
 {
+    public GameManger gameManger;
+
     [Header("Main Move")]
     public Button diceButton;
-    //public bool isDicePressed;
+    
 
     [Header("Driflim")]
     public Button DoubleButton;
@@ -16,20 +18,19 @@ public class DriftUI : NetworkBehaviour
 
 
 
-
-    private void Start()
-    {
-        //this.gameObject.SetActive(false);
-    }
-
-
-
-
     public IEnumerator DoubleForTrip(PlayerLogic player, int firstRoll)
     {
 
 
-        DriftChoiceUI();
+        if (!isServer)
+        {
+            yield break;
+        }
+        driftButtonPressed = false;
+        doubleRoll = false;
+
+        // Enable buttons when asking
+        showMeowUI(true);
 
         // Wait for a button press
         while (!driftButtonPressed)
@@ -38,7 +39,7 @@ public class DriftUI : NetworkBehaviour
         }
 
         // Disable buttons immediately
-        hideUI();
+        showMeowUI(false);
 
         if (doubleRoll)
         {
@@ -69,42 +70,60 @@ public class DriftUI : NetworkBehaviour
         doubleRoll = false;
 
         // Enable buttons when asking
-        showUI();
+        //showUI();
         
     }
 
-    [ServerRpc]
+
+
+    /* Buttons to pick whether player double roll and trip
+     * only shown to play with client id = to turn 
+     * 
+     */
     public void DoubleYesPressed()
     {
-        doubleRoll = true;
-        driftButtonPressed = true;
+        DoubleToServer(true);
     }
-
-    [ServerRpc]
     public void DoubleNoPressed()
     {
-        doubleRoll = false;
+        DoubleToServer(false);
+    }
+    [ServerRpc]
+    private void DoubleToServer(bool isdouble, RPCInfo info = default)
+    {
+        if ((ushort)info.sender.id != (ushort)gameManger.currentPlayerTurn.value)
+        {
+            return;
+        }
+        doubleRoll = isdouble;
         driftButtonPressed = true;
     }
 
 
-    //UI for normal dice roll
 
+    /* Buttons to show drift UI
+     * all clients send local id to server
+     * server picks which one to show based on its id
+     */
     [ObserversRpc]
-    public void showUI()
+    public void showMeowUI(bool showUI)
     {
-        DoubleButton.gameObject.SetActive(true);
-        DontDoubleButton.gameObject.SetActive(true);
-
+        PlayerID clientId = localPlayer.Value;
+        ShowDriftUIServer(clientId, showUI);
     }
-
-    [ObserversRpc]
-    public void hideUI()
+    [ServerRpc]
+    private void ShowDriftUIServer(PlayerID target, bool showUI)
     {
-        DoubleButton.gameObject.SetActive(false);
-        DontDoubleButton.gameObject.SetActive(false);
-       
-
+        if ((ushort)gameManger.currentPlayerTurn.value == (ushort)target.id)
+        {
+            showDriftUITarget(target, showUI);
+        }
+    }
+    [TargetRpc]
+    public void showDriftUITarget(PlayerID target, bool showUI)
+    {
+        DoubleButton.gameObject.SetActive(showUI);
+        DontDoubleButton.gameObject.SetActive(showUI);
     }
 
 

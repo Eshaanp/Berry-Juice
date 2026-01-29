@@ -354,6 +354,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
+  gameManger: {fileID: 1057622773}
   diceButton: {fileID: 2043705626}
   ReRollButton: {fileID: 216827256}
   DontReRollButton: {fileID: 1418990599}
@@ -464,6 +465,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
+  gameManger: {fileID: 1057622773}
   diceButton: {fileID: 2043705626}
   DoubleButton: {fileID: 155041678}
   DontDoubleButton: {fileID: 1403400559}
@@ -1615,7 +1617,7 @@ MonoBehaviour:
   PlayerId: 1
   CurrentTileId: 0
   currentTile: {fileID: 1821684296}
-  moveNum: 3
+  moveNum: 2
   moveSpeed: 16
   points: 0
   skipTurn: 0
@@ -1624,7 +1626,7 @@ MonoBehaviour:
   tileEffects: {fileID: 1057622775}
   gameManager: {fileID: 1057622773}
   playerTypes: {fileID: 1057622776}
-  character: 0
+  character: 3
   pickedCharacters:
     _ownerAuth: 1
     _sendIntervalInSeconds: 0
@@ -2907,7 +2909,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -323, y: -236}
+  m_AnchoredPosition: {x: -319, y: -193}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &586276984
@@ -3883,7 +3885,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -276}
+  m_AnchoredPosition: {x: 0, y: -193}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &928535506
@@ -4152,7 +4154,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -295, y: -193}
+  m_AnchoredPosition: {x: -295, y: -131}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1017897776
@@ -5082,7 +5084,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 251, y: -266}
+  m_AnchoredPosition: {x: 255, y: -193}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1070774174
@@ -5625,7 +5627,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 326, y: -193}
+  m_AnchoredPosition: {x: 321, y: -136}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1124650679
@@ -5897,7 +5899,7 @@ MonoBehaviour:
   PlayerId: 2
   CurrentTileId: 0
   currentTile: {fileID: 1821684296}
-  moveNum: 2
+  moveNum: 1
   moveSpeed: 16
   points: 0
   skipTurn: 0
@@ -5906,7 +5908,7 @@ MonoBehaviour:
   tileEffects: {fileID: 1057622775}
   gameManager: {fileID: 1057622773}
   playerTypes: {fileID: 1057622776}
-  character: 0
+  character: 7
   pickedCharacters:
     _ownerAuth: 1
     _sendIntervalInSeconds: 0
