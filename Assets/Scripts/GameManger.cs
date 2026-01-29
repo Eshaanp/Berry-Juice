@@ -19,6 +19,8 @@ public class GameManger : NetworkBehaviour
     public SnakeDraft snakeDraft;
     public PlayerTypes playerTypes;
     public DiceRoll rolling;
+
+    //[SerializeField] private NetworkIdentity networkIdentity;
     
 
     [Header("Game Information")]
@@ -26,9 +28,10 @@ public class GameManger : NetworkBehaviour
     public int Player2Score = 0;
     public int Player3Score = 0;
     public int Player4Score = 0;
-    public int turn = 0; 
-    public int currentPlayerTurn = 1;
+    public int turn = 0;
     public int numOfPlayers = 2;
+    public SyncVar<int> currentPlayerTurn;
+    
 
     public GameObject firstTile;
 
@@ -48,7 +51,7 @@ public class GameManger : NetworkBehaviour
     {
         if (Keyboard.current.tKey.wasPressedThisFrame)
         {
-            NextTurn();
+            
         }
         if (Keyboard.current.fKey.wasPressedThisFrame)
         {
@@ -68,7 +71,7 @@ public class GameManger : NetworkBehaviour
     //checks if a players turn
     public bool isPlayersTurn(int playerId) {
 
-        return (playerId == currentPlayerTurn);
+        return (playerId == currentPlayerTurn.value);
 
     }
 
@@ -201,7 +204,7 @@ public class GameManger : NetworkBehaviour
     public void FirstTurn()
     {
         //uiManager.gameObject.SetActive(true);
-        currentPlayerTurn = 1;
+        currentPlayerTurn.value = 1;
         turn = 0;
         StartTurn();
 
@@ -211,10 +214,10 @@ public class GameManger : NetworkBehaviour
     public void NextTurn()      
     {
         //currentPlayerTurn = (currentPlayerTurn == 1) ? 2 : 1;
-        currentPlayerTurn++;
+        currentPlayerTurn.value++;
         if (currentPlayerTurn > numOfPlayers)
         {
-            currentPlayerTurn = 1;
+            currentPlayerTurn.value = 1;
         }
 
         Debug.Log("Player " + currentPlayerTurn + "'s turn");

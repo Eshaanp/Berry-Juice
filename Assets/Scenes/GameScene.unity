@@ -384,6 +384,7 @@ MonoBehaviour:
   characterType: {fileID: 1057622776}
   meowManager: {fileID: 121767276}
   driftManager: {fileID: 121767280}
+  networkMan: {fileID: 1072925664}
   isDicePressed: 0
   diceButton: {fileID: 2043705626}
   moveNum: 1
@@ -4755,8 +4756,11 @@ MonoBehaviour:
   Player3Score: 0
   Player4Score: 0
   turn: 0
-  currentPlayerTurn: 1
   numOfPlayers: 2
+  currentPlayerTurn:
+    _value: 0
+    _ownerAuth: 0
+    _sendIntervalInSeconds: 0
   firstTile: {fileID: 1821684296}
 --- !u!4 &1057622774
 Transform:

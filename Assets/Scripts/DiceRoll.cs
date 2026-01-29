@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using System.Linq;
 using static Unity.Collections.AllocatorManager;
+using Unity.Networking.Transport;
+using System;
 
 public class DiceRoll : NetworkBehaviour
 {
@@ -15,6 +17,10 @@ public class DiceRoll : NetworkBehaviour
     [Header("Specific Character Scripts")]
     public MeowUI meowManager;
     public DriftUI driftManager;
+
+
+    [SerializeField] private NetworkManager networkMan;
+    
 
     [Header("Normal Dice Stuff")]
     public bool isDicePressed = false;
@@ -42,18 +48,22 @@ public class DiceRoll : NetworkBehaviour
         
 
         isDicePressed = false;
-        ShowDiceUI();
+
+
+        
+        ShowDiceUIObserver(true);
 
         while (!isDicePressed)
         {
             yield return null;
         }
         isDicePressed = true;
-        HideDiceUI();
-       // Debug.Log("Dice rolled a 2");
+        ShowDiceUIObserver(false);
+
+        // Debug.Log("Dice rolled a 2");
 
 
-        if(currentPlayer().character == PlayerLogic.Character.Meowscarada)
+        if (currentPlayer().character == PlayerLogic.Character.Meowscarada)
         {
 
             Debug.Log("Your First Roll is " + DiceRollNumber() + ". Roll again? (y/n)");
@@ -112,23 +122,67 @@ public class DiceRoll : NetworkBehaviour
     }
 
     [ObserversRpc]
-    public void ShowDiceUI()
+    public void ShowDiceUIObserver(bool showUI)
     {
-        diceButton.gameObject.SetActive(true);
+
+        GetRpcInfoDiceUI(showUI);
+
+
     }
 
-    [ObserversRpc]
-    public void HideDiceUI()
+    [ServerRpc]
+    private void GetRpcInfoDiceUI(bool showUI, RPCInfo info = default)
     {
-        diceButton.gameObject.SetActive(false);
+        //Here we now have the RPC info
+        //Debug.Log($"Sender: {info.sender}");
+
+        if ((ulong)gameManager.currentPlayerTurn.value == (ulong)info.sender.id)
+        {
+            showUITarget(info.sender, showUI);
+        }
+
     }
 
+
+
+    [TargetRpc]
+    public void showUITarget(PlayerID target, bool showUI)
+    {
+
+        diceButton.gameObject.SetActive(showUI);
+     
+    }
+
+
+
+    
+    public void RollDiceServerRpc()
+    {
+
+        TestRpc();
+
+
+
+    }
 
 
     [ServerRpc]
-    public void RollDiceServerRpc()
+    private void TestRpc(RPCInfo info = default)
     {
+        //Here we now have the RPC info
+        Debug.Log($"Sender: {info.sender}");
+
+        ulong id = info.sender.id;
+        ulong turn = (ulong)gameManager.currentPlayerTurn.value;
+        //Debug.Log(id);
+        //Debug.Log(turn);
+        if (id != turn)
+        {
+            return;
+        }
+
         isDicePressed = true;
+
     }
 
 

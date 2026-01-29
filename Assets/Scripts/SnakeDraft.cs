@@ -122,7 +122,7 @@ public class SnakeDraft : NetworkBehaviour
 
 
 
-        gameManager.currentPlayerTurn = gameManager.numOfPlayers;
+        gameManager.currentPlayerTurn.value = gameManager.numOfPlayers;
         Debug.Log("Reverse. Turn: " + gameManager.currentPlayerTurn);
 
         for (int i = gameManager.numOfPlayers; i > 0; i--)
@@ -134,13 +134,13 @@ public class SnakeDraft : NetworkBehaviour
             didPlayerPressButton = false;
             Debug.Log("Player Picking- " + (gameManager.GetCurrentPlayer().PlayerId));
             yield return StartCoroutine(PickCharacter(gameManager.GetCurrentPlayer()));
-            gameManager.currentPlayerTurn -= 1;
+            gameManager.currentPlayerTurn.value -= 1;
         }
 
         CharacterDraftButtonsDeActive();
         this.gameObject.SetActive(false);
         didPlayerPressButton = false;
-        gameManager.currentPlayerTurn = 1;
+        gameManager.currentPlayerTurn.value = 1;
 
     }
 

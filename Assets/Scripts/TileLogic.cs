@@ -24,6 +24,7 @@ public class TileLogic : NetworkBehaviour
         StartTile,
         EndTile,
         SlideForward,
+        SlideBackwards,
         TripTile,
         PitfallTile
     }
@@ -123,6 +124,9 @@ public class TileLogic : NetworkBehaviour
 
             case TileType.PitfallTile:
                 tileRenderer.material.color = Color.brown;
+                break;
+            case TileType.SlideBackwards:
+                tileRenderer.material.color = Color.purple;
                 break;
         }
     }

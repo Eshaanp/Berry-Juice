@@ -30,6 +30,10 @@ public class TileEffects : MonoBehaviour
                     StartCoroutine(player.MovementSlide(1));
                     break;
 
+                case TileType.SlideBackwards:
+                    StartCoroutine(player.MovementSlide(-1));
+                    break;
+
                 case TileType.TripTile:
                     player.skipTurn = true;
                     break;
