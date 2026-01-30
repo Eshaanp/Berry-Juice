@@ -23,7 +23,7 @@ public class PlayerLogic : NetworkBehaviour
     [Header("Player States")]
     public bool skipTurn = false;
     public bool CrossedFinish = false;
-    bool isMoving = false;
+    public bool isMoving = false;
     public bool isDicePressed = false;
 
     [Header("Manager Scripts")]

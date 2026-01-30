@@ -192,6 +192,8 @@ public class GameManger : NetworkBehaviour
         {
             yield return null;
         }
+        currentPlayerTurn.value = 1;
+
         yield return StartCoroutine(snakeDraft.StartSnakeDraft());
         yield return StartCoroutine(snakeDraft.ReverseSnakeDraft());
         Debug.Log("Draft over");

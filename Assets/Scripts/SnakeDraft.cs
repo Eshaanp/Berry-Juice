@@ -42,70 +42,44 @@ public class SnakeDraft : NetworkBehaviour
 
     //Turn off and on all select character buttons 
     [ObserversRpc]
-    public void CharacterDraftButtonsActive()
+    public void CharacterDraftButtons(bool showUI)
     {
         //this.gameObject.SetActive(true);
-        Meowscarada.gameObject.SetActive(true);
-        Jigglypuff.gameObject.SetActive(true);
-        Luvdisc.gameObject.SetActive(true);
-        Sligoo.gameObject.SetActive(true);
-        Patrat.gameObject.SetActive(true);
-        Golisopod.gameObject.SetActive(true);
-        Hoopa.gameObject.SetActive(true);
-        Victini.gameObject.SetActive(true);
-        Oricorio.gameObject.SetActive(true);
-        Raboot.gameObject.SetActive(true);
-        Drifblim.gameObject.SetActive(true);
+        Meowscarada.gameObject.SetActive(showUI);
+        Jigglypuff.gameObject.SetActive(showUI);
+        Luvdisc.gameObject.SetActive(showUI);
+        Sligoo.gameObject.SetActive(showUI);
+        Patrat.gameObject.SetActive(showUI);
+        Golisopod.gameObject.SetActive(showUI);
+        Hoopa.gameObject.SetActive(showUI);
+        Victini.gameObject.SetActive(showUI);
+        Oricorio.gameObject.SetActive(showUI);
+        Raboot.gameObject.SetActive(showUI);
+        Drifblim.gameObject.SetActive(showUI);
 
     }
-
-    [ObserversRpc]
-    public void CharacterDraftButtonsDeActive()
-    {
-        Meowscarada.gameObject.SetActive(false);
-        Jigglypuff.gameObject.SetActive(false);
-        Luvdisc.gameObject.SetActive(false);
-        Sligoo.gameObject.SetActive(false);
-        Patrat.gameObject.SetActive(false);
-        Golisopod.gameObject.SetActive(false);
-        Hoopa.gameObject.SetActive(false);
-        Victini.gameObject.SetActive(false);
-        Oricorio.gameObject.SetActive(false);
-        Raboot.gameObject.SetActive(false);
-        Drifblim.gameObject.SetActive(false);
-    }
-
 
     //First half of snake draft
-    
     public IEnumerator StartSnakeDraft()
     {
         this.gameObject.SetActive(true);
-        
 
-        CharacterDraftButtonsActive();
-
-        PlayerLogic[] currentPlayers = gameManager.getAllPlayers();
-        //int currentTurn = gameManager.currentPlayerTurn;
+        CharacterDraftButtons(true);
 
         //set to default (patrat lol) 
+        PlayerLogic[] currentPlayers = gameManager.getAllPlayers();
         for (int i = 0; i < currentPlayers.Length; i++)
         {
             currentPlayers[i].character = PlayerLogic.Character.Patrat;
         }
 
+
+
         for (int i = 0; i < gameManager.numOfPlayers; i++)
         {
+            Debug.Log("Player Picking: " + (i+1));
             didPlayerPressButton = false;
-            Debug.Log("Player Picking- " + (i+1));
-
-            yield return StartCoroutine(PickCharacter(currentPlayers[i]));
-
-            foreach (var x in gameManager.GetCurrentPlayer().pickedCharacters)
-            {
-                Debug.Log(x.ToString());
-            }
-
+            yield return StartCoroutine(PickCharacter());
             gameManager.NextTurn();
 
         }
@@ -120,8 +94,6 @@ public class SnakeDraft : NetworkBehaviour
     public IEnumerator ReverseSnakeDraft()
     {
 
-
-
         gameManager.currentPlayerTurn.value = gameManager.numOfPlayers;
         Debug.Log("Reverse. Turn: " + gameManager.currentPlayerTurn);
 
@@ -131,13 +103,13 @@ public class SnakeDraft : NetworkBehaviour
             {
                 break;
             }
+            Debug.Log("Player Picking: " + (i));
             didPlayerPressButton = false;
-            Debug.Log("Player Picking- " + (gameManager.GetCurrentPlayer().PlayerId));
-            yield return StartCoroutine(PickCharacter(gameManager.GetCurrentPlayer()));
+            yield return StartCoroutine(PickCharacter());
             gameManager.currentPlayerTurn.value -= 1;
         }
 
-        CharacterDraftButtonsDeActive();
+        CharacterDraftButtons(false);
         this.gameObject.SetActive(false);
         didPlayerPressButton = false;
         gameManager.currentPlayerTurn.value = 1;
@@ -146,7 +118,7 @@ public class SnakeDraft : NetworkBehaviour
 
     //waiting for player to pick character
     
-    private IEnumerator PickCharacter(PlayerLogic player)
+    private IEnumerator PickCharacter()
     {
         
 
@@ -158,147 +130,207 @@ public class SnakeDraft : NetworkBehaviour
 
     }
 
+    public bool checkIfLocalPlayerCanClick()
+    {
+
+        PlayerID clientId = localPlayer.Value;
+        Debug.Log("client: " +  clientId);
+        Debug.Log("turn: " + gameManager.currentPlayerTurn.value);
+        if ((ushort)gameManager.currentPlayerTurn.value == (ushort) clientId.id)
+        {
+            return true;
+        }
+        return false;
+
+    }
 
 
-    //Buttons call these functions 
+
+
+
+
     [ServerRpc]
+    public void draftButtonOptions(int characterNum, RPCInfo info = default)
+    {
+        if ((ushort)info.sender.id != (ushort)gameManager.currentPlayerTurn.value)
+        {
+            return;
+        }
+
+        switch (characterNum)
+        {
+            case 1: 
+                if (!isMeowscarada)
+                {
+                    gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Meowscarada);
+                    turnOff(1);
+                    isMeowscarada = true;
+                    didPlayerPressButton = true;
+                }
+                break;
+
+            case 2: 
+                if (!isLuvdisc)
+                {
+                    gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Luvdisc);
+                    turnOff(2);
+                    isLuvdisc = true;
+                    didPlayerPressButton = true;
+                }
+                break;
+
+            case 3: 
+                if (!isSligoo)
+                {
+                    gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Sligoo);
+                    turnOff(3);
+                    isSligoo = true;
+                    didPlayerPressButton = true;
+                }
+                break;
+
+            case 4:
+                if (!isPatrat)
+                {
+                    gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Patrat);
+                    turnOff(4);
+                    isPatrat = true;
+                    didPlayerPressButton = true;
+                }
+                break;
+
+            case 5: 
+                if (!isJigglypuff)
+                {
+                    gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Jigglypuff);
+                    turnOff(5);
+                    isJigglypuff = true;
+                    didPlayerPressButton = true;
+                }
+                break;
+
+            case 6:
+                if (!isGolisopod)
+                {
+                    gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Golisopod);
+                    turnOff(6);
+                    isGolisopod = true;
+                    didPlayerPressButton = true;
+                }
+                break;
+
+            case 7: 
+                if (!isVictini)
+                {
+                    gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Victini);
+                    turnOff(7);
+                    isVictini = true;
+                    didPlayerPressButton = true;
+                }
+                break;
+
+            case 8: 
+                if (!isHoopa)
+                {
+                    gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Hoopa);
+                    turnOff(8);
+                    isHoopa = true;
+                    didPlayerPressButton = true;
+                }
+                break;
+
+            case 9: 
+                if (!isOricorio)
+                {
+                    gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Oricorio);
+                    turnOff(9);
+                    isOricorio = true;
+                    didPlayerPressButton = true;
+                }
+                break;
+
+            case 10: 
+                if (!isRaboot)
+                {
+                    gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Raboot);
+                    turnOff(10);
+                    isRaboot = true;
+                    didPlayerPressButton = true;
+                }
+                break;
+
+            case 11: 
+                if (!isDrifblim)
+                {
+                    gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Drifblim);
+                    turnOff(11);
+                    isDrifblim = true;
+                    didPlayerPressButton = true;
+                }
+                break;
+        }
+
+
+
+
+
+
+    }
+
+
     public void PressMeowscarada()
     {
-        if (!isMeowscarada)
-        {
-            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Meowscarada);
-            Meowscarada.gameObject.SetActive(false);
-            turnOff(1);
-            isMeowscarada = true;
-            didPlayerPressButton = true;
-
-        }
+        draftButtonOptions(1);
     }
 
-
-
-    [ServerRpc]
     public void PressLuvdisc()
     {
-        if (!isLuvdisc)
-        {
-            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Luvdisc);
-            Luvdisc.gameObject.SetActive(false);
-            turnOff(2);
-            isLuvdisc = true;
-            didPlayerPressButton = true;
-        }
+        draftButtonOptions(2);
     }
-    [ServerRpc]
+
     public void PressSligoo()
     {
-        if (!isSligoo)
-        {
-            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Sligoo);
-            Sligoo.gameObject.SetActive(false);
-            turnOff(3);
-            isSligoo = true;
-            didPlayerPressButton = true;
-        }
+        draftButtonOptions(3);
     }
-    [ServerRpc]
+
     public void PressPatrat()
     {
-        if (!isPatrat)
-        {
-            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Patrat);
-            Patrat.gameObject.SetActive(false);
-            turnOff(4);
-            isPatrat = true;
-            didPlayerPressButton = true;
-        }
+        draftButtonOptions(4);
     }
-    [ServerRpc]
+
     public void PressJigglypuff()
     {
-        if (!isJigglypuff)
-        {
-            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Jigglypuff);
-            Jigglypuff.gameObject.SetActive(false);
-            turnOff(5);
-            isJigglypuff = true;
-            didPlayerPressButton = true;
-        }
+        draftButtonOptions(5);
     }
-    [ServerRpc]
+
     public void PressGolisopod()
     {
-        if (!isGolisopod)
-        {
-            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Golisopod);
-            Golisopod.gameObject.SetActive(false);
-            turnOff(6);
-            isGolisopod = true;
-            didPlayerPressButton = true;
-        }
+        draftButtonOptions(6);
     }
-    [ServerRpc]
+
     public void PressVictini()
     {
-        if (!isVictini)
-        {
-            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Victini);
-            Victini.gameObject.SetActive(false);
-            turnOff(7);
-            isVictini = true;
-            didPlayerPressButton = true;
-        }
+        draftButtonOptions(7);
     }
-    [ServerRpc]
+
     public void PressHoopa()
     {
-        if (!isHoopa)
-        {
-            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Hoopa);
-            Hoopa.gameObject.SetActive(false);
-            turnOff(8);
-            isHoopa = true;
-            didPlayerPressButton = true;
-        }
+        draftButtonOptions(8);
     }
 
-    [ServerRpc]
     public void PressOricorio()
     {
-        if (!isOricorio)
-        {
-            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Oricorio);
-            Oricorio.gameObject.SetActive(false);
-            turnOff(9);
-            isOricorio = true;
-            didPlayerPressButton = true;
-        }
+        draftButtonOptions(9);
     }
 
-    [ServerRpc]
     public void PressRaboot()
     {
-        if (!isRaboot)
-        {
-            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Raboot);
-            Raboot.gameObject.SetActive(false);
-            turnOff(10);
-            isRaboot = true;
-            didPlayerPressButton = true;
-        }
+        draftButtonOptions(10);
     }
 
-    [ServerRpc]
     public void PressDrifblim()
     {
-        if (!isDrifblim)
-        {
-            gameManager.GetCurrentPlayer().pickedCharacters.Add(PlayerLogic.Character.Drifblim);
-            Drifblim.gameObject.SetActive(false);
-            turnOff(11);
-            isDrifblim = true;
-            didPlayerPressButton = true;
-        }
+        draftButtonOptions(11);
     }
 
 
