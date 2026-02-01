@@ -14,8 +14,15 @@ public class GameManger : NetworkBehaviour
     public PlayerLogic player3;
     public PlayerLogic player4;
 
+    [Header("Player End Turn State")]
+    public bool player1Ready = false;
+    public bool player2Ready = false;
+    public bool player3Ready = false;
+    public bool player4Ready = false;
+    public int nextTurnReady = 0;
+
+
     [Header("Scripts")]
-    
     public SnakeDraft snakeDraft;
     public PlayerTypes playerTypes;
     public DiceRoll rolling;
@@ -167,22 +174,22 @@ public class GameManger : NetworkBehaviour
 
     }
 
-
-
-
-
-    public void playerSetUp()
+    
+    public void playerSetUp(PlayerLogic[] players)
     {
-        PlayerLogic[] players = getAllPlayers();
+        //PlayerLogic[] players = getAllPlayers();
 
         for (int i = 0; i < numOfPlayers; i++)
         {
-            players[i].character = players[i].pickedCharacters[0];
-
+            PlayerLogic.Character choice = players[i].pickedCharacters[0];
+            players[i].character = choice;
+            players[i].SetUpCharacter(choice);
 
         }
         Debug.Log("Setting up players");
     }
+
+    
 
 
     //Begin draft, calls normal then reverse draft
@@ -198,9 +205,32 @@ public class GameManger : NetworkBehaviour
         yield return StartCoroutine(snakeDraft.ReverseSnakeDraft());
         Debug.Log("Draft over");
 
-        playerSetUp();
+        playerSetUp(getAllPlayers());
         FirstTurn();
     }
+
+    [ServerRpc]
+    public void playerReady(RPCInfo info = default)
+    {
+
+        ushort id = (ushort)info.sender.id;
+        Debug.Log("Player Ready: " + id);
+        nextTurnReady += 1;
+
+    }
+
+
+
+    public IEnumerator WaitForPlayers()
+    {
+
+        yield return new WaitUntil(() => nextTurnReady == numOfPlayers);
+
+        EndTurn();
+    }
+
+
+
 
     //First turn, starts main game and sets initial variables
     public void FirstTurn()
@@ -256,6 +286,7 @@ public class GameManger : NetworkBehaviour
         }
 
         playerTypes.CheckCharacterBeforeRole(GetCurrentPlayer());
+        StartCoroutine(WaitForPlayers());
         //StartCoroutine(GetCurrentPlayer().DiceRoll());
 
     }
@@ -264,6 +295,7 @@ public class GameManger : NetworkBehaviour
     //ends turn, updates currentTurn number, starts next turn
     public void EndTurn()
     {
+        nextTurnReady = 0;
 
         if (currentPlayerTurn == numOfPlayers)
         {

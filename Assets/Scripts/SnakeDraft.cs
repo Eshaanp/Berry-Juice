@@ -40,23 +40,13 @@ public class SnakeDraft : NetworkBehaviour
     public Button Drifblim;
 
 
-    //Turn off and on all select character buttons 
     [ObserversRpc]
-    public void CharacterDraftButtons(bool showUI)
+    public void setToPatrat(PlayerLogic[] currentPlayers)
     {
-        //this.gameObject.SetActive(true);
-        Meowscarada.gameObject.SetActive(showUI);
-        Jigglypuff.gameObject.SetActive(showUI);
-        Luvdisc.gameObject.SetActive(showUI);
-        Sligoo.gameObject.SetActive(showUI);
-        Patrat.gameObject.SetActive(showUI);
-        Golisopod.gameObject.SetActive(showUI);
-        Hoopa.gameObject.SetActive(showUI);
-        Victini.gameObject.SetActive(showUI);
-        Oricorio.gameObject.SetActive(showUI);
-        Raboot.gameObject.SetActive(showUI);
-        Drifblim.gameObject.SetActive(showUI);
-
+        for (int i = 0; i < currentPlayers.Length; i++)
+        {
+            currentPlayers[i].character = PlayerLogic.Character.Patrat;
+        }
     }
 
     //First half of snake draft
@@ -68,10 +58,7 @@ public class SnakeDraft : NetworkBehaviour
 
         //set to default (patrat lol) 
         PlayerLogic[] currentPlayers = gameManager.getAllPlayers();
-        for (int i = 0; i < currentPlayers.Length; i++)
-        {
-            currentPlayers[i].character = PlayerLogic.Character.Patrat;
-        }
+        //setToPatrat(currentPlayers);
 
 
 
@@ -90,7 +77,6 @@ public class SnakeDraft : NetworkBehaviour
     }
 
     //Snake draft in reverse order
-    
     public IEnumerator ReverseSnakeDraft()
     {
 
@@ -117,7 +103,6 @@ public class SnakeDraft : NetworkBehaviour
     }
 
     //waiting for player to pick character
-    
     private IEnumerator PickCharacter()
     {
         
@@ -381,6 +366,25 @@ public class SnakeDraft : NetworkBehaviour
         
         
      
+    }
+
+    //Turn off and on all select character buttons 
+    [ObserversRpc]
+    public void CharacterDraftButtons(bool showUI)
+    {
+        //this.gameObject.SetActive(true);
+        Meowscarada.gameObject.SetActive(showUI);
+        Jigglypuff.gameObject.SetActive(showUI);
+        Luvdisc.gameObject.SetActive(showUI);
+        Sligoo.gameObject.SetActive(showUI);
+        Patrat.gameObject.SetActive(showUI);
+        Golisopod.gameObject.SetActive(showUI);
+        Hoopa.gameObject.SetActive(showUI);
+        Victini.gameObject.SetActive(showUI);
+        Oricorio.gameObject.SetActive(showUI);
+        Raboot.gameObject.SetActive(showUI);
+        Drifblim.gameObject.SetActive(showUI);
+
     }
 
 }

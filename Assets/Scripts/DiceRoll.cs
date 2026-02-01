@@ -85,11 +85,11 @@ public class DiceRoll : NetworkBehaviour
             int victiniRoll = DiceRollNumber();
             if(victiniRoll < 3)
             {
-                StartCoroutine(currentPlayer().MainMovement(4));
+                currentPlayer().StartMainMovement(4);
             }
             else
             {
-                StartCoroutine(currentPlayer().MainMovement(victiniRoll));
+                currentPlayer().StartMainMovement(victiniRoll);
             }
         }
 
@@ -117,7 +117,7 @@ public class DiceRoll : NetworkBehaviour
 
         else
         {
-            StartCoroutine(currentPlayer().MainMovement(DiceRollNumber()));
+            currentPlayer().StartMainMovement(DiceRollNumber());
         }
         
    

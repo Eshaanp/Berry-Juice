@@ -30,6 +30,8 @@ public class PlayerLogic : NetworkBehaviour
     public TileEffects tileEffects;
     public GameManger gameManager;
     public PlayerTypes playerTypes;
+    public WalkAnimations walkAnimations;
+    public IdleAnimations idleAnimations;
     //public UIManager uIManager;
 
 
@@ -54,8 +56,19 @@ public class PlayerLogic : NetworkBehaviour
 
     public SyncList<Character> pickedCharacters = new SyncList<Character> ();
 
+    [Header("Pokemon Sprites")]
+    public GameObject Meowscarada;
+    //public GameObject Jigglypuff;
+    //public GameObject Luvdisc;
+    //public GameObject Sligoo;
+    public GameObject Patrat;
+    //public GameObject Hoopa;
+    //public GameObject Golisopod;
+    public GameObject Victini;
+    //public GameObject Oricorio;
+    //public GameObject Raboot;
+    //public GameObject Drifblim;
 
-   
 
 
     //Puts character on first tile
@@ -70,61 +83,18 @@ public class PlayerLogic : NetworkBehaviour
         }
     }
 
-
-    //will simplify/fix dice later
-    //calls UIManager for dice button
-    /*
-    public IEnumerator DiceRoll()
-    {
-
-        if (!isServer)
-        {
-            yield break;
-        }
-        Debug.Log("test");
-        isDicePressed = false;
-        ShowDiceUIRpc();
-
-        while (!isDicePressed)
-        {
-            yield return null;
-        }
-        
-        HideDiceUIRpc();
-        StartCoroutine(MainMovement(moveNum));
-    }
-
     [ObserversRpc]
-    public void ShowDiceUIRpc()
+    public void StartMainMovement(int roll)
     {
-        if (uIManager == null)
-            uIManager = UIManager.Instance;
-
-        Debug.Log("ShowDiceUIRpc running"); // this should appear on all clients
-        uIManager.showUI("dice");
+        StartCoroutine(MainMovement(roll));
     }
-
     [ObserversRpc]
-    private void HideDiceUIRpc()
+    public void StartSlide(int roll)
     {
-        uIManager.hideUI("dice");
+        StartCoroutine(MovementSlide(roll));
     }
 
-    [ServerRpc]
-    public void RollDiceServerRpc()
-    {
-        isDicePressed = true;
-    }
 
-    public int DiceRollNumber()
-    {
-        return moveNum;
-    }*/
-    
-    public void test()
-    {
-        Debug.Log("testing mov");
-    }
 
     //Main Move, calls MovementSlide for movement
     public IEnumerator MainMovement(int tilesToMove)
@@ -132,7 +102,7 @@ public class PlayerLogic : NetworkBehaviour
         Debug.Log("move");
         yield return MovementSlide(tilesToMove);
         isMoving = false;
-        gameManager.EndTurn();
+        gameManager.playerReady();
     }
 
     //Moves the player model to tile
@@ -141,8 +111,10 @@ public class PlayerLogic : NetworkBehaviour
         Vector3 startPos = transform.position;
         Vector3 targetPos = new Vector3(targetTile.transform.position.x, transform.position.y, targetTile.transform.position.z);
 
+        walkAnimations.DetermineDirection(this, startPos, targetPos);
         while (Vector3.Distance(transform.position, targetPos) > 0.01f)
         {
+            
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
             yield return null;
         }
@@ -152,7 +124,7 @@ public class PlayerLogic : NetworkBehaviour
 
 
     //This is general movement  
-    //Will remove to simplify later 
+    //Will remove to simplify later
     public IEnumerator MovementSlide(int tilesToMove)
     {
         //Debug.Log("applying slide");
@@ -198,6 +170,7 @@ public class PlayerLogic : NetworkBehaviour
             //Debug.Log("Visited tile " + CurrentTileId);
         }
         currentTile.GetComponent<TileLogic>().setPlayerOnTile(this);
+        idleAnimations.setIdleAnimation(this);
         tileEffects.CheckEffect(this);
         
 
@@ -216,6 +189,36 @@ public class PlayerLogic : NetworkBehaviour
 
     }
 
+    [ObserversRpc]
+    public void SetUpCharacter(Character character)
+    {
+        Patrat.SetActive(false);
+        this.character = character;
+        switch (character)
+        {
+            case PlayerLogic.Character.Meowscarada:
+                Meowscarada.SetActive(true);
+                break;
+
+
+            case PlayerLogic.Character.Victini:
+                Victini.SetActive(true);
+                break;
+
+            default:
+                Patrat.SetActive(true);
+                break;
+
+            
+
+
+        }
+
+        idleAnimations.setIdleAnimation(this);
+
+
+
+    }
 
 
 

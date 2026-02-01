@@ -46,12 +46,12 @@ public class MeowUI : NetworkBehaviour
         {
             int secondRoll = 1;//prev player.DiceRollNumber
             Debug.Log("Second roll: " + secondRoll);
-            yield return StartCoroutine(player.MainMovement(secondRoll));
+            player.StartMainMovement(secondRoll);
         }
         else
         {
             Debug.Log("Keeping first roll");
-            yield return StartCoroutine(player.MainMovement(firstRoll));
+            player.StartMainMovement(firstRoll);
         }
     }
 
