@@ -42,7 +42,7 @@ public class WalkAnimations : NetworkBehaviour
     {
         if (lastDirection == direction)
         {
-            return;
+            //return;
         }
         lastDirection = direction;
 

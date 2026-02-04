@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using static TileLogic;
 using PurrNet;
+using UnityEngine.ProBuilder;
 
 public class PlayerLogic : NetworkBehaviour
 {
@@ -91,13 +92,15 @@ public class PlayerLogic : NetworkBehaviour
     [ObserversRpc]
     public void StartSlide(int roll)
     {
-        StartCoroutine(MovementSlide(roll));
+        StartCoroutine(SlideMovement(roll));
     }
     [ObserversRpc]
     public void StartTeleport(GameObject tile)
     {
         Teleport(tile);
     }
+
+
 
 
     //Main Move, calls MovementSlide for movement
@@ -109,13 +112,21 @@ public class PlayerLogic : NetworkBehaviour
         gameManager.playerReady();
     }
 
+    public IEnumerator SlideMovement(int tilesToMove)
+    {
+        Debug.Log("slide");
+        yield return MovementSlide(tilesToMove);
+        isMoving = false;
+        SlideSpriteChange(false);
+    }
+
+
     //Moves the player model to tile
     public IEnumerator WalkToTile(GameObject targetTile)
     {
         Debug.Log("Target tile- " + targetTile);
         // Cache positions ONCE
         Vector3 startPos = transform.position;
-
         Vector3 targetPos = targetTile.transform.position;
         targetPos.y = startPos.y; // lock Y for board movement
 
@@ -161,7 +172,7 @@ public class PlayerLogic : NetworkBehaviour
 
         int steps = Mathf.Abs(tilesToMove);
         bool movingForward = tilesToMove > 0;
-        Debug.Log("Moving Forwards: " + movingForward);
+        //Debug.Log("Moving Forwards: " + movingForward);
 
         for (int i = 0; i < steps; i++)
         {
@@ -177,10 +188,10 @@ public class PlayerLogic : NetworkBehaviour
             {
                 break;
             }
-            Debug.Log("Next Tile: " + nextTile.name);
+            //Debug.Log("Next Tile: " + nextTile.name);
             yield return StartCoroutine(WalkToTile(nextTile));
 
-            Debug.Log("Past Walking");
+            //Debug.Log("Past Walking");
             //For characters that activate effect during movement
             if (i != 0)
             {
@@ -202,8 +213,6 @@ public class PlayerLogic : NetworkBehaviour
 
     public void Teleport(GameObject tile)
     {
-
-     
         Vector3 pos = transform.position;
         pos.x = tile.transform.position.x;
         pos.z = tile.transform.position.z;
@@ -211,7 +220,6 @@ public class PlayerLogic : NetworkBehaviour
         currentTile = tile;
         tile.GetComponent<TileLogic>().setPlayerOnTile(this);
         CurrentTileId = tile.GetComponent<TileLogic>().id;
-
     }
 
     [ObserversRpc]
@@ -242,16 +250,56 @@ public class PlayerLogic : NetworkBehaviour
                 Patrat.SetActive(true);
                 break;
 
-            
-
-
         }
 
         idleAnimations.setIdleAnimation(this);
 
+    }
 
+
+
+    public GameObject getCharacterSprite()
+    {
+        switch (character)
+        {
+            case PlayerLogic.Character.Meowscarada:
+                return Meowscarada;
+                
+            case PlayerLogic.Character.Victini:
+                return Victini;
+
+            case PlayerLogic.Character.Sligoo:
+                return Sligoo;
+
+            case PlayerLogic.Character.Golisopod:
+                return Golisopod;
+
+            default:
+                return Patrat;
+        }
+        
+    }
+
+    //start = false sets back to normal
+    [ObserversRpc]
+    public void SlideSpriteChange(bool start)
+    {
+        GameObject sprite = getCharacterSprite();
+
+        if (!start)
+        {
+            sprite.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f);
+            moveSpeed = 5;
+        }
+        else
+        {
+            sprite.GetComponent<SpriteRenderer>().color = new Color(1f, .5f, .5f);
+            moveSpeed = 2;
+
+        }
 
     }
+
 
 
 

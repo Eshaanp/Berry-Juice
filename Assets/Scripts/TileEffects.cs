@@ -1,7 +1,9 @@
+using System.Collections;
+using PurrNet;
 using UnityEngine;
 using static TileLogic;
 
-public class TileEffects : MonoBehaviour
+public class TileEffects : NetworkBehaviour
 {
 
     //Called to figure out the tile effect when a player ends on a tile 
@@ -31,7 +33,9 @@ public class TileEffects : MonoBehaviour
                     break;
 
                 case TileType.SlideBackwards:
+                    player.SlideSpriteChange(true);
                     player.StartSlide(-1);
+                    //negativeTileEffect(false, player);
                     break;
 
                 case TileType.TripTile:
@@ -44,4 +48,7 @@ public class TileEffects : MonoBehaviour
             }
         }
     }
+
+
+
 }

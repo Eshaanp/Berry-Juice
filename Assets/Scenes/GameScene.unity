@@ -1969,7 +1969,7 @@ MonoBehaviour:
   PlayerId: 1
   CurrentTileId: 0
   currentTile: {fileID: 1821684296}
-  moveNum: 2
+  moveNum: 1
   moveSpeed: 4
   points: 0
   skipTurn: 0
@@ -1981,7 +1981,7 @@ MonoBehaviour:
   playerTypes: {fileID: 1057622776}
   walkAnimations: {fileID: 342499160}
   idleAnimations: {fileID: 342499161}
-  character: 6
+  character: 3
   pickedCharacters:
     _ownerAuth: 1
     _sendIntervalInSeconds: 0
@@ -5425,6 +5425,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5270a8712c1a034092228e47f9d9cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   gameManger: {fileID: 1057622773}
 --- !u!114 &1057622776
 MonoBehaviour:
@@ -6571,7 +6580,7 @@ MonoBehaviour:
   PlayerId: 2
   CurrentTileId: 0
   currentTile: {fileID: 1821684296}
-  moveNum: 1
+  moveNum: 2
   moveSpeed: 4
   points: 0
   skipTurn: 0
@@ -6583,7 +6592,7 @@ MonoBehaviour:
   playerTypes: {fileID: 1057622776}
   walkAnimations: {fileID: 1297452647}
   idleAnimations: {fileID: 1297452646}
-  character: 5
+  character: 2
   pickedCharacters:
     _ownerAuth: 1
     _sendIntervalInSeconds: 0
