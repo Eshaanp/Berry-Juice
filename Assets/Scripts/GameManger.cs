@@ -15,10 +15,6 @@ public class GameManger : NetworkBehaviour
     public PlayerLogic player4;
 
     [Header("Player End Turn State")]
-    public bool player1Ready = false;
-    public bool player2Ready = false;
-    public bool player3Ready = false;
-    public bool player4Ready = false;
     public int nextTurnReady = 0;
 
 
@@ -49,6 +45,7 @@ public class GameManger : NetworkBehaviour
     {
         //StartCoroutine(StartDraft());
         //FirstTurn();
+
     }
 
 
@@ -64,7 +61,11 @@ public class GameManger : NetworkBehaviour
         {
 
             FirstTurn();
-            
+            player1.SetUpCharacter(player1.character);
+            player2.SetUpCharacter(player2.character);
+            player3.SetUpCharacter(player3.character);
+            player4.SetUpCharacter(player4.character);
+
         }
         if (Keyboard.current.dKey.wasPressedThisFrame)
         {
@@ -220,7 +221,7 @@ public class GameManger : NetworkBehaviour
     }
 
 
-
+   
     public IEnumerator WaitForPlayers()
     {
 

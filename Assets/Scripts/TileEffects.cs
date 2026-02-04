@@ -27,11 +27,11 @@ public class TileEffects : MonoBehaviour
                     break;
 
                 case TileType.SlideForward:
-                    StartCoroutine(player.MovementSlide(1));
+                    player.StartSlide(1);
                     break;
 
                 case TileType.SlideBackwards:
-                    StartCoroutine(player.MovementSlide(-1));
+                    player.StartSlide(-1);
                     break;
 
                 case TileType.TripTile:

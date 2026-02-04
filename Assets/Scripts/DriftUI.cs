@@ -46,12 +46,12 @@ public class DriftUI : NetworkBehaviour
             int doubledRoll = firstRoll * 2;
             Debug.Log("double roll: " + doubledRoll);
             player.skipTurn = true; // trip player 
-            yield return StartCoroutine(player.MainMovement(doubledRoll));
+            player.StartMainMovement(doubledRoll);
         }
         else
         {
             Debug.Log("Keeping first roll");
-            yield return StartCoroutine(player.MainMovement(firstRoll));
+            player.StartMainMovement(firstRoll);
         }
     }
 

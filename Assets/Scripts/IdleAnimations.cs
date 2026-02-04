@@ -7,7 +7,8 @@ public class IdleAnimations : NetworkBehaviour
 
     public Animator MeowscaradaAnimator;
     public Animator VictiniAnimator;
-
+    public Animator SliggooAnimator;
+    public Animator GolisopodAnimator;
 
 
     public void setIdleAnimation(PlayerLogic player)
@@ -19,8 +20,18 @@ public class IdleAnimations : NetworkBehaviour
                 break;
 
             case PlayerLogic.Character.Victini:
-                Debug.Log("Victini Idle");
+
                 VictiniAnimator.Play("Victini_Idle 0");
+                break;
+
+            case PlayerLogic.Character.Sligoo:
+
+                SliggooAnimator.Play("Sliggoo_Idle");
+                break;
+
+            case PlayerLogic.Character.Golisopod:
+
+                GolisopodAnimator.Play("Golisopod_Idle");
                 break;
 
             default:

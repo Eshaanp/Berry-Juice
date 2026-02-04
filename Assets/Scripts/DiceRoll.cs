@@ -50,74 +50,48 @@ public class DiceRoll : NetworkBehaviour
         
 
         isDicePressed = false;
-
-
-        
         ShowDiceUIObserver(true);
 
         while (!isDicePressed)
         {
             yield return null;
         }
+
         isDicePressed = true;
         ShowDiceUIObserver(false);
 
-        // Debug.Log("Dice rolled a 2");
+        
 
+        int roll = DiceRollNumber();
 
-        if (currentPlayer().character == PlayerLogic.Character.Meowscarada)
+        switch (currentPlayer().character)
         {
+            case PlayerLogic.Character.Meowscarada:
+                Debug.Log("Your First Roll is " + DiceRollNumber() + ". Roll again? (y/n)");
+                StartCoroutine(meowManager.ReRollChoice(currentPlayer(), DiceRollNumber()));
+                break;
 
-            Debug.Log("Your First Roll is " + DiceRollNumber() + ". Roll again? (y/n)");
-            StartCoroutine(meowManager.ReRollChoice(currentPlayer(), DiceRollNumber()));
+            case PlayerLogic.Character.Drifblim:
+                Debug.Log("Your First Roll is " + DiceRollNumber() + ". Double for a trip? (y/n)");
+                StartCoroutine(driftManager.DoubleForTrip(currentPlayer(), DiceRollNumber()));
+                break;
 
-            //characterType.ReRoll(currentPlayer(), DiceRollNumber());
-        }
+            case PlayerLogic.Character.Victini:
+                VictiniRoll(roll);
+                break;
 
-        else if (currentPlayer().character == PlayerLogic.Character.Drifblim)
-        {
-            Debug.Log("Your First Roll is " + DiceRollNumber() + ". Double for a trip? (y/n)");
-            StartCoroutine(driftManager.DoubleForTrip(currentPlayer(), DiceRollNumber()));
-            //characterType.ReRoll(currentPlayer(), DiceRollNumber());
-        }
-        else if (currentPlayer().character == PlayerLogic.Character.Victini)
-        {
-            int victiniRoll = DiceRollNumber();
-            if(victiniRoll < 3)
-            {
-                currentPlayer().StartMainMovement(4);
-            }
-            else
-            {
-                currentPlayer().StartMainMovement(victiniRoll);
-            }
-        }
+            case PlayerLogic.Character.Golisopod:
+                GolisopodRoll(roll);
+                break;
 
-        else if (currentPlayer().character == PlayerLogic.Character.Golisopod)
-        {
-            int roll = DiceRollNumber();
-            if(roll > 1)
-            {
-                StartCoroutine(currentPlayer().MainMovement(roll * 2));
-            }
-            else
-            {
-                int rollToStart = -1 * currentPlayer().currentTile.GetComponent<TileLogic>().id;
-                currentPlayer().Teleport(gameManager.firstTile);
-                StartCoroutine(currentPlayer().MainMovement(0));
-            }
+            case PlayerLogic.Character.Raboot:
+                RabootEffectModifier(roll);
+                break;
 
-        }
-        else if (currentPlayer().character == PlayerLogic.Character.Raboot)
-        {
-            int roll = DiceRollNumber();
-            RabootEffectModifier(roll);
+            default:
+                currentPlayer().StartMainMovement(DiceRollNumber());
+                break;
 
-        }
-
-        else
-        {
-            currentPlayer().StartMainMovement(DiceRollNumber());
         }
         
    
@@ -188,6 +162,33 @@ public class DiceRoll : NetworkBehaviour
 
 
 
+    public void VictiniRoll(int roll)
+    {
+        if (roll < 3)
+        {
+            currentPlayer().StartMainMovement(4);
+        }
+        else
+        {
+            currentPlayer().StartMainMovement(roll);
+        }
+    }
+
+    public void GolisopodRoll(int roll)
+    {
+        if (roll > 1)
+        {
+            currentPlayer().StartMainMovement(roll * 2);
+        }
+        else
+        {
+            int rollToStart = -1 * currentPlayer().currentTile.GetComponent<TileLogic>().id;
+            currentPlayer().StartTeleport(gameManager.firstTile);
+            currentPlayer().StartMainMovement(0);
+        }
+    }
+
+
     public void RabootEffectModifier(int rollNum)
     {
 
@@ -233,7 +234,7 @@ public class DiceRoll : NetworkBehaviour
         }
 
 
-        StartCoroutine(currentPlayer().MainMovement((current-1)-currentSpaceId));
+        currentPlayer().StartMainMovement((current-1)-currentSpaceId);
 
 
 

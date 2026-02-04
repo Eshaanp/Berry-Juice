@@ -8,13 +8,13 @@ public class WalkAnimations : NetworkBehaviour
     public int direction;
 
 
-    public GameObject Player1;
 
     private Vector3 lastPosition;
 
     public Animator MeowscaradaAnimator;
     public Animator VictiniAnimator;
-
+    public Animator SliggooAnimator;
+    public Animator GolisopodAnimator;
 
 
 
@@ -56,6 +56,15 @@ public class WalkAnimations : NetworkBehaviour
             case PlayerLogic.Character.Victini:
                 VictiniWalk();
                 break;
+
+            case PlayerLogic.Character.Sligoo:
+                SliggooWalk();
+                break;
+
+            case PlayerLogic.Character.Golisopod:
+                GolisopodWalk();
+                break;
+
             default:
                 break;
 
@@ -109,6 +118,49 @@ public class WalkAnimations : NetworkBehaviour
     }
 
 
+    public void SliggooWalk()
+    {
+
+        switch (direction)
+        {
+            case 1:
+                SliggooAnimator.Play("Sliggoo_Walk_Backward");
+                break;
+            case 2:
+                SliggooAnimator.Play("Sliggoo_Walk_Forward");
+                break;
+            case 3:
+                SliggooAnimator.Play("Sliggoo_Walk_Down");
+                break;
+            case 4:
+                SliggooAnimator.Play("Sliggoo_Walk_Backward");
+                break;
+
+        }
+
+    }
+
+    public void GolisopodWalk()
+    {
+
+        switch (direction)
+        {
+            case 1:
+                GolisopodAnimator.Play("Golisopod_Walk_Backward");
+                break;
+            case 2:
+                GolisopodAnimator.Play("Golisopod_Walk_Forward");
+                break;
+            case 3:
+                GolisopodAnimator.Play("Golisopod_Walk_Down");
+                break;
+            case 4:
+                GolisopodAnimator.Play("Golisopod_Walk_Backward");
+                break;
+
+        }
+
+    }
 
 
 }

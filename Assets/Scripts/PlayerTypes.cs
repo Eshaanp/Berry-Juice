@@ -145,22 +145,22 @@ public class PlayerTypes : NetworkBehaviour
         if(player.PlayerId != 1 && player.currentTile == gameManager.player1.currentTile)
         {
             Debug.Log("passing player 1");
-            StartCoroutine(gameManager.player1.MovementSlide(-1));
+            gameManager.player1.StartSlide(-1);
         }
         if (player.PlayerId != 2 && player.currentTile == gameManager.player2.currentTile)
         {
             Debug.Log("passing player 2");
-            StartCoroutine(gameManager.player2.MovementSlide(-1));
+            gameManager.player2.StartSlide(-1);
         }
         if (gameManager.numOfPlayers >= 3 && player.PlayerId != 3 && player.currentTile == gameManager.player3.currentTile)
         {
             Debug.Log("passing player 3");
-            StartCoroutine(gameManager.player3.MovementSlide(-1));
+            gameManager.player3.StartSlide(-1);
         }
         if (gameManager.numOfPlayers == 4 &&  player.PlayerId != 4 && player.currentTile == gameManager.player4.currentTile)
         {
             Debug.Log("passing player 4");
-            StartCoroutine(gameManager.player4.MovementSlide(-1));
+            gameManager.player4.StartSlide(-1);
         }
 
     }

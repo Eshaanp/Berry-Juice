@@ -60,10 +60,10 @@ public class PlayerLogic : NetworkBehaviour
     public GameObject Meowscarada;
     //public GameObject Jigglypuff;
     //public GameObject Luvdisc;
-    //public GameObject Sligoo;
+    public GameObject Sligoo;
     public GameObject Patrat;
     //public GameObject Hoopa;
-    //public GameObject Golisopod;
+    public GameObject Golisopod;
     public GameObject Victini;
     //public GameObject Oricorio;
     //public GameObject Raboot;
@@ -93,7 +93,11 @@ public class PlayerLogic : NetworkBehaviour
     {
         StartCoroutine(MovementSlide(roll));
     }
-
+    [ObserversRpc]
+    public void StartTeleport(GameObject tile)
+    {
+        Teleport(tile);
+    }
 
 
     //Main Move, calls MovementSlide for movement
@@ -108,17 +112,34 @@ public class PlayerLogic : NetworkBehaviour
     //Moves the player model to tile
     public IEnumerator WalkToTile(GameObject targetTile)
     {
+        Debug.Log("Target tile- " + targetTile);
+        // Cache positions ONCE
         Vector3 startPos = transform.position;
-        Vector3 targetPos = new Vector3(targetTile.transform.position.x, transform.position.y, targetTile.transform.position.z);
 
+        Vector3 targetPos = targetTile.transform.position;
+        targetPos.y = startPos.y; // lock Y for board movement
+
+        float distance = Vector3.Distance(startPos, targetPos);
+        if (distance < 0.001f)
+            yield break;
+
+        float duration = distance / moveSpeed;
+        float elapsed = 0f;
+
+        // Optional: set walking animation here
         walkAnimations.DetermineDirection(this, startPos, targetPos);
-        while (Vector3.Distance(transform.position, targetPos) > 0.01f)
+
+        while (elapsed < duration)
         {
-            
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+
+            transform.position = Vector3.Lerp(startPos, targetPos, t);
+
             yield return null;
         }
 
+        // Snap cleanly to tile
         transform.position = targetPos;
     }
 
@@ -140,6 +161,7 @@ public class PlayerLogic : NetworkBehaviour
 
         int steps = Mathf.Abs(tilesToMove);
         bool movingForward = tilesToMove > 0;
+        Debug.Log("Moving Forwards: " + movingForward);
 
         for (int i = 0; i < steps; i++)
         {
@@ -150,14 +172,15 @@ public class PlayerLogic : NetworkBehaviour
             }
 
             GameObject nextTile = movingForward ? tileLogic.nextTile : tileLogic.prevTile;
-
+            
             if (nextTile == null)
             {
                 break;
             }
-
+            Debug.Log("Next Tile: " + nextTile.name);
             yield return StartCoroutine(WalkToTile(nextTile));
 
+            Debug.Log("Past Walking");
             //For characters that activate effect during movement
             if (i != 0)
             {
@@ -176,6 +199,7 @@ public class PlayerLogic : NetworkBehaviour
 
     }
 
+
     public void Teleport(GameObject tile)
     {
 
@@ -185,7 +209,8 @@ public class PlayerLogic : NetworkBehaviour
         pos.z = tile.transform.position.z;
         transform.position = pos;
         currentTile = tile;
-
+        tile.GetComponent<TileLogic>().setPlayerOnTile(this);
+        CurrentTileId = tile.GetComponent<TileLogic>().id;
 
     }
 
@@ -203,6 +228,14 @@ public class PlayerLogic : NetworkBehaviour
 
             case PlayerLogic.Character.Victini:
                 Victini.SetActive(true);
+                break;
+
+            case PlayerLogic.Character.Sligoo:
+                Sligoo.SetActive(true);
+                break;
+
+            case PlayerLogic.Character.Golisopod:
+                Golisopod.SetActive(true);
                 break;
 
             default:
