@@ -22,6 +22,7 @@ public class GameManger : NetworkBehaviour
     public SnakeDraft snakeDraft;
     public PlayerTypes playerTypes;
     public DiceRoll rolling;
+    public CardServerManager cardServerManager;
 
     //[SerializeField] private NetworkIdentity networkIdentity;
     
@@ -34,6 +35,8 @@ public class GameManger : NetworkBehaviour
     public int turn = 0;
     public int numOfPlayers = 2;
     public SyncVar<int> currentPlayerTurn;
+    public bool firstGame = true;
+
     
 
     public GameObject firstTile;
@@ -53,9 +56,13 @@ public class GameManger : NetworkBehaviour
     
     void Update()
     {
-        if (Keyboard.current.tKey.wasPressedThisFrame)
+        if (Keyboard.current.cKey.wasPressedThisFrame)
         {
-            
+            cardServerManager.giveCardAllPlayers();
+        }
+        if (Keyboard.current.oKey.wasPressedThisFrame)
+        {
+            cardServerManager.giveCardTargetPlayer(1);
         }
         if (Keyboard.current.fKey.wasPressedThisFrame)
         {
@@ -179,15 +186,34 @@ public class GameManger : NetworkBehaviour
     public void playerSetUp(PlayerLogic[] players)
     {
         //PlayerLogic[] players = getAllPlayers();
-
-        for (int i = 0; i < numOfPlayers; i++)
+        if (firstGame)
         {
-            PlayerLogic.Character choice = players[i].pickedCharacters[0];
-            players[i].character = choice;
-            players[i].SetUpCharacter(choice);
+            for (int i = 0; i < numOfPlayers; i++)
+            {
+                players[i].CrossedFinish = false;
+                players[i].TurnOffAllSprites();
+                PlayerLogic.Character choice = players[i].pickedCharacters[0];
+                players[i].character = choice;
+                players[i].SetUpCharacter(choice);
 
+            }
+            Debug.Log("Setting up players Round 1");
         }
-        Debug.Log("Setting up players");
+        else
+        {
+            for (int i = 0; i < numOfPlayers; i++)
+            {
+                players[i].CrossedFinish = false;
+                players[i].TurnOffAllSprites();
+                players[i].StartTeleport(firstTile);
+                PlayerLogic.Character choice = players[i].pickedCharacters[1];
+                players[i].character = choice;
+                players[i].SetUpCharacter(choice);
+
+            }
+            Debug.Log("Setting up players Round 2");
+        }
+
     }
 
     
@@ -201,11 +227,11 @@ public class GameManger : NetworkBehaviour
             yield return null;
         }
         currentPlayerTurn.value = 1;
-
+        snakeDraft.showDraft(true);
         yield return StartCoroutine(snakeDraft.StartSnakeDraft());
         yield return StartCoroutine(snakeDraft.ReverseSnakeDraft());
         Debug.Log("Draft over");
-
+        snakeDraft.showDraft(false);
         playerSetUp(getAllPlayers());
         FirstTurn();
     }
@@ -269,7 +295,6 @@ public class GameManger : NetworkBehaviour
             if (CheckIfRaceEnd())
             {
                 EndGame();
-                Debug.Log("Game Ended");
                 return;
             }    
             EndTurn();
@@ -294,16 +319,37 @@ public class GameManger : NetworkBehaviour
 
 
     //ends turn, updates currentTurn number, starts next turn
+    //also checks card effects states
     public void EndTurn()
     {
-        nextTurnReady = 0;
+        //giga impact card, rest of logic in dice roll 
+        if (cardServerManager.gigaImpact)
+        {
+            GetCurrentPlayer().skipTurn = true;
+            cardServerManager.gigaImpact = false;
+        }
 
+        nextTurnReady = 0;
+        
         if (currentPlayerTurn == numOfPlayers)
         {
+            //sticky web, rest of logic in dice roll
+            if (cardServerManager.stickyWebCheckPerPlayer)
+            {
+                cardServerManager.stickyWebCheckPerPlayer = false;
+                cardServerManager.stickyInEffect(false);
+            }
+            if (cardServerManager.firstStickyWebCheck)
+            {
+                cardServerManager.firstStickyWebCheck = false;
+                cardServerManager.stickyWebCheckPerPlayer = true;
+            }
+
+
             turn++;
             Debug.Log("Round " + turn + " completed");
         }
-
+        cardServerManager.playerUsedCardThisTurn = false;
         NextTurn();
         StartTurn();
 
@@ -312,8 +358,21 @@ public class GameManger : NetworkBehaviour
 
     public void EndGame()
     {
+        if (firstGame)
+        {
+            Debug.Log("First Round Over");
+            firstGame = false;
+            turn = 0;
+            currentPlayerTurn.value = 0;
+            playerSetUp(getAllPlayers());
+            FirstTurn();
 
-        Debug.Log("Game Ended");
+
+        }
+        else
+        {
+            Debug.Log("Second Round Over");
+        }
 
 
     }

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using PurrNet;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine.Rendering;
 
 public class SnakeDraft : NetworkBehaviour
 {
@@ -47,6 +48,12 @@ public class SnakeDraft : NetworkBehaviour
         {
             currentPlayers[i].character = PlayerLogic.Character.Patrat;
         }
+    }
+
+    [ObserversRpc]
+    public void showDraft(bool show)
+    {
+        this.gameObject.SetActive(show);    
     }
 
     //First half of snake draft
@@ -373,6 +380,7 @@ public class SnakeDraft : NetworkBehaviour
     public void CharacterDraftButtons(bool showUI)
     {
         //this.gameObject.SetActive(true);
+        Debug.Log("showing draft");
         Meowscarada.gameObject.SetActive(showUI);
         Jigglypuff.gameObject.SetActive(showUI);
         Luvdisc.gameObject.SetActive(showUI);

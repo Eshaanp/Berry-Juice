@@ -257,6 +257,19 @@ public class PlayerLogic : NetworkBehaviour
     }
 
 
+    [ObserversRpc]
+    public void TurnOffAllSprites()
+    {
+        Meowscarada.SetActive(false);
+        Victini.SetActive(false);
+        Sligoo.SetActive(false);
+        Golisopod.SetActive(false);
+        Patrat.SetActive(false);
+
+
+    }
+
+
 
     public GameObject getCharacterSprite()
     {

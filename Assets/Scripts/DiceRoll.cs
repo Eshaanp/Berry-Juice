@@ -27,22 +27,17 @@ public class DiceRoll : NetworkBehaviour
     [Header("Normal Dice Stuff")]
     public bool isDicePressed = false;
     public Button diceButton;
+    public Button cardButton;
     public int moveNum = 1;
 
+    [Header("Canvas")]
+    public GameObject cardCanvas;
+    public GameObject MainCanvas;
 
-    private void Update()
-    {
-        if (Keyboard.current.bKey.wasPressedThisFrame)
-        {
-            
-            //StartCoroutine(diceRoll());
-        }
-    }
+
 
     public IEnumerator diceRoll() 
     {
-       
-        
         if (!isServer)
         {
             yield break;
@@ -51,29 +46,54 @@ public class DiceRoll : NetworkBehaviour
 
         isDicePressed = false;
         ShowDiceUIObserver(true);
-
         while (!isDicePressed)
         {
             yield return null;
         }
-
         isDicePressed = true;
+
+
+
         ShowDiceUIObserver(false);
 
-        
-
         int roll = DiceRollNumber();
+
+        if(getCardManager().agility == true)
+        {
+            roll += 2;
+            getCardManager().agility = false;
+        } 
+        else if (getCardManager().gigaImpact == true)
+        {
+            //turning off giga impact and side effect done in GameManager
+            roll += 6;
+        }
+        else if (getCardManager().stickyWebCheckPerPlayer == true)
+        {
+            //turning off at end of round
+            roll -= 1;
+        }
+
+        if(getCardManager().snatch && roll == 6)
+        {
+            roll = 0;
+            gameManager.GetTargetPlayer(getCardManager().snatchOrgin).StartSlide(1);
+            getCardManager().snatch = false;
+            getCardManager().snatchInEffect(false);
+        }
+
+        //animation pause here
 
         switch (currentPlayer().character)
         {
             case PlayerLogic.Character.Meowscarada:
-                Debug.Log("Your First Roll is " + DiceRollNumber() + ". Roll again? (y/n)");
-                StartCoroutine(meowManager.ReRollChoice(currentPlayer(), DiceRollNumber()));
+                Debug.Log("Your First Roll is " + roll + ". Roll again? (y/n)");
+                StartCoroutine(meowManager.ReRollChoice(currentPlayer(), roll));
                 break;
 
             case PlayerLogic.Character.Drifblim:
-                Debug.Log("Your First Roll is " + DiceRollNumber() + ". Double for a trip? (y/n)");
-                StartCoroutine(driftManager.DoubleForTrip(currentPlayer(), DiceRollNumber()));
+                Debug.Log("Your First Roll is " + roll + ". Double for a trip? (y/n)");
+                StartCoroutine(driftManager.DoubleForTrip(currentPlayer(), roll));
                 break;
 
             case PlayerLogic.Character.Victini:
@@ -89,7 +109,7 @@ public class DiceRoll : NetworkBehaviour
                 break;
 
             default:
-                currentPlayer().StartMainMovement(DiceRollNumber());
+                currentPlayer().StartMainMovement(roll);
                 break;
 
         }
@@ -123,9 +143,10 @@ public class DiceRoll : NetworkBehaviour
     public void showUITarget(PlayerID target, bool showUI)
     {
         diceButton.gameObject.SetActive(showUI);
+        cardButton.gameObject.SetActive(showUI);
     }
     
-
+   
 
     
     public void RollDiceServerRpc()
@@ -144,8 +165,11 @@ public class DiceRoll : NetworkBehaviour
         isDicePressed = true;
     }
 
-
-
+    public void CardCanvas()
+    {
+        MainCanvas.SetActive(false);
+        cardCanvas.SetActive(true);
+    }
 
 
 
@@ -158,6 +182,11 @@ public class DiceRoll : NetworkBehaviour
     public PlayerLogic currentPlayer(){
         
         return gameManager.GetCurrentPlayer();
+    }
+
+    public CardServerManager getCardManager()
+    {
+        return gameManager.cardServerManager;
     }
 
 
@@ -176,15 +205,16 @@ public class DiceRoll : NetworkBehaviour
 
     public void GolisopodRoll(int roll)
     {
-        if (roll > 1)
+        if (roll == 1)
         {
-            currentPlayer().StartMainMovement(roll * 2);
+            //int rollToStart = -1 * currentPlayer().currentTile.GetComponent<TileLogic>().id;
+            currentPlayer().StartTeleport(gameManager.firstTile);
+            currentPlayer().StartMainMovement(0);
+
         }
         else
         {
-            int rollToStart = -1 * currentPlayer().currentTile.GetComponent<TileLogic>().id;
-            currentPlayer().StartTeleport(gameManager.firstTile);
-            currentPlayer().StartMainMovement(0);
+            currentPlayer().StartMainMovement(roll * 2);
         }
     }
 
