@@ -26,6 +26,8 @@ public class CardManager : NetworkBehaviour
     public bool isStickyInEffect;
     public bool isSnatchInEffect;
 
+    public bool playerUsedCard = false;
+
 
 
 
@@ -50,7 +52,8 @@ public class CardManager : NetworkBehaviour
     public void generateCard()
     {
         Debug.Log("In generate Card");
-        addCard(ActionCard.CardType.GigaImpact);
+        addCard(ActionCard.CardType.StickWeb);
+        //addCard(getRandomCard());
     }
 
     public void addCard(CardType card)
@@ -81,7 +84,7 @@ public class CardManager : NetworkBehaviour
 
     public void selectButton_1()
     {
-        if(cardButton1.image == cardButton1.empty || cardServerManager.playerUsedCardThisTurn == true || checkIfInEffect(cardButton1))
+        if(cardButton1.image == cardButton1.empty || playerUsedCard == true || checkIfInEffect(cardButton1))
         {
             Debug.Log("Empty");
             return;
@@ -90,11 +93,12 @@ public class CardManager : NetworkBehaviour
         cardButton1.turnEmpty();
         cardCanvas.SetActive(false);
         MainCanvas.SetActive(true);
+        playerUsedCard = true;
     }
 
     public void selectButton_2()
     {
-        if (cardButton2.image == cardButton2.empty || cardServerManager.playerUsedCardThisTurn == true || checkIfInEffect(cardButton2))
+        if (cardButton2.image == cardButton2.empty || playerUsedCard == true || checkIfInEffect(cardButton2))
         {
             return;
         }
@@ -102,11 +106,12 @@ public class CardManager : NetworkBehaviour
         cardButton2.turnEmpty();
         cardCanvas.SetActive(false);
         MainCanvas.SetActive(true);
+        playerUsedCard = true;
     }
 
     public void selectButton_3()
     {
-        if (cardButton3.image == cardButton3.empty || cardServerManager.playerUsedCardThisTurn == true || checkIfInEffect(cardButton3))
+        if (cardButton3.image == cardButton3.empty || playerUsedCard == true || checkIfInEffect(cardButton3))
         {
             return;
         }
@@ -114,6 +119,7 @@ public class CardManager : NetworkBehaviour
         cardButton3.turnEmpty();
         cardCanvas.SetActive(false);
         MainCanvas.SetActive(true);
+        playerUsedCard = true;
     }
 
 

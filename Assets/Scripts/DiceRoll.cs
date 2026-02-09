@@ -74,7 +74,7 @@ public class DiceRoll : NetworkBehaviour
             roll -= 1;
         }
 
-        if(getCardManager().snatch && roll == 6)
+        if(getCardManager().snatch && roll == 6 && currentPlayer().PlayerId != getCardManager().snatchOrgin)
         {
             roll = 0;
             gameManager.GetTargetPlayer(getCardManager().snatchOrgin).StartSlide(1);

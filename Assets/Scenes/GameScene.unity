@@ -2108,7 +2108,7 @@ MonoBehaviour:
   PlayerId: 1
   CurrentTileId: 0
   currentTile: {fileID: 1821684296}
-  moveNum: 3
+  moveNum: 1
   moveSpeed: 4
   points: 0
   skipTurn: 0
@@ -9788,6 +9788,8 @@ MonoBehaviour:
   cardButton2: {fileID: 1283504174}
   cardButton3: {fileID: 1069893558}
   cardServerManager: {fileID: 1057622777}
+  isStickyInEffect: 0
+  isSnatchInEffect: 0
 --- !u!1 &1565735541
 GameObject:
   m_ObjectHideFlags: 0

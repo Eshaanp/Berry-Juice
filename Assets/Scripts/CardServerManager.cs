@@ -100,4 +100,12 @@ public class CardServerManager : NetworkBehaviour
         clientCardManager.isStickyInEffect = turnOn;
     }
 
+    [ObserversRpc]
+    public void clientCanPlayCards()
+    {
+        clientCardManager.playerUsedCard = false;
+    }
+
+
+
 }

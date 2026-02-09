@@ -60,9 +60,14 @@ public class GameManger : NetworkBehaviour
         {
             cardServerManager.giveCardAllPlayers();
         }
-        if (Keyboard.current.oKey.wasPressedThisFrame)
+        if (Keyboard.current.qKey.wasPressedThisFrame)
         {
             cardServerManager.giveCardTargetPlayer(1);
+        }
+
+        if (Keyboard.current.wKey.wasPressedThisFrame)
+        {
+            cardServerManager.giveCardTargetPlayer(2);
         }
         if (Keyboard.current.fKey.wasPressedThisFrame)
         {
@@ -349,7 +354,7 @@ public class GameManger : NetworkBehaviour
             turn++;
             Debug.Log("Round " + turn + " completed");
         }
-        cardServerManager.playerUsedCardThisTurn = false;
+        cardServerManager.clientCanPlayCards();
         NextTurn();
         StartTurn();
 
