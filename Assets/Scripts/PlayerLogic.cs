@@ -66,8 +66,8 @@ public class PlayerLogic : NetworkBehaviour
     //public GameObject Hoopa;
     public GameObject Golisopod;
     public GameObject Victini;
-    //public GameObject Oricorio;
-    //public GameObject Raboot;
+    public GameObject Oricorio;
+    public GameObject Raboot;
     public GameObject Drifblim;
 
 
@@ -254,6 +254,14 @@ public class PlayerLogic : NetworkBehaviour
                 Jigglypuff.SetActive(true);
                 break;
 
+            case PlayerLogic.Character.Oricorio:
+                Oricorio.SetActive(true);
+                break;
+
+            case PlayerLogic.Character.Raboot:
+                Raboot.SetActive(true);
+                break;
+
             default:
                 Patrat.SetActive(true);
                 break;
@@ -275,8 +283,8 @@ public class PlayerLogic : NetworkBehaviour
         Patrat.SetActive(false);
         Drifblim.SetActive(false);
         Jigglypuff.SetActive(false);
-
-
+        Oricorio.SetActive(false);
+        Raboot.SetActive(false);
 
     }
 
@@ -303,6 +311,12 @@ public class PlayerLogic : NetworkBehaviour
 
             case PlayerLogic.Character.Jigglypuff:
                 return Jigglypuff;
+
+            case PlayerLogic.Character.Oricorio:
+                return Oricorio;
+
+            case PlayerLogic.Character.Raboot:
+                return Raboot;
 
             default:
                 return Patrat;

@@ -11,6 +11,9 @@ public class IdleAnimations : NetworkBehaviour
     public Animator GolisopodAnimator;
     public Animator JigglypuffAnimator;
     public Animator DrifblimAnimator;
+    public Animator PlusleAnimator;
+    public Animator MinunAnimator;
+    public Animator RabootAnimator;
 
 
     public void setIdleAnimation(PlayerLogic player)
@@ -45,6 +48,20 @@ public class IdleAnimations : NetworkBehaviour
 
                 DrifblimAnimator.Play("Drifblim_Idle");
                 break;
+
+            case PlayerLogic.Character.Oricorio:
+
+                MinunAnimator.Play("Minun_Idle");
+                PlusleAnimator.Play("Plusle_Idle");
+                break;
+
+            case PlayerLogic.Character.Raboot:
+
+                RabootAnimator.Play("Raboot_Idle");
+                break;
+
+
+
             default:
                 break;
 

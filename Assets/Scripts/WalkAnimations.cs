@@ -17,6 +17,9 @@ public class WalkAnimations : NetworkBehaviour
     public Animator GolisopodAnimator;
     public Animator JigglypuffAnimator;
     public Animator DrifblimAnimator;
+    public Animator PlusleAnimator;
+    public Animator MinunAnimator;
+    public Animator RabootAnimator;
 
 
 
@@ -72,6 +75,14 @@ public class WalkAnimations : NetworkBehaviour
 
             case PlayerLogic.Character.Jigglypuff:
                 JigglypuffWalk();
+                break;
+
+            case PlayerLogic.Character.Oricorio:
+                PlusleMinunWalk();
+                break;
+
+            case PlayerLogic.Character.Raboot:
+                RabootWalk();
                 break;
 
             default:
@@ -207,6 +218,53 @@ public class WalkAnimations : NetworkBehaviour
                 break;
             case 4:
                 DrifblimAnimator.Play("Drifblim_Walk_Backward");
+                break;
+
+        }
+    }
+
+
+    public void PlusleMinunWalk()
+    {
+        switch (direction)
+        {
+            case 1:
+                PlusleAnimator.Play("Plusle_Walk_Backward");
+                MinunAnimator.Play("Minun_Walk_Backward");
+                break;
+            case 2:
+                PlusleAnimator.Play("Plusle_Walk_Forward");
+                MinunAnimator.Play("Minun_Walk_Forward");
+                break;
+            case 3:
+                PlusleAnimator.Play("Plusle_Walk_Down");
+                MinunAnimator.Play("Minun_Walk_Down");
+                break;
+            case 4:
+                PlusleAnimator.Play("Plusle_Walk_Backward");
+                MinunAnimator.Play("Minun_Walk_Backward");
+                break;
+
+        }
+
+    }
+
+
+    public void RabootWalk()
+    {
+        switch (direction)
+        {
+            case 1:
+                RabootAnimator.Play("Raboot_Walk_Backward");
+                break;
+            case 2:
+                RabootAnimator.Play("Raboot_Walk_Forward");
+                break;
+            case 3:
+                RabootAnimator.Play("Raboot_Walk_Down");
+                break;
+            case 4:
+                RabootAnimator.Play("Raboot_Walk_Backward");
                 break;
 
         }
