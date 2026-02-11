@@ -25,6 +25,8 @@ public class CardManager : NetworkBehaviour
     [Header("Cards In Effect")]
     public bool isStickyInEffect;
     public bool isSnatchInEffect;
+    public bool isTopsyInEffect;
+    public bool isTauntInEffect;
 
     public bool playerUsedCard = false;
 
@@ -52,7 +54,7 @@ public class CardManager : NetworkBehaviour
     public void generateCard()
     {
         Debug.Log("In generate Card");
-        addCard(ActionCard.CardType.StickWeb);
+        addCard(ActionCard.CardType.TopsyTurvy);
         //addCard(getRandomCard());
     }
 
@@ -84,7 +86,7 @@ public class CardManager : NetworkBehaviour
 
     public void selectButton_1()
     {
-        if(cardButton1.image == cardButton1.empty || playerUsedCard == true || checkIfInEffect(cardButton1))
+        if(cardButton1.image == cardButton1.empty || checkIfInEffect(cardButton1))
         {
             Debug.Log("Empty");
             return;
@@ -98,7 +100,7 @@ public class CardManager : NetworkBehaviour
 
     public void selectButton_2()
     {
-        if (cardButton2.image == cardButton2.empty || playerUsedCard == true || checkIfInEffect(cardButton2))
+        if (cardButton2.image == cardButton2.empty || checkIfInEffect(cardButton2))
         {
             return;
         }
@@ -111,7 +113,7 @@ public class CardManager : NetworkBehaviour
 
     public void selectButton_3()
     {
-        if (cardButton3.image == cardButton3.empty || playerUsedCard == true || checkIfInEffect(cardButton3))
+        if (cardButton3.image == cardButton3.empty || checkIfInEffect(cardButton3))
         {
             return;
         }
@@ -125,16 +127,14 @@ public class CardManager : NetworkBehaviour
 
     public bool checkIfInEffect(ActionCard cardSlot)
     {
-        if(cardSlot.cardType == ActionCard.CardType.StickWeb && isStickyInEffect == true) { return true; }
+        if (playerUsedCard == true) { return true; }
+        if (isTauntInEffect == true) { return true; } //taunt main effect
+        if (cardSlot.cardType == ActionCard.CardType.StickWeb && isStickyInEffect == true) { return true; }
         if (cardSlot.cardType == ActionCard.CardType.Snatch && isSnatchInEffect == true) { return true; }
+        if (cardSlot.cardType == ActionCard.CardType.TopsyTurvy && isTopsyInEffect == true) { return true; }
         return false;
 
     }
-
-
-
-
-
 
 
     public void backButton()
@@ -171,6 +171,25 @@ public class CardManager : NetworkBehaviour
                 cardServerManager.Snatch();
                 break;
 
+            case ActionCard.CardType.Teleport:
+                cardServerManager.Teleport();
+                break;
+
+            case ActionCard.CardType.Ingrain:
+                cardServerManager.Ingrain();
+                break;
+
+            case ActionCard.CardType.HeartSwap:
+                cardServerManager.HeartSwap();
+                break;
+
+            case ActionCard.CardType.Taunt:
+                cardServerManager.Taunt();
+                break;
+
+            case ActionCard.CardType.TopsyTurvy:
+                cardServerManager.TopsyTurvy();
+                break;
         }
 
     }

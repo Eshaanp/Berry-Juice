@@ -294,6 +294,23 @@ public class GameManger : NetworkBehaviour
     //checks the players character before role for effect (ie meowscarada)
     public void StartTurn()
     {
+
+        if (cardServerManager.topsyTurvyOrgin == GetCurrentPlayer().PlayerId)
+        {
+            cardServerManager.topsyTurvy = false;
+            cardServerManager.topsyInEffect(false);
+        }
+        if (cardServerManager.stickyWebOrigin == GetCurrentPlayer().PlayerId)
+        {
+            cardServerManager.stickyWeb = false;
+            cardServerManager.stickyInEffect(false);
+        }
+        if (cardServerManager.tauntOrgin == GetCurrentPlayer().PlayerId)
+        {
+            cardServerManager.taunt = false;
+            cardServerManager.tauntInEffect(false);
+        }
+
         if (GetCurrentPlayer().CrossedFinish == true)
         {
 
@@ -338,17 +355,7 @@ public class GameManger : NetworkBehaviour
         
         if (currentPlayerTurn == numOfPlayers)
         {
-            //sticky web, rest of logic in dice roll
-            if (cardServerManager.stickyWebCheckPerPlayer)
-            {
-                cardServerManager.stickyWebCheckPerPlayer = false;
-                cardServerManager.stickyInEffect(false);
-            }
-            if (cardServerManager.firstStickyWebCheck)
-            {
-                cardServerManager.firstStickyWebCheck = false;
-                cardServerManager.stickyWebCheckPerPlayer = true;
-            }
+
 
 
             turn++;

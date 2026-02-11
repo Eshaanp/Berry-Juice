@@ -1,5 +1,6 @@
 using PurrNet;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CardServerManager : NetworkBehaviour
 {
@@ -21,13 +22,17 @@ public class CardServerManager : NetworkBehaviour
 
 
     [Header("Cards that can only exist one cast at a time")]
-    public bool firstStickyWebCheck; 
-    public bool stickyWebCheckPerPlayer;
+    public bool stickyWeb;
+    public int stickyWebOrigin;
 
     public bool snatch;
     public int snatchOrgin;
 
+    public bool topsyTurvy;
+    public int topsyTurvyOrgin;
 
+    public bool taunt;
+    public int tauntOrgin;
 
 
     public void Snatch()
@@ -40,8 +45,23 @@ public class CardServerManager : NetworkBehaviour
 
     public void StickyWeb()
     {
-        firstStickyWebCheck = true;
+        stickyWeb = true;
+        stickyWebOrigin = gameManger.GetCurrentPlayer().PlayerId;
         stickyInEffect(true);
+    }
+
+    public void TopsyTurvy()
+    {
+        topsyTurvy = true;
+        topsyTurvyOrgin = gameManger.GetCurrentPlayer().PlayerId;
+        topsyInEffect(true);
+    }
+
+    public void Taunt()
+    {
+        taunt = true;
+        tauntOrgin = gameManger.GetCurrentPlayer().PlayerId;
+        tauntInEffect(true);
     }
 
     //Instant
@@ -68,6 +88,72 @@ public class CardServerManager : NetworkBehaviour
         }
 
     }
+
+    public void Teleport()
+    {
+        PlayerLogic[] allPlayers = gameManger.getAllPlayers();
+
+        int len = allPlayers.Length;
+        int randomInt = UnityEngine.Random.Range(0, len);
+
+        gameManger.GetCurrentPlayer().StartTeleport(allPlayers[randomInt].currentTile);
+
+    }
+
+    public void Ingrain()
+    {
+        gameManger.GetCurrentPlayer().skipTurn = true;
+        gameManger.updateScore(-2);
+    }
+
+   
+    public void HeartSwap()
+    {
+        PlayerLogic[] allPlayers = gameManger.getAllPlayers();
+        PlayerLogic[] targetPlayers = new PlayerLogic[gameManger.numOfPlayers - 1];
+        int index = 0;
+
+        for (int i = 0; i < allPlayers.Length; i++)
+        {
+            if (allPlayers[i] != gameManger.GetCurrentPlayer())
+            {
+                targetPlayers[index] = allPlayers[i];
+                index++;
+            }
+        }
+
+        int randomInt = UnityEngine.Random.Range(0, gameManger.numOfPlayers - 1);
+
+        swapCharacters(targetPlayers[randomInt]);
+
+    }
+
+    public void swapCharacters(PlayerLogic target)
+    {
+        //check infrastructure
+
+        PlayerLogic.Character currentPlayerCharacter = gameManger.GetCurrentPlayer().character;
+
+        PlayerLogic.Character targetPlayerCharacter = target.character;
+
+        //gameManger.GetCurrentPlayer().character = targetPlayerCharacter;
+        //target.character = currentPlayerCharacter;
+
+        
+        //turn off sprites
+        gameManger.GetCurrentPlayer().TurnOffAllSprites();
+        target.TurnOffAllSprites();
+
+        //turn on new sprites
+        gameManger.GetCurrentPlayer().SetUpCharacter(targetPlayerCharacter);
+        target.SetUpCharacter(currentPlayerCharacter);
+    }
+
+
+
+
+
+
 
     [ObserversRpc]
     public void giveCardAllPlayers()
@@ -98,6 +184,16 @@ public class CardServerManager : NetworkBehaviour
     public void stickyInEffect(bool turnOn)
     {
         clientCardManager.isStickyInEffect = turnOn;
+    }
+    [ObserversRpc]
+    public void tauntInEffect(bool turnOn)
+    {
+        clientCardManager.isTauntInEffect = turnOn;
+    }
+    [ObserversRpc]
+    public void topsyInEffect(bool turnOn)
+    {
+        clientCardManager.isTopsyInEffect = turnOn;
     }
 
     [ObserversRpc]

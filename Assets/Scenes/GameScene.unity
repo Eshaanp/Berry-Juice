@@ -5898,10 +5898,14 @@ MonoBehaviour:
   playerUsedCardThisTurn: 0
   agility: 0
   gigaImpact: 0
-  firstStickyWebCheck: 0
-  stickyWebCheckPerPlayer: 0
+  stickyWeb: 0
+  stickyWebOrigin: 0
   snatch: 0
   snatchOrgin: 0
+  topsyTurvy: 0
+  topsyTurvyOrgin: 0
+  taunt: 0
+  tauntOrgin: 0
 --- !u!1 &1060993949
 GameObject:
   m_ObjectHideFlags: 0
@@ -6225,12 +6229,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image: {fileID: 1069893560}
   slotNum: 3
-  cardType: 5
+  cardType: 0
   agilityImage: {fileID: 21300000, guid: 85e0bfdffaf9f9b48913ea8031fde9cf, type: 3}
   gigaImpactImage: {fileID: 21300000, guid: 65d1226b03b2c4f419f22fcbfcbc53ad, type: 3}
   hypnosisImage: {fileID: 21300000, guid: 744a9cf92b5c9124f8f5c1ff15115ad4, type: 3}
   stickyWebImage: {fileID: 21300000, guid: 4fca6148b600cc442a50bf32d6f35408, type: 3}
   snatchImage: {fileID: 21300000, guid: 31b0ff603090e184588fc8a5e9ae494c, type: 3}
+  teleportImage: {fileID: 21300000, guid: a1f55847fc0c1e041a8dc5245a57902b, type: 3}
+  ingrainImage: {fileID: 21300000, guid: e616376d1782d6544a6c7121376f1812, type: 3}
+  heartSwapImage: {fileID: 21300000, guid: bfa60abd3b6945a48b5a201dba88f2f8, type: 3}
+  tauntImage: {fileID: 21300000, guid: 910e4f35f6952734f841c796d6d7ebe6, type: 3}
+  topsyTurvyImage: {fileID: 21300000, guid: 11aa54e5a59bc5444808cd6e40918d27, type: 3}
   empty: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &1069893559
 MonoBehaviour:
@@ -7326,12 +7335,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image: {fileID: 1283504176}
   slotNum: 2
-  cardType: 5
+  cardType: 0
   agilityImage: {fileID: 21300000, guid: 85e0bfdffaf9f9b48913ea8031fde9cf, type: 3}
   gigaImpactImage: {fileID: 21300000, guid: 65d1226b03b2c4f419f22fcbfcbc53ad, type: 3}
   hypnosisImage: {fileID: 21300000, guid: 744a9cf92b5c9124f8f5c1ff15115ad4, type: 3}
   stickyWebImage: {fileID: 21300000, guid: 4fca6148b600cc442a50bf32d6f35408, type: 3}
   snatchImage: {fileID: 21300000, guid: 31b0ff603090e184588fc8a5e9ae494c, type: 3}
+  teleportImage: {fileID: 21300000, guid: a1f55847fc0c1e041a8dc5245a57902b, type: 3}
+  ingrainImage: {fileID: 21300000, guid: e616376d1782d6544a6c7121376f1812, type: 3}
+  heartSwapImage: {fileID: 21300000, guid: bfa60abd3b6945a48b5a201dba88f2f8, type: 3}
+  tauntImage: {fileID: 21300000, guid: 910e4f35f6952734f841c796d6d7ebe6, type: 3}
+  topsyTurvyImage: {fileID: 21300000, guid: 11aa54e5a59bc5444808cd6e40918d27, type: 3}
   empty: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &1283504175
 MonoBehaviour:
@@ -8297,12 +8311,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image: {fileID: 1345417763}
   slotNum: 1
-  cardType: 5
+  cardType: 2
   agilityImage: {fileID: 21300000, guid: 85e0bfdffaf9f9b48913ea8031fde9cf, type: 3}
   gigaImpactImage: {fileID: 21300000, guid: 65d1226b03b2c4f419f22fcbfcbc53ad, type: 3}
   hypnosisImage: {fileID: 21300000, guid: 744a9cf92b5c9124f8f5c1ff15115ad4, type: 3}
   stickyWebImage: {fileID: 21300000, guid: 4fca6148b600cc442a50bf32d6f35408, type: 3}
   snatchImage: {fileID: 21300000, guid: 31b0ff603090e184588fc8a5e9ae494c, type: 3}
+  teleportImage: {fileID: 21300000, guid: a1f55847fc0c1e041a8dc5245a57902b, type: 3}
+  ingrainImage: {fileID: 21300000, guid: e616376d1782d6544a6c7121376f1812, type: 3}
+  heartSwapImage: {fileID: 21300000, guid: bfa60abd3b6945a48b5a201dba88f2f8, type: 3}
+  tauntImage: {fileID: 21300000, guid: 910e4f35f6952734f841c796d6d7ebe6, type: 3}
+  topsyTurvyImage: {fileID: 21300000, guid: 11aa54e5a59bc5444808cd6e40918d27, type: 3}
   empty: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &1345417762
 MonoBehaviour:
@@ -9790,6 +9809,9 @@ MonoBehaviour:
   cardServerManager: {fileID: 1057622777}
   isStickyInEffect: 0
   isSnatchInEffect: 0
+  isTopsyInEffect: 0
+  isTauntInEffect: 0
+  playerUsedCard: 0
 --- !u!1 &1565735541
 GameObject:
   m_ObjectHideFlags: 0

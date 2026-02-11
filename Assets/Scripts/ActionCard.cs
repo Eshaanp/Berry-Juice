@@ -11,12 +11,18 @@ public class ActionCard : MonoBehaviour
 
     public enum CardType
     {
+        EmptyCard,
         Agility,
         GigaImpact,
         Hypnosis,
         StickWeb,
         Snatch,
-        EmptyCard
+        Teleport,
+        Ingrain,
+        HeartSwap,
+        Taunt,
+        TopsyTurvy
+
     }
     [Header("Type of card")]
     public CardType cardType;
@@ -27,10 +33,19 @@ public class ActionCard : MonoBehaviour
     public Sprite hypnosisImage;
     public Sprite stickyWebImage;
     public Sprite snatchImage;
+    public Sprite teleportImage;
+    public Sprite ingrainImage;
+    public Sprite heartSwapImage;
+    public Sprite tauntImage;
+    public Sprite topsyTurvyImage;
+
     public Sprite empty;
 
 
-
+    private void Awake()
+    {
+        cardType = CardType.EmptyCard;
+    }
 
 
 
@@ -63,7 +78,31 @@ public class ActionCard : MonoBehaviour
             case CardType.Snatch:
                 image.sprite = snatchImage;
                 break;
+
+            case CardType.Teleport:
+                image.sprite = teleportImage;
+                break;
+
+            case CardType.Ingrain:
+                image.sprite = ingrainImage;
+                break;
+
+            case CardType.HeartSwap:
+                image.sprite = heartSwapImage;
+                break;
+
+            case CardType.Taunt:
+                image.sprite = tauntImage;
+                break;
+
+            case CardType.TopsyTurvy:
+                image.sprite = topsyTurvyImage;
+                break;
+
                 
+
+
+
             case CardType.EmptyCard:
                 image.sprite = empty;
                 break;

@@ -68,11 +68,17 @@ public class DiceRoll : NetworkBehaviour
             //turning off giga impact and side effect done in GameManager
             roll += 6;
         }
-        else if (getCardManager().stickyWebCheckPerPlayer == true)
+
+        if (getCardManager().stickyWeb == true)
         {
             //turning off at end of round
             roll -= 1;
         }
+        if (getCardManager().topsyTurvy == true)
+        {
+            roll *= -1;
+        }
+
 
         if(getCardManager().snatch && roll == 6 && currentPlayer().PlayerId != getCardManager().snatchOrgin)
         {
