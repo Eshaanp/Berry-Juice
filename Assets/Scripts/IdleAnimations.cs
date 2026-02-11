@@ -9,6 +9,8 @@ public class IdleAnimations : NetworkBehaviour
     public Animator VictiniAnimator;
     public Animator SliggooAnimator;
     public Animator GolisopodAnimator;
+    public Animator JigglypuffAnimator;
+    public Animator DrifblimAnimator;
 
 
     public void setIdleAnimation(PlayerLogic player)
@@ -34,6 +36,15 @@ public class IdleAnimations : NetworkBehaviour
                 GolisopodAnimator.Play("Golisopod_Idle");
                 break;
 
+            case PlayerLogic.Character.Jigglypuff:
+
+                JigglypuffAnimator.Play("Jigglypuff_Idle");
+                break;
+
+            case PlayerLogic.Character.Drifblim:
+
+                DrifblimAnimator.Play("Drifblim_Idle");
+                break;
             default:
                 break;
 

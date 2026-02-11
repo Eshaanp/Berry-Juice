@@ -15,7 +15,8 @@ public class WalkAnimations : NetworkBehaviour
     public Animator VictiniAnimator;
     public Animator SliggooAnimator;
     public Animator GolisopodAnimator;
-
+    public Animator JigglypuffAnimator;
+    public Animator DrifblimAnimator;
 
 
 
@@ -63,6 +64,14 @@ public class WalkAnimations : NetworkBehaviour
 
             case PlayerLogic.Character.Golisopod:
                 GolisopodWalk();
+                break;
+
+            case PlayerLogic.Character.Drifblim:
+                DrifblimWalk();
+                break;
+
+            case PlayerLogic.Character.Jigglypuff:
+                JigglypuffWalk();
                 break;
 
             default:
@@ -162,6 +171,46 @@ public class WalkAnimations : NetworkBehaviour
 
     }
 
+
+    public void JigglypuffWalk()
+    {
+        switch (direction)
+        {
+            case 1:
+                JigglypuffAnimator.Play("Jigglypuff_Walk_Backward");
+                break;
+            case 2:
+                JigglypuffAnimator.Play("Jigglypuff_Walk_Forward");
+                break;
+            case 3:
+                JigglypuffAnimator.Play("Jigglypuff_Walk_Down");
+                break;
+            case 4:
+                JigglypuffAnimator.Play("Jigglypuff_Walk_Backward");
+                break;
+
+        }
+    }
+
+    public void DrifblimWalk()
+    {
+        switch (direction)
+        {
+            case 1:
+                DrifblimAnimator.Play("Drifblim_Walk_Backward");
+                break;
+            case 2:
+                DrifblimAnimator.Play("Drifblim_Walk_Forward");
+                break;
+            case 3:
+                DrifblimAnimator.Play("Drifblim_Walk_Down");
+                break;
+            case 4:
+                DrifblimAnimator.Play("Drifblim_Walk_Backward");
+                break;
+
+        }
+    }
 
 }
 
