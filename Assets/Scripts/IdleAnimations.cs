@@ -14,7 +14,8 @@ public class IdleAnimations : NetworkBehaviour
     public Animator PlusleAnimator;
     public Animator MinunAnimator;
     public Animator RabootAnimator;
-
+    public Animator HoopaAnimator;
+    public Animator LuvdiscAnimator;
 
     public void setIdleAnimation(PlayerLogic player)
     {
@@ -60,7 +61,15 @@ public class IdleAnimations : NetworkBehaviour
                 RabootAnimator.Play("Raboot_Idle");
                 break;
 
+            case PlayerLogic.Character.Luvdisc:
 
+                LuvdiscAnimator.Play("Luvdisc_Idle");
+                break;
+
+            case PlayerLogic.Character.Hoopa:
+
+                HoopaAnimator.Play("Hoopa_Idle");
+                break;
 
             default:
                 break;

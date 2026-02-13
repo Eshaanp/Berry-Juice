@@ -60,10 +60,10 @@ public class PlayerLogic : NetworkBehaviour
     [Header("Pokemon Sprites")]
     public GameObject Meowscarada;
     public GameObject Jigglypuff;
-    //public GameObject Luvdisc;
+    public GameObject Luvdisc;
     public GameObject Sligoo;
     public GameObject Patrat;
-    //public GameObject Hoopa;
+    public GameObject Hoopa;
     public GameObject Golisopod;
     public GameObject Victini;
     public GameObject Oricorio;
@@ -262,6 +262,14 @@ public class PlayerLogic : NetworkBehaviour
                 Raboot.SetActive(true);
                 break;
 
+            case PlayerLogic.Character.Hoopa:
+                Hoopa.SetActive(true);
+                break;
+
+            case PlayerLogic.Character.Luvdisc:
+                Luvdisc.SetActive(true);
+                break;
+
             default:
                 Patrat.SetActive(true);
                 break;
@@ -285,6 +293,8 @@ public class PlayerLogic : NetworkBehaviour
         Jigglypuff.SetActive(false);
         Oricorio.SetActive(false);
         Raboot.SetActive(false);
+        Hoopa.SetActive(false);
+        Luvdisc.SetActive(false);
 
     }
 
@@ -317,6 +327,12 @@ public class PlayerLogic : NetworkBehaviour
 
             case PlayerLogic.Character.Raboot:
                 return Raboot;
+
+            case PlayerLogic.Character.Hoopa:
+                return Hoopa;
+
+            case PlayerLogic.Character.Luvdisc:
+                return Luvdisc;
 
             default:
                 return Patrat;

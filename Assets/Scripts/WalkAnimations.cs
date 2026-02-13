@@ -20,6 +20,8 @@ public class WalkAnimations : NetworkBehaviour
     public Animator PlusleAnimator;
     public Animator MinunAnimator;
     public Animator RabootAnimator;
+    public Animator HoopaAnimator;
+    public Animator LuvdiscAnimator;
 
 
 
@@ -83,6 +85,14 @@ public class WalkAnimations : NetworkBehaviour
 
             case PlayerLogic.Character.Raboot:
                 RabootWalk();
+                break;
+
+            case PlayerLogic.Character.Luvdisc:
+                LuvdiscWalk();
+                break;
+
+            case PlayerLogic.Character.Hoopa:
+                HoopaWalk();
                 break;
 
             default:
@@ -268,6 +278,50 @@ public class WalkAnimations : NetworkBehaviour
                 break;
 
         }
+    }
+
+
+    public void LuvdiscWalk()
+    {
+        switch (direction)
+        {
+            case 1:
+                LuvdiscAnimator.Play("Luvdisc_Walk_Backward");
+                break;
+            case 2:
+                LuvdiscAnimator.Play("Luvdisc_Walk_Forward");
+                break;
+            case 3:
+                LuvdiscAnimator.Play("Luvdisc_Walk_Down");
+                break;
+            case 4:
+                LuvdiscAnimator.Play("Luvdisc_Walk_Backward");
+                break;
+
+        }
+
+    }
+
+
+    public void HoopaWalk()
+    {
+        switch (direction)
+        {
+            case 1:
+                HoopaAnimator.Play("Hoopa_Walk_Backward");
+                break;
+            case 2:
+                HoopaAnimator.Play("Hoopa_Walk_Forward");
+                break;
+            case 3:
+                HoopaAnimator.Play("Hoopa_Walk_Down");
+                break;
+            case 4:
+                HoopaAnimator.Play("Hoopa_Walk_Backward");
+                break;
+
+        }
+
     }
 
 }
