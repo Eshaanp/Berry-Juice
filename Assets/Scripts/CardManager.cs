@@ -54,8 +54,8 @@ public class CardManager : NetworkBehaviour
     public void generateCard()
     {
         Debug.Log("In generate Card");
-        addCard(ActionCard.CardType.TopsyTurvy);
-        //addCard(getRandomCard());
+        //addCard(ActionCard.CardType.TopsyTurvy);
+        addCard(getRandomCard());
     }
 
     public void addCard(CardType card)
