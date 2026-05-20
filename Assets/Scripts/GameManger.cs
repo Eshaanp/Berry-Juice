@@ -23,6 +23,7 @@ public class GameManger : NetworkBehaviour
     public PlayerTypes playerTypes;
     public DiceRoll rolling;
     public CardServerManager cardServerManager;
+    public CameraManager cameraManager;
 
     //[SerializeField] private NetworkIdentity networkIdentity;
     
@@ -40,7 +41,7 @@ public class GameManger : NetworkBehaviour
     
 
     public GameObject firstTile;
-
+    
 
     
 
@@ -227,15 +228,19 @@ public class GameManger : NetworkBehaviour
     //Begin draft, calls normal then reverse draft
     public IEnumerator StartDraft()
     {
+           
         if (!isServer)
         {
             yield return null;
         }
         currentPlayerTurn.value = 1;
+
         snakeDraft.showDraft(true);
         yield return StartCoroutine(snakeDraft.StartSnakeDraft());
         yield return StartCoroutine(snakeDraft.ReverseSnakeDraft());
         Debug.Log("Draft over");
+        cameraManager.CameraSetUp();
+       
         snakeDraft.showDraft(false);
         playerSetUp(getAllPlayers());
         FirstTurn();
@@ -332,7 +337,7 @@ public class GameManger : NetworkBehaviour
             return;
             
         }
-
+        cameraManager.startFreeCamera();
         playerTypes.CheckCharacterBeforeRole(GetCurrentPlayer());
         StartCoroutine(WaitForPlayers());
         //StartCoroutine(GetCurrentPlayer().DiceRoll());

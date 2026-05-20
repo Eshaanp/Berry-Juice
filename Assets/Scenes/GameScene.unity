@@ -183,6 +183,8 @@ MonoBehaviour:
   player3Cam: {fileID: 0}
   player4Cam: {fileID: 0}
   followSpeed: 10
+  moveSpeed: 5
+  isFreeCam: 0
 --- !u!114 &59199587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2216,7 +2218,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &330585544
 AudioListener:
   m_ObjectHideFlags: 0
@@ -5361,6 +5363,8 @@ MonoBehaviour:
   player3Cam: {fileID: 0}
   player4Cam: {fileID: 0}
   followSpeed: 10
+  moveSpeed: 5
+  isFreeCam: 0
 --- !u!114 &864803627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5943,6 +5947,8 @@ MonoBehaviour:
   player3Cam: {fileID: 0}
   player4Cam: {fileID: 0}
   followSpeed: 10
+  moveSpeed: 5
+  isFreeCam: 0
 --- !u!114 &922476058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7173,6 +7179,7 @@ MonoBehaviour:
   playerTypes: {fileID: 1057622776}
   rolling: {fileID: 121767277}
   cardServerManager: {fileID: 1057622777}
+  cameraManager: {fileID: 1842541609}
   Player1Score: 0
   Player2Score: 0
   Player3Score: 0
@@ -11239,7 +11246,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  parentCam: {fileID: 0}
+  parentCam: {fileID: 1842541607}
   cameraID: 2
   gameManger: {fileID: 1057622773}
   player1Cam: {fileID: 1224900068}
@@ -11247,6 +11254,8 @@ MonoBehaviour:
   player3Cam: {fileID: 0}
   player4Cam: {fileID: 0}
   followSpeed: 10
+  moveSpeed: 5
+  isFreeCam: 0
 --- !u!114 &1541976107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12444,7 +12453,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!95 &1717339325
 Animator:
   serializedVersion: 7
@@ -13314,6 +13323,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1842541608}
+  - component: {fileID: 1842541609}
   m_Layer: 0
   m_Name: Cameras
   m_TagString: Untagged
@@ -13340,6 +13350,33 @@ Transform:
   - {fileID: 922476056}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1842541609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1842541607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbbdd1143700db845b92d0eddbfea6b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  gameManger: {fileID: 1057622773}
+  cam1: {fileID: 59199586}
+  cam2: {fileID: 1541976106}
+  cam3: {fileID: 864803626}
+  cam4: {fileID: 922476057}
+  MainCam: {fileID: 330585545}
 --- !u!1 &1843696028
 GameObject:
   m_ObjectHideFlags: 0
@@ -14796,7 +14833,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2138969174
 Transform:
   m_ObjectHideFlags: 0

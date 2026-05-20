@@ -87,6 +87,7 @@ public class PlayerLogic : NetworkBehaviour
     [ObserversRpc]
     public void StartMainMovement(int roll)
     {
+        gameManager.cameraManager.LockToCurrentPlayer(); //camera
         StartCoroutine(MainMovement(roll));
     }
     [ObserversRpc]
