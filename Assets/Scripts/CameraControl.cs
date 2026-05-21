@@ -20,7 +20,7 @@ public class CameraControl : NetworkIdentity
 
     private void Start()
     {
-        this.gameObject.SetActive(false);
+        //this.gameObject.SetActive(false);
     }
 
 
@@ -61,14 +61,14 @@ public class CameraControl : NetworkIdentity
     [ObserversRpc]
     public void TurnOn(PlayerLogic Player1_Reference)
     {
-        this.gameObject.SetActive(true);
+        
         LockToCurrentPlayer(Player1_Reference);
         EnterFreeCam();
     }
 
 
 
-
+    [ObserversRpc]
     public void EnterFreeCam()
     {
         isFreeCam = true;
@@ -78,7 +78,7 @@ public class CameraControl : NetworkIdentity
 
 
 
-
+    [ObserversRpc]
     public void LockToCurrentPlayer(PlayerLogic currentPlayer)
     {
         //PlayerLogic currentPlayer = gameManger.GetCurrentPlayer();
@@ -100,7 +100,7 @@ public class CameraControl : NetworkIdentity
 
     private Transform getCurrentPlayerCameraPosition(PlayerLogic currentPlayer)
     {
-
+        PlayerID clientID = localPlayer.Value;
         switch (currentPlayer.PlayerId)
         {
             case 1: return player1Cam;

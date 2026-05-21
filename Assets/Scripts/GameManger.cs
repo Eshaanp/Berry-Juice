@@ -315,6 +315,7 @@ public class GameManger : NetworkBehaviour
             cardServerManager.taunt = false;
             cardServerManager.tauntInEffect(false);
         }
+        cameraManager.startFreeCamera();
 
         if (GetCurrentPlayer().CrossedFinish == true)
         {
@@ -337,7 +338,7 @@ public class GameManger : NetworkBehaviour
             return;
             
         }
-        cameraManager.startFreeCamera();
+        
         playerTypes.CheckCharacterBeforeRole(GetCurrentPlayer());
         StartCoroutine(WaitForPlayers());
         //StartCoroutine(GetCurrentPlayer().DiceRoll());

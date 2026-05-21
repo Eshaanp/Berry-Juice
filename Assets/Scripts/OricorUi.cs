@@ -108,12 +108,12 @@ public class OricorUi : NetworkBehaviour
                 {
                     Debug.Log(lastPlace[i].PlayerId);
                     
-                    StartCoroutine(lastPlace[i].MovementSlide(2));
+                    lastPlace[i].StartSlide(2);
                 }
 
             }
 
-            StartCoroutine(gameManger.GetCurrentPlayer().MovementSlide(1));
+            gameManger.GetCurrentPlayer().StartSlide(1);
         }
     }
 

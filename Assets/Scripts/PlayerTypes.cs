@@ -96,22 +96,25 @@ public class PlayerTypes : NetworkBehaviour
     //JiggyPuff effect- if passby, trip player. called by Check During ROle
     private void CheckJigglypuffEffect(PlayerLogic player)
     {
-        if (player.PlayerId != 1 && gameManager.player1.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player1.currentTile)
+        if (gameManager.GetCurrentPlayer().character == PlayerLogic.Character.Jigglypuff)
         {
-            player.skipTurn = true;
-            
-        }
-        if (player.PlayerId != 2 && gameManager.player2.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player2.currentTile)
-        {
-            player.skipTurn = true;
-        }
-        if (gameManager.numOfPlayers >= 3 && player.PlayerId != 3 && gameManager.player3.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player3.currentTile)
-        {
-            player.skipTurn = true;
-        }
-        if (gameManager.numOfPlayers == 4 && player.PlayerId != 4 && gameManager.player4.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player4.currentTile)
-        {
-            player.skipTurn = true;
+            if (player.PlayerId != 1 && gameManager.player1.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player1.currentTile)
+            {
+                player.skipTurn = true;
+
+            }
+            if (player.PlayerId != 2 && gameManager.player2.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player2.currentTile)
+            {
+                player.skipTurn = true;
+            }
+            if (gameManager.numOfPlayers >= 3 && player.PlayerId != 3 && gameManager.player3.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player3.currentTile)
+            {
+                player.skipTurn = true;
+            }
+            if (gameManager.numOfPlayers == 4 && player.PlayerId != 4 && gameManager.player4.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player4.currentTile)
+            {
+                player.skipTurn = true;
+            }
         }
     }
 
@@ -136,35 +139,38 @@ public class PlayerTypes : NetworkBehaviour
 
 
     /*
-     * Sligoo- -2 spaces to players it passes
+     * Sligoo- -1 spaces to players it passes
      * 
      * 
      */
     private void MoveBackwards(PlayerLogic player)
     {
-        if(player.PlayerId != 1 && player.currentTile == gameManager.player1.currentTile)
+        if (gameManager.GetCurrentPlayer().character == PlayerLogic.Character.Sligoo)
         {
-            Debug.Log("passing player 1");
-            gameManager.player1.SlideSpriteChange(true);
-            gameManager.player1.StartSlide(-1);
-        }
-        if (player.PlayerId != 2 && player.currentTile == gameManager.player2.currentTile)
-        {
-            Debug.Log("passing player 2");
-            gameManager.player2.SlideSpriteChange(true);
-            gameManager.player2.StartSlide(-1);
-        }
-        if (gameManager.numOfPlayers >= 3 && player.PlayerId != 3 && player.currentTile == gameManager.player3.currentTile)
-        {
-            Debug.Log("passing player 3");
-            gameManager.player3.SlideSpriteChange(true);
-            gameManager.player3.StartSlide(-1);
-        }
-        if (gameManager.numOfPlayers == 4 &&  player.PlayerId != 4 && player.currentTile == gameManager.player4.currentTile)
-        {
-            Debug.Log("passing player 4");
-            gameManager.player4.SlideSpriteChange(true);
-            gameManager.player4.StartSlide(-1);
+            if (player.PlayerId != 1 && player.currentTile == gameManager.player1.currentTile)
+            {
+                Debug.Log("passing player 1");
+                gameManager.player1.SlideSpriteChange(true);
+                gameManager.player1.StartSlide(-1);
+            }
+            if (player.PlayerId != 2 && player.currentTile == gameManager.player2.currentTile)
+            {
+                Debug.Log("passing player 2");
+                gameManager.player2.SlideSpriteChange(true);
+                gameManager.player2.StartSlide(-1);
+            }
+            if (gameManager.numOfPlayers >= 3 && player.PlayerId != 3 && player.currentTile == gameManager.player3.currentTile)
+            {
+                Debug.Log("passing player 3");
+                gameManager.player3.SlideSpriteChange(true);
+                gameManager.player3.StartSlide(-1);
+            }
+            if (gameManager.numOfPlayers == 4 && player.PlayerId != 4 && player.currentTile == gameManager.player4.currentTile)
+            {
+                Debug.Log("passing player 4");
+                gameManager.player4.SlideSpriteChange(true);
+                gameManager.player4.StartSlide(-1);
+            }
         }
 
     }

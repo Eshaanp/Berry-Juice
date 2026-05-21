@@ -18,17 +18,20 @@ public class CameraManager : NetworkIdentity
     [ServerRpc]
     public void LockToCurrentPlayer()
     {
-        GetLockPlayerCamera(gameManger.numOfPlayers, gameManger.GetCurrentPlayer());
-
+        //GetLockPlayerCamera(gameManger.numOfPlayers, gameManger.GetCurrentPlayer());
+        cam1.LockToCurrentPlayer(gameManger.GetCurrentPlayer());
     }
 
     [ServerRpc]
     public void startFreeCamera()
     {
-        GetFreePlayerCamera(gameManger.numOfPlayers);
+        //GetFreePlayerCamera(gameManger.numOfPlayers);
+
+        cam1.EnterFreeCam();
 
     }
 
+    /*
     [ObserversRpc]
     public void GetLockPlayerCamera(int playerCount, PlayerLogic currentPlayer)
     {
@@ -73,7 +76,7 @@ public class CameraManager : NetworkIdentity
         {
             cam4.EnterFreeCam();
         }
-    }
+    }*/
 
 
     [ObserversRpc]
@@ -81,20 +84,28 @@ public class CameraManager : NetworkIdentity
     {
         MainCam.gameObject.SetActive(false);
         PlayerID clientID = localPlayer.Value;
+        cam1.gameObject.SetActive(true);
+        cam1.TurnOn(gameManger.GetCurrentPlayer());
+
+        /*
         switch (clientID.id)
         {
             case (ushort)1:
+                cam1.gameObject.SetActive(true);
                 cam1.TurnOn(gameManger.player1);
                 break;
             case (ushort)2:
+                cam2.gameObject.SetActive(true);
                 cam2.TurnOn(gameManger.player1);
                 break;
             case (ushort)3:
+                cam3.gameObject.SetActive(true);
                 cam3.TurnOn(gameManger.player1);
                 break;
             case (ushort)4:
+                cam4.gameObject.SetActive(true);
                 cam4.TurnOn(gameManger.player1);
                 break;
-        }
+        }*/
     }
 }

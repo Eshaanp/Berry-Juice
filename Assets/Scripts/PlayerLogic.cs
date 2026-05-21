@@ -35,7 +35,9 @@ public class PlayerLogic : NetworkBehaviour
     public IdleAnimations idleAnimations;
     //public UIManager uIManager;
 
-
+    //pokemon model exceptions
+    public GameObject minunSprite;
+    public GameObject plusleSprite;
 
     
     public enum Character
@@ -126,10 +128,10 @@ public class PlayerLogic : NetworkBehaviour
     public IEnumerator WalkToTile(GameObject targetTile)
     {
         Debug.Log("Target tile- " + targetTile);
-        // Cache positions ONCE
+      
         Vector3 startPos = transform.position;
         Vector3 targetPos = targetTile.transform.position;
-        targetPos.y = startPos.y; // lock Y for board movement
+        targetPos.y = startPos.y; //lock Y for board movement
 
         float distance = Vector3.Distance(startPos, targetPos);
         if (distance < 0.001f)
@@ -138,7 +140,7 @@ public class PlayerLogic : NetworkBehaviour
         float duration = distance / moveSpeed;
         float elapsed = 0f;
 
-        // Optional: set walking animation here
+        
         walkAnimations.DetermineDirection(this, startPos, targetPos);
 
         while (elapsed < duration)
@@ -151,7 +153,7 @@ public class PlayerLogic : NetworkBehaviour
             yield return null;
         }
 
-        // Snap cleanly to tile
+      
         transform.position = targetPos;
     }
 
@@ -211,7 +213,7 @@ public class PlayerLogic : NetworkBehaviour
 
     }
 
-
+    [ObserversRpc]
     public void Teleport(GameObject tile)
     {
         Vector3 pos = transform.position;
@@ -342,6 +344,7 @@ public class PlayerLogic : NetworkBehaviour
     }
 
     //start = false sets back to normal
+    //doesnt work with minun/plusle
     [ObserversRpc]
     public void SlideSpriteChange(bool start)
     {
@@ -349,12 +352,18 @@ public class PlayerLogic : NetworkBehaviour
 
         if (!start)
         {
-            sprite.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f);
+            //sprite.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f);
             moveSpeed = 5;
         }
-        else
+        /*else if (sprite = Oricorio)
         {
-            sprite.GetComponent<SpriteRenderer>().color = new Color(1f, .5f, .5f);
+            plusleSprite.GetComponent<SpriteRenderer>().color = new Color(1f, .5f, .5f);
+            minunSprite.GetComponent<SpriteRenderer>().color = new Color(1f, .5f, .5f);
+            moveSpeed = 2;
+        }*/
+        else 
+        {
+            //sprite.GetComponent<SpriteRenderer>().color = new Color(1f, .5f, .5f);
             moveSpeed = 2;
 
         }
