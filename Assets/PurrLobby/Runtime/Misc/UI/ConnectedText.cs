@@ -30,7 +30,7 @@ namespace PurrLobby
             {
                 StartCoroutine(TypewriterEffect("Connected"));
                 Debug.Log("WOOOOOOOOW");
-                SceneManager.LoadSceneAsync(nextScene);
+                //SceneManager.LoadSceneAsync(nextScene);
             }
             else if (obj == ConnectionState.Disconnected)
             {
