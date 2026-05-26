@@ -171,6 +171,12 @@ namespace PurrLobby.Providers {
                     Data = lobbyData
                 });
 
+                await LobbyService.Instance.UpdateLobbyAsync(CurrentLobby.Id, new UpdateLobbyOptions()
+                {
+                    IsLocked = false,
+                    IsPrivate = lobbyType == LobbyType.Private
+                });
+
                 await SubscribeLobbyEventsAsync();
 
                 await InitializeLocalPlayerData();
