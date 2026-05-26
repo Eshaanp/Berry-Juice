@@ -1,4 +1,5 @@
 using PurrNet;
+using PurrNet.Modules;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,7 +12,6 @@ public class GameStarter : MonoBehaviour
     private void Update()
     {
         if (!networkManager.isHost) return;
-
         if (networkManager.playerCount >= requiredPlayers)
         {
             StartGame();
@@ -20,11 +20,15 @@ public class GameStarter : MonoBehaviour
 
     private void StartGame()
     {
-        // Disable so it doesn't fire multiple times
         enabled = false;
         Debug.Log("START");
 
-        // PurrNet's server-side scene load — all clients follow automatically
-        SceneManager.LoadSceneAsync(nextScene);
+        var settings = new PurrSceneSettings
+        {
+            isPublic = true,
+            mode = LoadSceneMode.Single
+        };
+
+        networkManager.sceneModule.LoadSceneAsync(nextScene, settings);
     }
 }
