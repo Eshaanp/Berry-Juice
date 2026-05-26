@@ -10,6 +10,7 @@ namespace PurrNet.Modules
 {
     public class BroadcastModule : INetworkModule, IDataListener, IPromoteToServerModule
     {
+        public const int MAX_HEADER_SIZE = 5;
         private readonly ITransport _transport;
 
         private readonly Dictionary<uint, List<IBroadcastCallback>> _actions =
@@ -17,7 +18,7 @@ namespace PurrNet.Modules
 
         private bool _asServer;
 
-        internal event Action<Connection, uint, object> onRawDataReceived;
+        internal event Action<Connection, uint, BitPacker> onRawDataReceived;
 
         public BroadcastModule(INetworkManager manager, bool asServer)
         {
@@ -39,36 +40,21 @@ namespace PurrNet.Modules
                 throw new InvalidOperationException(PurrLogger.FormatMessage(message));
         }
 
-        public static ByteData GetImmediateData(object data)
-        {
-            using var stream = BitPackerPool.Get();
-            Packer<PackedUInt>.Write(stream, Hasher.GetStableHashU32(data.GetType()));
-            Packer.Write(stream, data);
-            return stream.ToByteData();
-        }
-
-        public static ByteData GetData<T>(T data)
+        private static ByteData GetData<T>(T data)
         {
             using var stream = BitPackerPool.Get();
             var typeId = Hasher.GetStableHashU32<T>();
 
-            Packer<PackedUInt>.Write(stream, typeId);
-            Packer<T>.Write(stream, data);
+            Packer<uint>.WriteFunc(stream, typeId);
+            Packer<T>.WriteFunc(stream, data);
 
             return stream.ToByteData();
-        }
-
-        public static void GetData<T>(BitPacker stream, T data)
-        {
-            var typeId = Hasher.GetStableHashU32<T>();
-
-            Packer<PackedUInt>.Write(stream, typeId);
-            Packer<T>.Write(stream, data);
         }
 
         static bool ShouldTrackType(Type type)
         {
-            return type != typeof(RPCPacket) && type != typeof(ChildRPCPacket) && type != typeof(StaticRPCPacket);
+            return type != typeof(RPCPacket) && type != typeof(ChildRPCPacket) && type != typeof(StaticRPCPacket)
+                   && type != typeof(RPCBatchPacket);
         }
 
         public void SendToAll<T>(T data, Channel method = Channel.ReliableOrdered)
@@ -83,21 +69,18 @@ namespace PurrNet.Modules
             int connCount = _transport.connections.Count;
             for (int i = 0; i < connCount; i++)
             {
+                var conn = _transport.connections[i];
 #if UNITY_EDITOR || PURR_RUNTIME_PROFILING
                 if (shouldTrack)
                     Statistics.SentBroadcast(type, byteData.segment);
 #endif
-                _transport.SendToClient(_transport.connections[i], byteData, method);
-            }
-        }
-
-        public void SendRaw(Connection conn, ByteData data, Channel method = Channel.ReliableOrdered)
-        {
-            AssertIsServer("Cannot send data to player from client.");
-#if UNITY_EDITOR || PURR_RUNTIME_PROFILING
-            Statistics.ForwardedBytes(data.length);
+#if PURR_MTU_DEBUGGING
+                var mtu = _transport.GetMTU(conn, method, _asServer);
+                if (byteData.length > mtu)
+                    PurrLogger.LogError($"MTU exceeded by `{typeof(T)}` with {byteData.length} bytes when MTU is {mtu} bytes.");
 #endif
-            _transport.SendToClient(conn, data, method);
+                _transport.SendToClient(conn, byteData, method);
+            }
         }
 
         public void Send<T>(Connection conn, T data, Channel method = Channel.ReliableOrdered)
@@ -109,6 +92,11 @@ namespace PurrNet.Modules
             var type = typeof(T);
             if (ShouldTrackType(type))
                 Statistics.SentBroadcast(type, byteData.segment);
+#endif
+#if PURR_MTU_DEBUGGING
+            var mtu = _transport.GetMTU(conn, method, _asServer);
+            if (byteData.length > mtu)
+                PurrLogger.LogError($"MTU exceeded by `{typeof(T)}` with {byteData.length} bytes when MTU is {mtu} bytes.");
 #endif
             _transport.SendToClient(conn, byteData, method);
         }
@@ -130,19 +118,10 @@ namespace PurrNet.Modules
                 if (shouldTrack)
                     Statistics.SentBroadcast(type, byteData.segment);
 #endif
-                _transport.SendToClient(connection, byteData, method);
-            }
-        }
-
-        public void Send(IReadOnlyList<Connection> conn, ByteData byteData, Channel method = Channel.ReliableOrdered)
-        {
-            AssertIsServer("Cannot send data to player from client.");
-
-            for (var i = 0; i < conn.Count; i++)
-            {
-                var connection = conn[i];
-#if UNITY_EDITOR || PURR_RUNTIME_PROFILING
-                Statistics.ForwardedBytes(byteData.length);
+#if PURR_MTU_DEBUGGING
+                var mtu = _transport.GetMTU(connection, method, _asServer);
+                if (byteData.length > mtu)
+                    PurrLogger.LogError($"MTU exceeded by `{typeof(T)}` with {byteData.length} bytes when MTU is {mtu} bytes.");
 #endif
                 _transport.SendToClient(connection, byteData, method);
             }
@@ -159,32 +138,42 @@ namespace PurrNet.Modules
             if (ShouldTrackType(type))
                 Statistics.SentBroadcast(type, byteData.segment);
 #endif
+#if PURR_MTU_DEBUGGING
+            var mtu = _transport.GetMTU(default, method, _asServer);
+            if (byteData.length > mtu)
+                PurrLogger.LogError($"MTU exceeded by `{typeof(T)}` with {byteData.length} bytes when MTU is {mtu} bytes.");
+#endif
             _transport.SendToServer(byteData, method);
         }
 
         public void OnDataReceived(Connection conn, ByteData data, bool asServer)
         {
-            if (_asServer != asServer)
-                return;
-
-            using var stream = BitPackerPool.Get(data);
-            var typeId = Packer<PackedUInt>.Read(stream);
-
-            if (!Hasher.TryGetType(typeId, out var typeInfo))
+            try
             {
-                PurrLogger.LogError(
-                    $"Cannot find type with id {typeId}; type must not have been registered properly.\nData: {data.ToString()}");
-                return;
-            }
+                if (_asServer != asServer)
+                    return;
 
-            object instance = null;
-            Packer.Read(stream, typeInfo, ref instance);
-            TriggerCallback(conn, typeId, instance);
+                using var stream = BitPackerPool.Get(data);
+                var typeId = Packer<uint>.Read(stream);
+
+                if (!Hasher.TryGetType(typeId, out var typeInfo))
+                {
+                    PurrLogger.LogError(
+                        $"Cannot find type with id {typeId}; type must not have been registered properly.\nData: {data.ToString()}");
+                    return;
+                }
+
+                TriggerCallback(conn, typeId, stream);
 
 #if UNITY_EDITOR || PURR_RUNTIME_PROFILING
-            if (ShouldTrackType(typeInfo))
-                Statistics.ReceivedBroadcast(typeInfo, data.segment);
+                if (ShouldTrackType(typeInfo))
+                    Statistics.ReceivedBroadcast(typeInfo, data.segment);
 #endif
+            }
+            catch (Exception e)
+            {
+                PurrLogger.LogException(e);
+            }
         }
 
         public void Subscribe<T>(BroadcastDelegate<T> callback)
@@ -221,15 +210,20 @@ namespace PurrNet.Modules
             }
         }
 
-        private void TriggerCallback(Connection conn, uint hash, object instance)
+        private void TriggerCallback(Connection conn, uint hash, BitPacker packer)
         {
+            var startPos = packer.positionInBits;
+
             if (_actions.TryGetValue(hash, out var actions))
             {
                 for (int i = 0; i < actions.Count; i++)
-                    actions[i].TriggerCallback(conn, instance, _asServer);
+                {
+                    actions[i].TriggerCallback(conn, packer, _asServer);
+                    packer.SetBitPosition(startPos);
+                }
             }
 
-            onRawDataReceived?.Invoke(conn, hash, instance);
+            onRawDataReceived?.Invoke(conn, hash, packer);
         }
 
         public void PromoteToServerModule()

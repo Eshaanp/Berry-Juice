@@ -6,7 +6,8 @@ using PurrNet.Packing;
 
 namespace PurrNet.Pooling
 {
-    public struct DisposableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDisposable, IDuplicate<DisposableDictionary<TKey, TValue>>
+    public struct DisposableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDisposable, IDuplicate<DisposableDictionary<TKey, TValue>>,
+        IEquatable<DisposableDictionary<TKey, TValue>>
         where TKey : notnull
     {
         private bool _isAllocated;
@@ -102,7 +103,7 @@ namespace PurrNet.Pooling
             if (!_isAllocated)
                 throw new ObjectDisposedException(nameof(DisposableDictionary<TKey, TValue>));
             NotifyUsage();
-            return dictionary.ContainsKey(item.Key) && EqualityComparer<TValue>.Default.Equals(dictionary[item.Key], item.Value);
+            return dictionary.TryGetValue(item.Key, out var val) && EqualityComparer<TValue>.Default.Equals(val, item.Value);
         }
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
@@ -126,7 +127,7 @@ namespace PurrNet.Pooling
             if (!_isAllocated)
                 throw new ObjectDisposedException(nameof(DisposableDictionary<TKey, TValue>));
             NotifyUsage();
-            if (dictionary.ContainsKey(item.Key) && EqualityComparer<TValue>.Default.Equals(dictionary[item.Key], item.Value))
+            if (dictionary.TryGetValue(item.Key, out var val) && EqualityComparer<TValue>.Default.Equals(val, item.Value))
             {
                 dictionary.Remove(item.Key);
                 _keys.Remove(item.Key);
@@ -214,9 +215,10 @@ namespace PurrNet.Pooling
                 if (!_isAllocated)
                     throw new ObjectDisposedException(nameof(DisposableDictionary<TKey, TValue>));
                 NotifyUsage();
-                if (!dictionary.ContainsKey(key))
+                if (dictionary.TryAdd(key, value))
                     _keys.Add(key);
-                dictionary[key] = value;
+                else
+                    dictionary[key] = value;
             }
         }
 
@@ -270,5 +272,8 @@ namespace PurrNet.Pooling
             }
             return Create(this);
         }
+
+        public bool Equals(DisposableDictionary<TKey, TValue> other)
+            => new DictionaryComparator<TKey, TValue>().Equals(dictionary, other.dictionary);
     }
 }

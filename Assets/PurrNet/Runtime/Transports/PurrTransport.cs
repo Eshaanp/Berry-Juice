@@ -14,6 +14,7 @@ using UnityEngine;
 
 namespace PurrNet.Transports
 {
+    [AddComponentMenu("PurrNet/Transport/Purr Transport")]
     public partial class PurrTransport : GenericTransport, ITransport
     {
         enum SERVER_PACKET_TYPE : byte
@@ -53,12 +54,14 @@ namespace PurrNet.Transports
         public string region
         {
             get => _region;
+            [Obsolete("Use SetServer() instead")]
             set => _region = value;
         }
 
         public string host
         {
             get => _host;
+            [Obsolete("Use SetServer() instead")]
             set => _host = value;
         }
 
@@ -66,6 +69,12 @@ namespace PurrNet.Transports
         {
             get => _roomName;
             set => _roomName = value;
+        }
+
+        public void SetServer(RelayServer server)
+        {
+            _region = server.region;
+            _host = server.host;
         }
 
         public bool hasRegionAndHost => !string.IsNullOrEmpty(_region) && !string.IsNullOrEmpty(_host);
@@ -311,7 +320,9 @@ namespace PurrNet.Transports
                         true);
                     break;
                 }
-                default: throw new ArgumentOutOfRangeException(type.ToString());
+                default:
+                    PurrLogger.LogError($"Unexpected packet type {type} from server");
+                    break;
             }
         }
 
@@ -344,7 +355,9 @@ namespace PurrNet.Transports
                     case SERVER_PACKET_TYPE.SERVER_AUTHENTICATION_FAILED:
                         Disconnect();
                         break;
-                    default: throw new ArgumentOutOfRangeException(type.ToString());
+                    default:
+                        PurrLogger.LogError($"Unexpected packet type {type} from server");
+                        break;
                 }
             }
         }

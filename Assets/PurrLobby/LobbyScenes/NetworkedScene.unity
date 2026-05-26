@@ -157,7 +157,8 @@ MonoBehaviour:
   _dontDestroyOnLoad: 0
   _transport: {fileID: 104676491}
   _networkPrefabs: {fileID: 11400000, guid: 61ab6c8df370f33429ba4e9c3aa2c17e, type: 2}
-  _networkAssets: {fileID: 0}
+  _addressableNetworkPrefabs: {fileID: 0}
+  _networkAssets: {fileID: 11400000, guid: 64e28127dec2eb44cabb68b34e8dbd72, type: 2}
   _networkRules: {fileID: 11400000, guid: d8799083b96579a42b8b2d03e4ceae98, type: 2}
   _visibilityRules: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
   _authenticator: {fileID: 0}
@@ -376,6 +377,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   networkManager: {fileID: 104676488}
   connectedText: {fileID: 270819955}
+  nextScene: GameScene
 --- !u!1 &273798950
 GameObject:
   m_ObjectHideFlags: 0

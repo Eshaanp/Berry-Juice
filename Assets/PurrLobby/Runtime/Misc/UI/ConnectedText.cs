@@ -4,6 +4,7 @@ using PurrNet;
 using PurrNet.Transports;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 namespace PurrLobby
 {
@@ -11,6 +12,7 @@ namespace PurrLobby
     {
         [SerializeField] private NetworkManager networkManager;
         [SerializeField] private TMP_Text connectedText;
+        [PurrScene, SerializeField] private string nextScene;
 
         private void Awake()
         {
@@ -25,9 +27,15 @@ namespace PurrLobby
         private void OnConnectionState(ConnectionState obj)
         {
             if (obj == ConnectionState.Connected)
+            {
                 StartCoroutine(TypewriterEffect("Connected"));
+                Debug.Log("WOOOOOOOOW");
+                SceneManager.LoadSceneAsync(nextScene);
+            }
             else if (obj == ConnectionState.Disconnected)
+            {
                 StartCoroutine(TypewriterEffect("Not connected"));
+            }
         }
 
         private WaitForSeconds _wait = new(0.1f);
