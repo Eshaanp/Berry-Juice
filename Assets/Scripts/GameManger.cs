@@ -24,6 +24,7 @@ public class GameManger : NetworkBehaviour
     public DiceRoll rolling;
     public CardServerManager cardServerManager;
     public CameraManager cameraManager;
+    public MainUI mainUI;
 
     //[SerializeField] private NetworkIdentity networkIdentity;
     
@@ -41,6 +42,8 @@ public class GameManger : NetworkBehaviour
     
 
     public GameObject firstTile;
+    public GameObject firstTileRound2;
+    public TileParent tileParent;
     
 
     
@@ -211,7 +214,7 @@ public class GameManger : NetworkBehaviour
             {
                 players[i].CrossedFinish = false;
                 players[i].TurnOffAllSprites();
-                players[i].StartTeleport(firstTile);
+                players[i].StartTeleport(firstTileRound2); 
                 PlayerLogic.Character choice = players[i].pickedCharacters[1];
                 players[i].character = choice;
                 players[i].SetUpCharacter(choice);
@@ -233,6 +236,8 @@ public class GameManger : NetworkBehaviour
         {
             yield return null;
         }
+        tileParent.SetAllTiles();
+
         currentPlayerTurn.value = 1;
 
         snakeDraft.showDraft(true);
@@ -272,6 +277,7 @@ public class GameManger : NetworkBehaviour
     //First turn, starts main game and sets initial variables
     public void FirstTurn()
     {
+        mainUI.UpdateNameUI();
         //uiManager.gameObject.SetActive(true);
         currentPlayerTurn.value = 1;
         turn = 0;
@@ -324,7 +330,7 @@ public class GameManger : NetworkBehaviour
             {
                 EndGame();
                 return;
-            }    
+            }
             EndTurn();
             Debug.Log("crossed Finish");
             return;
@@ -336,12 +342,17 @@ public class GameManger : NetworkBehaviour
             EndTurn();
             Debug.Log("skip");
             return;
-            
+
         }
-        
-        playerTypes.CheckCharacterBeforeRole(GetCurrentPlayer());
-        StartCoroutine(WaitForPlayers());
-        //StartCoroutine(GetCurrentPlayer().DiceRoll());
+        if (GetCurrentPlayer().isAI == false)
+        {
+            playerTypes.CheckCharacterBeforeRole(GetCurrentPlayer());
+            StartCoroutine(WaitForPlayers());
+        }
+        else
+        {
+
+        }
 
     }
 
@@ -411,15 +422,14 @@ public class GameManger : NetworkBehaviour
 
 
     //updates score of player
-    public void updateScore(int points)
+    public void updateScore(PlayerLogic player, int points)
     {
-
-        PlayerLogic player = GetCurrentPlayer();
 
         
         if (player.PlayerId == 1)
         {
             Player1Score += points;
+            
         } else if (player.PlayerId == 2)
         {
             Player2Score += points;
@@ -430,6 +440,8 @@ public class GameManger : NetworkBehaviour
         {
             Player4Score += points;
         }
+
+        mainUI.UpdatePointUI();
 
     }
 

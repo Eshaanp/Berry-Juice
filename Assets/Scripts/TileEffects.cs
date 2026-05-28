@@ -25,7 +25,7 @@ public class TileEffects : NetworkBehaviour
 
                 case TileType.EndTile:
                     player.CrossedFinish = true;
-                    gameManger.updateScore(gameManger.turn);
+                    gameManger.updateScore(gameManger.GetCurrentPlayer() ,gameManger.turn);
                     break;
 
                 case TileType.SlideForward:
@@ -42,8 +42,16 @@ public class TileEffects : NetworkBehaviour
                     player.skipTurn = true;
                     break;
 
-                case TileType.PitfallTile:
-                    gameManger.updateScore(1);
+                case TileType.PenaltyTile:
+                    gameManger.updateScore(gameManger.GetCurrentPlayer() , -1);
+                    break;
+
+                case TileType.PointTile:
+                    gameManger.updateScore(gameManger.GetCurrentPlayer(),1);
+                    break;
+                case TileType.CardTile: 
+                    int currentPlayerID = gameManger.GetCurrentPlayer().PlayerId;
+                    gameManger.cardServerManager.giveCardTargetPlayer(currentPlayerID);
                     break;
             }
         }

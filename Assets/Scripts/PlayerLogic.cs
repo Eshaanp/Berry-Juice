@@ -12,6 +12,7 @@ public class PlayerLogic : NetworkBehaviour
     [Header("Player Information")]
     public int PlayerId;
     public int CurrentTileId = 0;
+    public bool isAI = false;
     public GameObject currentTile;
     
 
@@ -353,7 +354,7 @@ public class PlayerLogic : NetworkBehaviour
         if (!start)
         {
             //sprite.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f);
-            moveSpeed = 5;
+            //moveSpeed = 5;
         }
         /*else if (sprite = Oricorio)
         {
@@ -364,7 +365,7 @@ public class PlayerLogic : NetworkBehaviour
         else 
         {
             //sprite.GetComponent<SpriteRenderer>().color = new Color(1f, .5f, .5f);
-            moveSpeed = 2;
+            //moveSpeed = 2;
 
         }
 

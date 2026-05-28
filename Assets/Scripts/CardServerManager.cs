@@ -103,7 +103,7 @@ public class CardServerManager : NetworkBehaviour
     public void Ingrain()
     {
         gameManger.GetCurrentPlayer().skipTurn = true;
-        gameManger.updateScore(-2);
+        gameManger.updateScore(gameManger.GetCurrentPlayer(), 2);
     }
 
    
