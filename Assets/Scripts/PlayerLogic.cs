@@ -90,7 +90,7 @@ public class PlayerLogic : NetworkBehaviour
     [ObserversRpc]
     public void StartMainMovement(int roll)
     {
-        gameManager.cameraManager.LockToCurrentPlayer(); //camera
+         //camera
         StartCoroutine(MainMovement(roll));
     }
     [ObserversRpc]
@@ -111,15 +111,19 @@ public class PlayerLogic : NetworkBehaviour
     public IEnumerator MainMovement(int tilesToMove)
     {
         Debug.Log("move");
-        yield return MovementSlide(tilesToMove);
+        yield return StartCoroutine(gameManager.mainCamera.changeCamera(false, this));
+        //gameManager.cameraManager.LockToCurrentPlayer();
+        yield return StartCoroutine(MovementSlide(tilesToMove));
         isMoving = false;
+
+        yield return StartCoroutine(gameManager.mainCamera.changeCamera(true, this));
         gameManager.playerReady();
     }
 
     public IEnumerator SlideMovement(int tilesToMove)
     {
         Debug.Log("slide");
-        yield return MovementSlide(tilesToMove);
+        yield return StartCoroutine(MovementSlide(tilesToMove));
         isMoving = false;
         SlideSpriteChange(false);
     }
@@ -201,16 +205,19 @@ public class PlayerLogic : NetworkBehaviour
             {
                 playerTypes.CheckCharacterDuringRole(this);
             }
-
+           
             currentTile = nextTile;
             CurrentTileId = currentTile.GetComponent<TileLogic>().id;
 
             //Debug.Log("Visited tile " + CurrentTileId);
         }
-        currentTile.GetComponent<TileLogic>().setPlayerOnTile(this);
-        idleAnimations.setIdleAnimation(this);
-        tileEffects.CheckEffect(this);
         
+        currentTile.GetComponent<TileLogic>().setPlayerOnTile(this);
+       
+        idleAnimations.setIdleAnimation(this);
+        
+        yield return StartCoroutine(tileEffects.CheckEffect(this));
+        Debug.Log("left tile eff");
 
     }
 

@@ -11,8 +11,7 @@ public class CardManager : NetworkBehaviour
     public GameObject cardCanvas;
     public GameObject MainCanvas;
 
-    private CardType[] cardArr = { CardType.Agility, CardType.GigaImpact, CardType.Hypnosis, CardType.Hypnosis, CardType.Snatch };
-    private float[] probabilities = { 0.24f, 0.24f, 0.24f, 0.14f, 0.14f };
+
 
     [Header("Card Buttons")]
     public ActionCard cardButton1;
@@ -27,60 +26,25 @@ public class CardManager : NetworkBehaviour
     public bool isSnatchInEffect;
     public bool isTopsyInEffect;
     public bool isTauntInEffect;
+    public bool isBloodMoonInEffect;
 
     public bool playerUsedCard = false;
 
 
 
 
-
-
-
-    public CardType getRandomCard()
+    [ObserversRpc]
+    public void UpdateCardToPlayer(ActionCard.CardType[] cardArray, int playerID)
     {
-        float roll = Random.value; // 0.0–1.0
-        float cumulative = 0f;
+        Debug.Log("Giving Card to Player: " + playerID);
+        PlayerID clientId = localPlayer.Value;
 
-        for (int i = 0; i < probabilities.Length; i++)
+        if ((ushort)clientId.id == (ushort)playerID)
         {
-            cumulative += probabilities[i];
-
-            if (roll <= cumulative)
-                return cardArr[i];
+            cardButton1.SetCardSprite(cardArray[0]);
+            cardButton2.SetCardSprite(cardArray[1]);
+            cardButton3.SetCardSprite(cardArray[2]);
         }
-        return cardArr[cardArr.Length - 1];
-    }
-
-    public void generateCard()
-    {
-        Debug.Log("In generate Card");
-        //addCard(ActionCard.CardType.TopsyTurvy);
-        addCard(getRandomCard());
-    }
-
-    public void addCard(CardType card)
-    {
-        ActionCard cardSlot;
-        if (cardButton1.cardType == CardType.EmptyCard)
-        {
-            cardSlot = cardButton1;
-        }
-        else if (cardButton2.cardType == CardType.EmptyCard)
-        {
-            cardSlot = cardButton2;
-        }
-        else if (cardButton3.cardType == CardType.EmptyCard)
-        {
-            cardSlot = cardButton3;
-        }
-        else
-        {
-            return;
-        }
-
-        cardSlot.SetCardSprite(card);
-
-
     }
 
 
@@ -91,8 +55,9 @@ public class CardManager : NetworkBehaviour
             Debug.Log("Empty");
             return;
         }
-        checkCard(cardButton1.cardType);
+        checkCard(cardButton1.cardType, 0);
         cardButton1.turnEmpty();
+
         cardCanvas.SetActive(false);
         MainCanvas.SetActive(true);
         playerUsedCard = true;
@@ -104,7 +69,7 @@ public class CardManager : NetworkBehaviour
         {
             return;
         }
-        checkCard(cardButton2.cardType);
+        checkCard(cardButton2.cardType, 1);
         cardButton2.turnEmpty();
         cardCanvas.SetActive(false);
         MainCanvas.SetActive(true);
@@ -117,7 +82,7 @@ public class CardManager : NetworkBehaviour
         {
             return;
         }
-        checkCard(cardButton3.cardType);
+        checkCard(cardButton3.cardType, 2);
         cardButton3.turnEmpty();
         cardCanvas.SetActive(false);
         MainCanvas.SetActive(true);
@@ -132,6 +97,7 @@ public class CardManager : NetworkBehaviour
         if (cardSlot.cardType == ActionCard.CardType.StickWeb && isStickyInEffect == true) { return true; }
         if (cardSlot.cardType == ActionCard.CardType.Snatch && isSnatchInEffect == true) { return true; }
         if (cardSlot.cardType == ActionCard.CardType.TopsyTurvy && isTopsyInEffect == true) { return true; }
+        if (cardSlot.cardType == ActionCard.CardType.BloodMoon && isBloodMoonInEffect == true) { return true; } //no effect yet
         return false;
 
     }
@@ -146,9 +112,10 @@ public class CardManager : NetworkBehaviour
 
 
     [ServerRpc]
-    public void checkCard(CardType card)
+    public void checkCard(CardType card, int cardSlot)
     {
         cardServerManager.playerUsedCardThisTurn = true;
+        cardServerManager.DeleteCard(cardSlot);
         switch (card)
         {
             case ActionCard.CardType.Agility:
@@ -189,6 +156,40 @@ public class CardManager : NetworkBehaviour
 
             case ActionCard.CardType.TopsyTurvy:
                 cardServerManager.TopsyTurvy();
+                break;
+
+            //__________________________________________
+
+            case ActionCard.CardType.LightThatBurn:
+                cardServerManager.Snatch();
+                break;
+
+            case ActionCard.CardType.Coaching:
+                cardServerManager.Snatch();
+                break;
+
+            case ActionCard.CardType.Present:
+                cardServerManager.Snatch();
+                break;
+
+            case ActionCard.CardType.BloodMoon:
+                cardServerManager.Snatch();
+                break;
+
+            case ActionCard.CardType.DireClaw:
+                cardServerManager.Snatch();
+                break;
+
+            case ActionCard.CardType.JumpKick:
+                cardServerManager.Snatch();
+                break;
+
+            case ActionCard.CardType.SpiritShackle:
+                cardServerManager.Snatch();
+                break;
+
+            case ActionCard.CardType.MakeItRain:
+                cardServerManager.Snatch();
                 break;
         }
 

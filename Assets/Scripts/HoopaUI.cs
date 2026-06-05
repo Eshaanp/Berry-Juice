@@ -25,7 +25,7 @@ public class HoopaUI : NetworkBehaviour
     {
         hoopaButtonPressed = false;
         int currentPlayerId = gameManger.GetCurrentPlayer().PlayerId;
-        int numOfPlayers = gameManger.numOfPlayers;
+        int numOfPlayers = gameManger.maxPlayers;
 
         ShowHoopaUI(true);
 
@@ -68,11 +68,11 @@ public class HoopaUI : NetworkBehaviour
             {
                 player2.gameObject.SetActive(true);
             }
-            if (currentPlayerId != 3 && gameManger.numOfPlayers >= 3 && gameManger.player3.CrossedFinish == false)
+            if (currentPlayerId != 3 && gameManger.maxPlayers >= 3 && gameManger.player3.CrossedFinish == false)
             {
                 player3.gameObject.SetActive(true);
             }
-            if (currentPlayerId != 4 && gameManger.numOfPlayers == 4 && gameManger.player4.CrossedFinish == false)
+            if (currentPlayerId != 4 && gameManger.maxPlayers == 4 && gameManger.player4.CrossedFinish == false)
             {
                 player4.gameObject.SetActive(true);
             }
@@ -136,7 +136,7 @@ public class HoopaUI : NetworkBehaviour
 
 
 
-    private void movePlayer(int playerNum)
+    public void movePlayer(int playerNum)
     {
         /*
         if(gameManger.GetTargetPlayer(playerNum) == null){

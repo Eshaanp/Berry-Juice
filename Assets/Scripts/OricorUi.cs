@@ -94,7 +94,7 @@ public class OricorUi : NetworkBehaviour
 
 
 
-    private void movePlayers()
+    public void movePlayers()
     {
         List<PlayerLogic> lastPlace = gameManger.getLastPlacePlayers();
         

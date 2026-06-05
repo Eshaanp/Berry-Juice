@@ -21,7 +21,15 @@ public class ActionCard : MonoBehaviour
         Ingrain,
         HeartSwap,
         Taunt,
-        TopsyTurvy
+        TopsyTurvy,
+        LightThatBurn,
+        Coaching,
+        Present,
+        BloodMoon,
+        DireClaw,
+        JumpKick,
+        SpiritShackle,
+        MakeItRain,
 
     }
     [Header("Type of card")]
@@ -38,6 +46,15 @@ public class ActionCard : MonoBehaviour
     public Sprite heartSwapImage;
     public Sprite tauntImage;
     public Sprite topsyTurvyImage;
+    public Sprite LightThatBurnImage;
+    public Sprite CoachingImage;
+    public Sprite PresentImage;
+    public Sprite BloodMoonImage;
+    public Sprite DireClawImage;
+    public Sprite JumpKickImage;
+    public Sprite SpiritShackleImage;
+    public Sprite MakeItRainImage;
+
 
     public Sprite empty;
 
@@ -99,8 +116,37 @@ public class ActionCard : MonoBehaviour
                 image.sprite = topsyTurvyImage;
                 break;
 
-                
+            case CardType.LightThatBurn:
+                image.sprite = LightThatBurnImage;
+                break;
 
+            case CardType.Coaching:
+                image.sprite = CoachingImage;
+                break;
+
+            case CardType.Present:
+                image.sprite = PresentImage;
+                break;
+
+            case CardType.BloodMoon:
+                image.sprite = BloodMoonImage;
+                break;
+
+            case CardType.DireClaw:
+                image.sprite = DireClawImage;
+                break;
+
+            case CardType.JumpKick:
+                image.sprite = JumpKickImage;
+                break;
+
+            case CardType.SpiritShackle:
+                image.sprite = SpiritShackleImage;
+                break;
+
+            case CardType.MakeItRain:
+                image.sprite = MakeItRainImage;
+                break;
 
 
             case CardType.EmptyCard:

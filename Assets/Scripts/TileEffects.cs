@@ -11,7 +11,7 @@ public class TileEffects : NetworkBehaviour
 
     public GameManger gameManger;
 
-    public void CheckEffect(PlayerLogic player)
+    public IEnumerator CheckEffect(PlayerLogic player)
     {
         //get tile tile of current player
         TileLogic tile = player.currentTile.GetComponent<TileLogic>();
@@ -21,38 +21,38 @@ public class TileEffects : NetworkBehaviour
             switch (tile.tileType)
             {
                 case TileType.StartTile:
-                    break;
+                    yield break;
 
                 case TileType.EndTile:
                     player.CrossedFinish = true;
                     gameManger.updateScore(gameManger.GetCurrentPlayer() ,gameManger.turn);
-                    break;
+                    yield break; 
 
                 case TileType.SlideForward:
-                    player.StartSlide(1);
-                    break;
+                    yield return StartCoroutine(player.SlideMovement(1));
+                    yield break; 
 
                 case TileType.SlideBackwards:
                     player.SlideSpriteChange(true);
-                    player.StartSlide(-1);
+                    yield return StartCoroutine(player.SlideMovement(-1));
                     //negativeTileEffect(false, player);
-                    break;
+                    yield break; 
 
                 case TileType.TripTile:
                     player.skipTurn = true;
-                    break;
+                    yield break; 
 
                 case TileType.PenaltyTile:
                     gameManger.updateScore(gameManger.GetCurrentPlayer() , -1);
-                    break;
+                    yield break; 
 
                 case TileType.PointTile:
                     gameManger.updateScore(gameManger.GetCurrentPlayer(),1);
-                    break;
+                    yield break; 
                 case TileType.CardTile: 
                     int currentPlayerID = gameManger.GetCurrentPlayer().PlayerId;
                     gameManger.cardServerManager.giveCardTargetPlayer(currentPlayerID);
-                    break;
+                    yield break; 
             }
         }
     }

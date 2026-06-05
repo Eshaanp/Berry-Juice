@@ -1,11 +1,10 @@
 using PurrNet;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static ActionCard;
 
 public class CardServerManager : NetworkBehaviour
 {
-
-
 
 
     public GameManger gameManger;
@@ -34,6 +33,18 @@ public class CardServerManager : NetworkBehaviour
     public bool taunt;
     public int tauntOrgin;
 
+    public bool bloodMoon;
+    public int bloodMoonOrgin;
+
+    [Header("Players Current Cards")]
+    public ActionCard.CardType[] Player1Cards = { ActionCard.CardType.EmptyCard, ActionCard.CardType.EmptyCard, ActionCard.CardType.EmptyCard };
+    public ActionCard.CardType[] Player2Cards = { ActionCard.CardType.EmptyCard, ActionCard.CardType.EmptyCard, ActionCard.CardType.EmptyCard };
+    public ActionCard.CardType[] Player3Cards = { ActionCard.CardType.EmptyCard, ActionCard.CardType.EmptyCard, ActionCard.CardType.EmptyCard };
+    public ActionCard.CardType[] Player4Cards = { ActionCard.CardType.EmptyCard, ActionCard.CardType.EmptyCard, ActionCard.CardType.EmptyCard };
+
+
+    private CardType[] cardProb = { CardType.Agility, CardType.GigaImpact, CardType.Hypnosis, CardType.Hypnosis, CardType.Snatch };
+    private float[] probabilities = { 0.24f, 0.24f, 0.24f, 0.14f, 0.14f };
 
     public void Snatch()
     {
@@ -48,6 +59,13 @@ public class CardServerManager : NetworkBehaviour
         stickyWeb = true;
         stickyWebOrigin = gameManger.GetCurrentPlayer().PlayerId;
         stickyInEffect(true);
+    }
+
+    public void BloodMoon()
+    {
+        bloodMoon = true;
+        bloodMoonOrgin = gameManger.GetCurrentPlayer().PlayerId;
+        bloodMoonInEffect(true);
     }
 
     public void TopsyTurvy()
@@ -110,7 +128,7 @@ public class CardServerManager : NetworkBehaviour
     public void HeartSwap()
     {
         PlayerLogic[] allPlayers = gameManger.getAllPlayers();
-        PlayerLogic[] targetPlayers = new PlayerLogic[gameManger.numOfPlayers - 1];
+        PlayerLogic[] targetPlayers = new PlayerLogic[gameManger.maxPlayers - 1];
         int index = 0;
 
         for (int i = 0; i < allPlayers.Length; i++)
@@ -122,7 +140,7 @@ public class CardServerManager : NetworkBehaviour
             }
         }
 
-        int randomInt = UnityEngine.Random.Range(0, gameManger.numOfPlayers - 1);
+        int randomInt = UnityEngine.Random.Range(0, gameManger.maxPlayers - 1);
 
         swapCharacters(targetPlayers[randomInt]);
 
@@ -152,27 +170,77 @@ public class CardServerManager : NetworkBehaviour
 
 
 
-
-
-
-    [ObserversRpc]
-    public void giveCardAllPlayers()
+    public CardType getRandomCard()
     {
-        clientCardManager.generateCard();
+        float roll = Random.value; // 0.0–1.0
+        float cumulative = 0f;
+
+        for (int i = 0; i < probabilities.Length; i++)
+        {
+            cumulative += probabilities[i];
+
+            if (roll <= cumulative)
+                return cardProb[i];
+        }
+        return cardProb[cardProb.Length - 1];
     }
 
-    [ObserversRpc]
+
+
+
+
     public void giveCardTargetPlayer(int playerID)
     {
-        Debug.Log("Giving Card to Player: " +  playerID);
-        PlayerID clientId = localPlayer.Value;
 
-        if ((ushort)clientId.id == (ushort)playerID)
+
+        ActionCard.CardType card = getRandomCard();
+
+        ActionCard.CardType[] cardArray = new ActionCard.CardType[3];
+
+        Debug.Log(card.ToString());
+        
+        switch (playerID)
         {
-            clientCardManager.generateCard();
+            case 1: cardArray = Player1Cards; break;
+            case 2: cardArray = Player2Cards; break;
+            case 3: cardArray = Player3Cards; break;
+            case 4: cardArray = Player4Cards; break;
         }
 
+        for (int i = 0; i < 3; i++)
+        {
+            if (cardArray[i] == ActionCard.CardType.EmptyCard)
+            {
+                cardArray[i] = card;
+                break;
+            }
+        }
+
+        switch (playerID)
+        {
+            case 1: Player1Cards = cardArray; clientCardManager.UpdateCardToPlayer(Player1Cards, playerID); break;
+            case 2: Player2Cards = cardArray; clientCardManager.UpdateCardToPlayer(Player2Cards, playerID); break;
+            case 3: Player3Cards = cardArray; clientCardManager.UpdateCardToPlayer(Player3Cards, playerID); break;
+            case 4: Player4Cards = cardArray; clientCardManager.UpdateCardToPlayer(Player4Cards, playerID); break;
+        }
+
+
     }
+
+
+
+    public void DeleteCard(int cardSlot)
+    {
+
+        switch (gameManger.GetCurrentPlayer().PlayerId)
+        {
+            case 1: Player1Cards[cardSlot] = ActionCard.CardType.EmptyCard; break;
+            case 2: Player2Cards[cardSlot] = ActionCard.CardType.EmptyCard; break;
+            case 3: Player3Cards[cardSlot] = ActionCard.CardType.EmptyCard; break;
+            case 4: Player4Cards[cardSlot] = ActionCard.CardType.EmptyCard; break;
+        }
+    }
+
 
 
     [ObserversRpc]
@@ -185,6 +253,13 @@ public class CardServerManager : NetworkBehaviour
     {
         clientCardManager.isStickyInEffect = turnOn;
     }
+
+    [ObserversRpc]
+    public void bloodMoonInEffect(bool turnOn)
+    {
+        clientCardManager.isBloodMoonInEffect = turnOn;
+    }
+
     [ObserversRpc]
     public void tauntInEffect(bool turnOn)
     {

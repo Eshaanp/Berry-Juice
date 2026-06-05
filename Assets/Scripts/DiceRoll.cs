@@ -42,20 +42,20 @@ public class DiceRoll : NetworkBehaviour
         {
             yield break;
         }
-        
 
-        isDicePressed = false;
-        ShowDiceUIObserver(true);
-        while (!isDicePressed)
+        if (gameManager.GetCurrentPlayer().isAI == false)
         {
-            yield return null;
+            isDicePressed = false;
+            ShowDiceUIObserver(true);
+            while (!isDicePressed)
+            {
+                yield return null;
+            }
+            isDicePressed = true;
+
+            ShowDiceUIObserver(false);
         }
-        isDicePressed = true;
-
-
-
-        ShowDiceUIObserver(false);
-
+       
         int roll = DiceRollNumber();
 
         if(getCardManager().agility == true)
@@ -73,6 +73,14 @@ public class DiceRoll : NetworkBehaviour
         {
             //turning off at end of round
             roll -= 1;
+        }
+        if (getCardManager().bloodMoon == true)
+        {
+            if(roll > 3)
+            {
+                roll = 0;
+            } 
+           
         }
         if (getCardManager().topsyTurvy == true)
         {
@@ -94,12 +102,26 @@ public class DiceRoll : NetworkBehaviour
         {
             case PlayerLogic.Character.Meowscarada:
                 Debug.Log("Your First Roll is " + roll + ". Roll again? (y/n)");
-                StartCoroutine(meowManager.ReRollChoice(currentPlayer(), roll));
+                if (!currentPlayer().isAI)
+                {
+                    StartCoroutine(meowManager.ReRollChoice(currentPlayer(), roll));
+                }
+                else
+                {
+                    currentPlayer().StartMainMovement(roll);
+                }
                 break;
 
             case PlayerLogic.Character.Drifblim:
                 Debug.Log("Your First Roll is " + roll + ". Double for a trip? (y/n)");
-                StartCoroutine(driftManager.DoubleForTrip(currentPlayer(), roll));
+                if (!currentPlayer().isAI)
+                {
+                    StartCoroutine(driftManager.DoubleForTrip(currentPlayer(), roll));
+                }
+                else
+                {
+                    currentPlayer().StartMainMovement(roll);
+                }
                 break;
 
             case PlayerLogic.Character.Victini:
@@ -115,6 +137,7 @@ public class DiceRoll : NetworkBehaviour
                 break;
 
             default:
+                
                 currentPlayer().StartMainMovement(roll);
                 break;
 
@@ -230,9 +253,9 @@ public class DiceRoll : NetworkBehaviour
 
         PlayerLogic[] players = gameManager.getAllPlayers();
 
-        int[] placements = new int[gameManager.numOfPlayers];
+        int[] placements = new int[gameManager.maxPlayers];
 
-        for (int i = 0; i < gameManager.numOfPlayers; i++)
+        for (int i = 0; i < gameManager.maxPlayers; i++)
         {
             placements[i] = players[i].currentTile.gameObject.GetComponent<TileLogic>().id;
         }

@@ -107,11 +107,11 @@ public class PlayerTypes : NetworkBehaviour
             {
                 player.skipTurn = true;
             }
-            if (gameManager.numOfPlayers >= 3 && player.PlayerId != 3 && gameManager.player3.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player3.currentTile)
+            if (gameManager.maxPlayers >= 3 && player.PlayerId != 3 && gameManager.player3.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player3.currentTile)
             {
                 player.skipTurn = true;
             }
-            if (gameManager.numOfPlayers == 4 && player.PlayerId != 4 && gameManager.player4.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player4.currentTile)
+            if (gameManager.maxPlayers == 4 && player.PlayerId != 4 && gameManager.player4.character == PlayerLogic.Character.Jigglypuff && player.currentTile == gameManager.player4.currentTile)
             {
                 player.skipTurn = true;
             }
@@ -159,13 +159,13 @@ public class PlayerTypes : NetworkBehaviour
                 gameManager.player2.SlideSpriteChange(true);
                 gameManager.player2.StartSlide(-1);
             }
-            if (gameManager.numOfPlayers >= 3 && player.PlayerId != 3 && player.currentTile == gameManager.player3.currentTile)
+            if (gameManager.maxPlayers >= 3 && player.PlayerId != 3 && player.currentTile == gameManager.player3.currentTile)
             {
                 Debug.Log("passing player 3");
                 gameManager.player3.SlideSpriteChange(true);
                 gameManager.player3.StartSlide(-1);
             }
-            if (gameManager.numOfPlayers == 4 && player.PlayerId != 4 && player.currentTile == gameManager.player4.currentTile)
+            if (gameManager.maxPlayers == 4 && player.PlayerId != 4 && player.currentTile == gameManager.player4.currentTile)
             {
                 Debug.Log("passing player 4");
                 gameManager.player4.SlideSpriteChange(true);

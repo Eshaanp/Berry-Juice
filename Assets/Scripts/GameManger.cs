@@ -1,10 +1,11 @@
-using UnityEngine;
-using UnityEngine.InputSystem;
+using System;
 using System.Collections;
-using PurrNet;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using System.Collections.Generic;
+using PurrNet;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManger : NetworkBehaviour
 {
@@ -24,7 +25,9 @@ public class GameManger : NetworkBehaviour
     public DiceRoll rolling;
     public CardServerManager cardServerManager;
     public CameraManager cameraManager;
+    public CameraControl mainCamera; 
     public MainUI mainUI;
+    public AI_Manager aiManager;
 
     //[SerializeField] private NetworkIdentity networkIdentity;
     
@@ -35,7 +38,8 @@ public class GameManger : NetworkBehaviour
     public int Player3Score = 0;
     public int Player4Score = 0;
     public int turn = 0;
-    public int numOfPlayers = 2;
+    public int numOfPlayers = 1;
+    public int maxPlayers = 2;
     public SyncVar<int> currentPlayerTurn;
     public bool firstGame = true;
 
@@ -121,9 +125,9 @@ public class GameManger : NetworkBehaviour
         else if (playerNum == 2)
             return player2;
         else if (playerNum == 3)
-            return player2;
+            return player3;
         else if (playerNum == 4)
-            return player2;
+            return player4;
         else
             return null;
     }
@@ -138,7 +142,7 @@ public class GameManger : NetworkBehaviour
         {
             result[i] = maxPlayers[i];
         }
-        return result;
+        return maxPlayers;
 
     }
 
@@ -147,9 +151,9 @@ public class GameManger : NetworkBehaviour
     {
 
         PlayerLogic[] players = getAllPlayers();// append with more later
-        int[] placements = new int[numOfPlayers];
+        int[] placements = new int[maxPlayers];
 
-        for (int i = 0; i < numOfPlayers; i++)
+        for (int i = 0; i < maxPlayers; i++)
         {
             placements[i] = players[i].currentTile.gameObject.GetComponent<TileLogic>().id;
         }
@@ -161,7 +165,7 @@ public class GameManger : NetworkBehaviour
 
         List<PlayerLogic> result = new List<PlayerLogic>();
 
-        for (int i = 0; i < numOfPlayers; i++)
+        for (int i = 0; i < maxPlayers; i++)
         {
             if (players[i].currentTile.gameObject.GetComponent<TileLogic>().id == minimum)
             {
@@ -171,6 +175,15 @@ public class GameManger : NetworkBehaviour
 
         return result;
 
+    }
+
+    // returns player in placement order
+    public List<PlayerLogic> getPlayersInPlacementOrder()
+    {
+
+        PlayerLogic[] players = getAllPlayers();
+        Array.Sort(players, (a, b) => a.CurrentTileId.CompareTo(b.CurrentTileId));
+        return new List<PlayerLogic>(players);
     }
 
 
@@ -197,8 +210,12 @@ public class GameManger : NetworkBehaviour
         //PlayerLogic[] players = getAllPlayers();
         if (firstGame)
         {
-            for (int i = 0; i < numOfPlayers; i++)
+            for (int i = 0; i < maxPlayers; i++)
             {
+                if (i+1 > numOfPlayers)
+                {
+                    players[i].isAI = true;
+                }
                 players[i].CrossedFinish = false;
                 players[i].TurnOffAllSprites();
                 PlayerLogic.Character choice = players[i].pickedCharacters[0];
@@ -210,7 +227,7 @@ public class GameManger : NetworkBehaviour
         }
         else
         {
-            for (int i = 0; i < numOfPlayers; i++)
+            for (int i = 0; i < maxPlayers; i++)
             {
                 players[i].CrossedFinish = false;
                 players[i].TurnOffAllSprites();
@@ -243,6 +260,7 @@ public class GameManger : NetworkBehaviour
         snakeDraft.showDraft(true);
         yield return StartCoroutine(snakeDraft.StartSnakeDraft());
         yield return StartCoroutine(snakeDraft.ReverseSnakeDraft());
+        aiManager.NPCDraft(false);
         Debug.Log("Draft over");
         cameraManager.CameraSetUp();
        
@@ -290,7 +308,7 @@ public class GameManger : NetworkBehaviour
     {
         //currentPlayerTurn = (currentPlayerTurn == 1) ? 2 : 1;
         currentPlayerTurn.value++;
-        if (currentPlayerTurn > numOfPlayers)
+        if (currentPlayerTurn > maxPlayers)
         {
             currentPlayerTurn.value = 1;
         }
@@ -316,12 +334,18 @@ public class GameManger : NetworkBehaviour
             cardServerManager.stickyWeb = false;
             cardServerManager.stickyInEffect(false);
         }
+        if (cardServerManager.bloodMoonOrgin == GetCurrentPlayer().PlayerId)
+        {
+            cardServerManager.bloodMoon = false;
+            cardServerManager.bloodMoonInEffect(false);
+        }
         if (cardServerManager.tauntOrgin == GetCurrentPlayer().PlayerId)
         {
             cardServerManager.taunt = false;
             cardServerManager.tauntInEffect(false);
         }
-        cameraManager.startFreeCamera();
+        Debug.Log("free cam");
+        //cameraManager.LockToCurrentPlayer();
 
         if (GetCurrentPlayer().CrossedFinish == true)
         {
@@ -347,13 +371,13 @@ public class GameManger : NetworkBehaviour
         if (GetCurrentPlayer().isAI == false)
         {
             playerTypes.CheckCharacterBeforeRole(GetCurrentPlayer());
-            StartCoroutine(WaitForPlayers());
+            
         }
         else
         {
-
+            StartCoroutine(aiManager.AI_Turn());
         }
-
+        StartCoroutine(WaitForPlayers());
     }
 
 
@@ -370,7 +394,7 @@ public class GameManger : NetworkBehaviour
 
         nextTurnReady = 0;
         
-        if (currentPlayerTurn == numOfPlayers)
+        if (currentPlayerTurn == maxPlayers)
         {
 
 
@@ -409,7 +433,7 @@ public class GameManger : NetworkBehaviour
 
     public bool CheckIfRaceEnd()
     {
-        if(finishedPlayersAmount() == numOfPlayers)
+        if(finishedPlayersAmount() == maxPlayers)
         {
             return true;
         }

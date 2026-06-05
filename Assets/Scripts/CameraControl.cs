@@ -1,6 +1,7 @@
 using PurrNet;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class CameraControl : NetworkIdentity
 {
@@ -18,10 +19,7 @@ public class CameraControl : NetworkIdentity
     public bool isFreeCam;
 
 
-    private void Start()
-    {
-        //this.gameObject.SetActive(false);
-    }
+
 
 
     void Update()
@@ -47,14 +45,6 @@ public class CameraControl : NetworkIdentity
         }
 
 
-        if (Keyboard.current.lKey.wasPressedThisFrame)
-        {
-            //LockToCurrentPlayer();
-        }
-        if (Keyboard.current.iKey.wasPressedThisFrame)
-        {
-            EnterFreeCam();
-        }
     }
 
 
@@ -62,45 +52,67 @@ public class CameraControl : NetworkIdentity
     public void TurnOn(PlayerLogic Player1_Reference)
     {
         
-        LockToCurrentPlayer(Player1_Reference);
-        EnterFreeCam();
+        StartCoroutine(changeCamera(false, Player1_Reference));
+        //EnterFreeCam();
     }
+
+
+
 
 
 
     [ObserversRpc]
-    public void EnterFreeCam()
+    public void MainCameraInterface(bool freeCam, PlayerLogic currentPlayer)
     {
-        isFreeCam = true;
-        this.transform.SetParent(parentCam.transform);
-        Debug.Log("Entered Free Cam");
+        StartCoroutine(changeCamera(freeCam, currentPlayer));
+
     }
 
-
-
-    [ObserversRpc]
-    public void LockToCurrentPlayer(PlayerLogic currentPlayer)
+    public IEnumerator changeCamera(bool freeCam, PlayerLogic currentPlayer)
     {
-        //PlayerLogic currentPlayer = gameManger.GetCurrentPlayer();
-        transform.SetParent(getCurrentPlayerCameraPosition(currentPlayer));
-        transform.localPosition = Vector3.zero;
-        isFreeCam = false;
-        Debug.Log("camera locked to Player " +  currentPlayer.PlayerId);
 
-        //transform.localRotation = Quaternion.identity;
-
-
+        Debug.Log("Locked to Player: " + currentPlayer.PlayerId);
+        yield return StartCoroutine(MoveToLocalZeroXZ(freeCam, 1f, currentPlayer));
+        
 
     }
 
 
+    public IEnumerator MoveToLocalZeroXZ(bool freeCam, float duration, PlayerLogic currentPlayer)
+    {
 
+        Vector3 target;
+
+        if (freeCam)
+        {
+            this.transform.SetParent(parentCam.transform);
+            target = new Vector3(transform.localPosition.x, 0, transform.localPosition.z);
+            isFreeCam = true;
+        } else {
+            transform.SetParent(getCurrentPlayerCameraPosition(currentPlayer));
+            target = new Vector3(0, 0, 0);
+            isFreeCam = false;
+        }
+
+        Vector3 start = transform.localPosition;
+        
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            transform.localPosition = Vector3.Lerp(start, target, elapsed / duration);
+            yield return null;
+        }
+
+        transform.localPosition = target;
+    }
 
 
 
     private Transform getCurrentPlayerCameraPosition(PlayerLogic currentPlayer)
     {
-        PlayerID clientID = localPlayer.Value;
+        Debug.Log("Transform: " + currentPlayer.PlayerId);
         switch (currentPlayer.PlayerId)
         {
             case 1: return player1Cam;

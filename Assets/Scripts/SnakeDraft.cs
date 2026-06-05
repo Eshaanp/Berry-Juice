@@ -1,9 +1,11 @@
-using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 using PurrNet;
+using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class SnakeDraft : NetworkBehaviour
 {
@@ -39,6 +41,8 @@ public class SnakeDraft : NetworkBehaviour
     public Button Oricorio;
     public Button Raboot;
     public Button Drifblim;
+
+
 
 
     [ObserversRpc]
@@ -135,6 +139,14 @@ public class SnakeDraft : NetworkBehaviour
         return false;
 
     }
+
+
+
+
+   
+
+
+
 
 
 
